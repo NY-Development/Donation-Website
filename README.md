@@ -129,7 +129,7 @@ src
 
 ### 1️⃣ Clone the repository
 ```bash
-git clone <repo-url>
+git clone https://github.com/NY-Development/Donation-Website.git
 cd donation-web-app
 2️⃣ Install dependencies
 npm install
