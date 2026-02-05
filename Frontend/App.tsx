@@ -32,6 +32,7 @@ const ScrollToTop = () => {
 
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -42,6 +43,7 @@ const App: React.FC = () => {
   }, [isDarkMode]);
 
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
+  const toggleHelp = () => setIsHelpOpen((prev) => !prev);
 
   return (
     <HashRouter>
@@ -74,6 +76,63 @@ const App: React.FC = () => {
         </main>
 
         <Footer />
+
+        <button
+          type="button"
+          aria-label="Open help"
+          onClick={toggleHelp}
+          className="fixed bottom-6 right-6 z-50 size-12 rounded-full bg-primary text-white shadow-xl shadow-primary/40 flex items-center justify-center hover:bg-primary-hover transition-all"
+        >
+          <span className="material-symbols-outlined">help</span>
+        </button>
+
+        {isHelpOpen && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+            <button
+              type="button"
+              aria-label="Close help"
+              className="absolute inset-0 bg-black/40"
+              onClick={toggleHelp}
+            />
+            <div className="relative w-full sm:w-[420px] bg-white dark:bg-surface-dark rounded-t-2xl sm:rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 p-6 m-0 sm:m-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Need help?</h3>
+                <button
+                  type="button"
+                  aria-label="Close help"
+                  onClick={toggleHelp}
+                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                <button className="w-full text-left p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:border-primary/40 hover:bg-primary/5 transition">
+                  <p className="font-semibold">How do I donate securely?</p>
+                  <p className="text-sm text-gray-500">Learn about encryption, receipts, and payment safety.</p>
+                </button>
+                <button className="w-full text-left p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:border-primary/40 hover:bg-primary/5 transition">
+                  <p className="font-semibold">How do I start a campaign?</p>
+                  <p className="text-sm text-gray-500">Step-by-step guide to create and launch your fundraiser.</p>
+                </button>
+                <button className="w-full text-left p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:border-primary/40 hover:bg-primary/5 transition">
+                  <p className="font-semibold">Where can I track my impact?</p>
+                  <p className="text-sm text-gray-500">See donations, updates, and progress reports.</p>
+                </button>
+                <div className="pt-2">
+                  <Link
+                    to="/help-center"
+                    onClick={() => setIsHelpOpen(false)}
+                    className="w-full h-10 rounded-lg bg-primary text-white font-bold flex items-center justify-center hover:bg-primary-hover transition-colors"
+                  >
+                    Visit Help Center
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </HashRouter>
   );
