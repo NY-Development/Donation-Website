@@ -3,6 +3,7 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
+import { AlertTriangle, BadgeCheck, Heart, Search } from 'lucide-react';
 
 const Explore: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -111,7 +112,7 @@ const Explore: React.FC = () => {
               <label className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Keywords</label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="material-symbols-outlined text-slate-400 text-[20px]">search</span>
+                  <Search className="size-4 text-slate-400" aria-hidden="true" />
                 </span>
                 <input className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-primary focus:border-primary placeholder-slate-400" placeholder="Refine search..." type="text" />
               </div>
@@ -155,12 +156,12 @@ const Explore: React.FC = () => {
                   <img src={campaign.image} alt={campaign.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   {campaign.verified && (
                     <div className="absolute top-3 left-3 bg-white/95 dark:bg-slate-900/90 px-2 py-1 rounded-md text-xs font-bold text-teal-600 flex items-center gap-1 shadow-sm">
-                      <span className="material-symbols-outlined text-[14px]">verified</span> Verified Org
+                      <BadgeCheck className="size-3.5" aria-hidden="true" /> Verified Org
                     </div>
                   )}
                   {campaign.urgent && (
                     <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1 shadow-sm animate-pulse">
-                      <span className="material-symbols-outlined text-[14px]">warning</span> Urgent
+                      <AlertTriangle className="size-3.5" aria-hidden="true" /> Urgent
                     </div>
                   )}
                 </Link>
@@ -185,7 +186,7 @@ const Explore: React.FC = () => {
                       </div>
                     </div>
                     <Link to={`/donate/${campaign.id}`} className="w-full py-2.5 px-4 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg shadow-sm flex items-center justify-center gap-2">
-                      Donate Now <span className="material-symbols-outlined text-[18px]">volunteer_activism</span>
+                      Donate Now <Heart className="size-4" aria-hidden="true" />
                     </Link>
                   </div>
                 </div>

@@ -2,6 +2,7 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
+import { Activity, Award, CheckCircle, GraduationCap, Heart, Image, Leaf, Megaphone, RefreshCw, Repeat, Star, Wallet } from 'lucide-react';
 
 const UserDashboard: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -39,7 +40,7 @@ const UserDashboard: React.FC = () => {
           <p className="text-gray-500">You're making a real difference. Here's your impact overview.</p>
         </div>
         <button className="flex items-center gap-2 bg-primary px-6 py-2.5 rounded-lg text-white font-bold hover:shadow-lg transition-all">
-          <span className="material-symbols-outlined">volunteer_activism</span>
+          <Heart className="size-4" aria-hidden="true" />
           Donate Again
         </button>
       </div>
@@ -47,21 +48,21 @@ const UserDashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10" data-animate="section">
         <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-2" data-animate="card">
           <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
-            <span className="material-symbols-outlined">payments</span>
+            <Wallet className="size-5" aria-hidden="true" />
           </div>
           <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Donated</p>
           <p className="text-3xl font-black text-gray-900 dark:text-white">$2,450</p>
         </div>
         <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-2" data-animate="card">
           <div className="size-12 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mb-2">
-            <span className="material-symbols-outlined">favorite</span>
+            <Heart className="size-5" aria-hidden="true" />
           </div>
           <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Lives Touched</p>
           <p className="text-3xl font-black text-gray-900 dark:text-white">342</p>
         </div>
         <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-2" data-animate="card">
           <div className="size-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mb-2">
-            <span className="material-symbols-outlined">campaign</span>
+            <Megaphone className="size-5" aria-hidden="true" />
           </div>
           <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Projects Supported</p>
           <p className="text-3xl font-black text-gray-900 dark:text-white">18</p>
@@ -72,7 +73,7 @@ const UserDashboard: React.FC = () => {
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8" data-animate="card">
             <h3 className="text-xl font-bold mb-8 flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary">timeline</span>
+              <Activity className="size-5 text-primary" aria-hidden="true" />
               Timeline of Impact
             </h3>
             <div className="space-y-12">
@@ -87,7 +88,7 @@ const UserDashboard: React.FC = () => {
                   <h4 className="text-lg font-bold">Construction complete on the village well!</h4>
                   <p className="text-gray-600 dark:text-gray-400">We are thrilled to announce that the new solar-powered well in Kajiado is fully operational. Over 200 families now have access to clean, safe water.</p>
                   <div className="w-full aspect-video rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                     <span className="material-symbols-outlined text-gray-400 text-5xl">image</span>
+                    <Image className="size-12 text-gray-400" aria-hidden="true" />
                   </div>
                 </div>
               </div>
@@ -100,7 +101,7 @@ const UserDashboard: React.FC = () => {
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl flex items-center justify-between border border-gray-100 dark:border-gray-800">
                     <div className="flex items-center gap-3">
-                      <span className="material-symbols-outlined text-primary">check_circle</span>
+                      <CheckCircle className="size-4 text-primary" aria-hidden="true" />
                       <span className="font-bold">Emergency Medical Relief</span>
                     </div>
                     <span className="font-bold">$50.00</span>
@@ -114,14 +115,14 @@ const UserDashboard: React.FC = () => {
         <div className="space-y-6">
           <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800" data-animate="card">
             <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary">sync</span>
+              <RefreshCw className="size-4 text-primary" aria-hidden="true" />
               Active Subscriptions
             </h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
                 <div className="flex items-center gap-3">
                   <div className="size-10 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600">
-                    <span className="material-symbols-outlined">school</span>
+                    <GraduationCap className="size-4" aria-hidden="true" />
                   </div>
                   <div>
                     <p className="text-sm font-bold">Education Fund</p>
@@ -136,21 +137,21 @@ const UserDashboard: React.FC = () => {
 
           <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800" data-animate="card">
             <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-              <span className="material-symbols-outlined text-warning">workspace_premium</span>
+              <Award className="size-4 text-warning" aria-hidden="true" />
               Badges Earned
             </h3>
             <div className="grid grid-cols-4 gap-3">
               <div className="aspect-square rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600" title="First Donation">
-                <span className="material-symbols-outlined">star</span>
+                <Star className="size-4" aria-hidden="true" />
               </div>
               <div className="aspect-square rounded-full bg-purple-100 flex items-center justify-center text-purple-600" title="Monthly Supporter">
-                <span className="material-symbols-outlined">event_repeat</span>
+                <Repeat className="size-4" aria-hidden="true" />
               </div>
               <div className="aspect-square rounded-full bg-pink-100 flex items-center justify-center text-pink-600" title="Life Changer">
-                <span className="material-symbols-outlined">favorite</span>
+                <Heart className="size-4" aria-hidden="true" />
               </div>
               <div className="aspect-square rounded-full bg-blue-100 flex items-center justify-center text-blue-600" title="Eco Hero">
-                <span className="material-symbols-outlined">forest</span>
+                <Leaf className="size-4" aria-hidden="true" />
               </div>
             </div>
             <button className="w-full mt-6 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-xs font-bold text-gray-500 hover:bg-gray-50 transition-colors">

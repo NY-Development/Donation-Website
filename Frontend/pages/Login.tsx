@@ -1,16 +1,30 @@
 
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
+import { useAuthStore } from '../store';
+import { Eye, EyeOff, Lock, Mail, Quote } from 'lucide-react';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const login = useAuthStore((state) => state.login);
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const authError = useAuthStore((state) => state.error);
+  const clearError = useAuthStore((state) => state.clearError);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/dashboard');
+    const success = await login({ email, password });
+    if (success) {
+      navigate('/dashboard');
+    } else{
+      navigate('/login');
+    }
   };
 
   useLayoutEffect(() => {
@@ -24,7 +38,7 @@ const Login: React.FC = () => {
 
       const forms = gsap.utils.toArray<HTMLElement>('[data-animate="form"]', containerRef.current);
       forms.forEach((form) => {
-        const inputs = gsap.utils.toArray('[data-animate="input"]', form);
+        const inputs = gsap.utils.toArray<HTMLElement>('[data-animate="input"]', form);
         animateStagger(inputs, {
           y: 10,
           duration: 0.5,
@@ -54,7 +68,7 @@ const Login: React.FC = () => {
             className="absolute inset-0 w-full h-full object-cover" 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-10 text-white">
-            <span className="material-symbols-outlined text-4xl mb-4">format_quote</span>
+            <Quote className="size-10 mb-4" aria-hidden="true" />
             <p className="text-2xl font-bold leading-tight mb-4">"Your contribution changes lives every single day. We are building a future where everyone thrives."</p>
             <div className="flex items-center gap-3">
               <div className="size-10 rounded-full border-2 border-white/50 bg-gray-200 bg-cover bg-center" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&auto=format&fit=crop")' }}></div>
@@ -70,13 +84,30 @@ const Login: React.FC = () => {
           <div className="max-w-md mx-auto w-full">
             <h1 className="text-3xl font-black mb-2 text-gray-900 dark:text-white">Welcome Back</h1>
             <p className="text-gray-500 mb-8">Please enter your details to sign in to your dashboard.</p>
+
+            {authError && (
+              <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {authError}
+              </div>
+            )}
             
             <form onSubmit={handleLogin} className="space-y-6" data-animate="form">
               <div className="space-y-2">
                 <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Email</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400">mail</span>
-                  <input className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-primary outline-none" placeholder="name@example.com" type="email" required data-animate="input" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" aria-hidden="true" />
+                  <input
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-primary outline-none"
+                    placeholder="name@example.com"
+                    type="email"
+                    required
+                    data-animate="input"
+                    value={email}
+                    onChange={(event) => {
+                      setEmail(event.target.value);
+                      if (authError) clearError();
+                    }}
+                  />
                 </div>
               </div>
               <div className="space-y-2">
@@ -85,9 +116,27 @@ const Login: React.FC = () => {
                   <a href="#" className="text-xs font-bold text-primary hover:underline">Forgot password?</a>
                 </div>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400">lock</span>
-                  <input className="w-full pl-10 pr-10 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-primary outline-none" placeholder="••••••••" type="password" required data-animate="input" />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 cursor-pointer hover:text-primary transition-colors">visibility_off</span>
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" aria-hidden="true" />
+                  <input
+                    className="w-full pl-10 pr-10 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-primary outline-none"
+                    placeholder="••••••••"
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    data-animate="input"
+                    value={password}
+                    onChange={(event) => {
+                      setPassword(event.target.value);
+                      if (authError) clearError();
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff className="size-4" aria-hidden="true" /> : <Eye className="size-4" aria-hidden="true" />}
+                  </button>
                 </div>
               </div>
 
@@ -96,8 +145,13 @@ const Login: React.FC = () => {
                 <label htmlFor="remember" className="text-sm text-gray-500">Remember for 30 days</label>
               </div>
 
-              <button className="w-full py-4 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg transition-all transform active:scale-[0.98]" data-animate="button">
-                Sign In
+              <button
+                className="w-full py-4 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg transition-all transform active:scale-[0.98] disabled:opacity-70"
+                data-animate="button"
+                disabled={isLoading}
+                aria-busy={isLoading}
+              >
+                {isLoading ? 'Signing In...' : 'Sign In'}
               </button>
 
               <div className="text-center">

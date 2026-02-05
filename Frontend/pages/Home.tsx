@@ -3,6 +3,7 @@ import React, { useLayoutEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
+import { ArrowRight, BadgeCheck, Heart, Mail, MailCheck, Megaphone, Search, Wallet } from 'lucide-react';
 
 const Home: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -80,7 +81,7 @@ const Home: React.FC = () => {
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-gray-900/60 via-gray-900/50 to-background-light dark:to-background-dark"></div>
         <div className="relative z-20 container mx-auto px-4 flex flex-col items-center text-center pt-10">
           <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-xs font-semibold uppercase tracking-wider mb-6">
-            <span className="material-symbols-outlined text-sm">verified</span>
+            <BadgeCheck className="size-3.5" aria-hidden="true" />
             Trusted by 10k+ Donors
           </span>
           <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight max-w-4xl mb-6 drop-shadow-sm">
@@ -92,7 +93,7 @@ const Home: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
             <Link to="/explore" className="h-12 px-8 rounded-lg bg-primary text-white text-base font-bold hover:bg-primary-hover transition-all transform hover:scale-105 shadow-xl shadow-primary/40 flex items-center justify-center gap-2">
               <span>Donate Now</span>
-              <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
             <Link to="/explore" className="h-12 px-8 rounded-lg bg-white/10 backdrop-blur-md border border-white/30 text-white text-base font-bold hover:bg-white/20 transition-all flex items-center justify-center">
               Explore Campaigns
@@ -107,21 +108,21 @@ const Home: React.FC = () => {
           <div className="bg-white dark:bg-surface-dark rounded-xl shadow-xl shadow-gray-200/50 dark:shadow-black/50 p-8 grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-800 border border-gray-100 dark:border-gray-800">
             <div className="flex flex-col items-center text-center p-2">
               <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-3 text-primary">
-                <span className="material-symbols-outlined text-3xl">payments</span>
+                <Wallet className="size-7" aria-hidden="true" />
               </div>
               <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">$2M+</p>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total Raised</p>
             </div>
             <div className="flex flex-col items-center text-center p-2">
               <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-3 text-primary">
-                <span className="material-symbols-outlined text-3xl">campaign</span>
+                <Megaphone className="size-7" aria-hidden="true" />
               </div>
               <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">500+</p>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Active Campaigns</p>
             </div>
             <div className="flex flex-col items-center text-center p-2">
               <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-3 text-primary">
-                <span className="material-symbols-outlined text-3xl">favorite</span>
+                <Heart className="size-7" aria-hidden="true" />
               </div>
               <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">10k+</p>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Lives Changed</p>
@@ -138,7 +139,7 @@ const Home: React.FC = () => {
             <p className="text-gray-600 dark:text-gray-400">Support urgent causes that need your help right now.</p>
           </div>
           <Link className="inline-flex items-center text-primary font-bold hover:underline gap-1" to="/explore">
-            View all campaigns <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            View all campaigns <ArrowRight className="size-4" aria-hidden="true" />
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -224,21 +225,21 @@ const Home: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div className="flex flex-col items-center" data-animate="impact-step">
               <div className="size-16 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-primary mb-6">
-                <span className="material-symbols-outlined text-3xl">search</span>
+                <Search className="size-7" aria-hidden="true" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">1. Discover a Cause</h3>
               <p className="text-gray-600 dark:text-gray-400">Browse through hundreds of verified campaigns from trusted non-profits.</p>
             </div>
             <div className="flex flex-col items-center" data-animate="impact-step">
               <div className="size-16 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-primary mb-6">
-                <span className="material-symbols-outlined text-3xl">volunteer_activism</span>
+                <Heart className="size-7" aria-hidden="true" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">2. Donate Securely</h3>
               <p className="text-gray-600 dark:text-gray-400">Make a donation with just a few clicks. Our secure platform ensures safety.</p>
             </div>
             <div className="flex flex-col items-center" data-animate="impact-step">
               <div className="size-16 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-primary mb-6">
-                <span className="material-symbols-outlined text-3xl">mark_email_read</span>
+                <MailCheck className="size-7" aria-hidden="true" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">3. Receive Updates</h3>
               <p className="text-gray-600 dark:text-gray-400">Get real-time updates and photos showing exactly how your contribution made a difference.</p>
@@ -250,7 +251,7 @@ const Home: React.FC = () => {
       {/* Community Section */}
       <section className="py-20 px-4 bg-primary text-white" data-animate="section">
         <div className="max-w-[800px] mx-auto text-center">
-          <span className="material-symbols-outlined text-5xl mb-6 opacity-80">mail</span>
+          <Mail className="size-12 mb-6 opacity-80" aria-hidden="true" />
           <h2 className="text-3xl font-bold mb-4">Join Our Community</h2>
           <p className="text-purple-100 mb-8 max-w-lg mx-auto">Get inspiring stories and impact reports delivered straight to your inbox every week.</p>
           <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>

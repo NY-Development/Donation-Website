@@ -3,6 +3,7 @@ import React, { useLayoutEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { addHoverScale, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
+import { Lock, Moon, Sun } from 'lucide-react';
 
 interface NavbarProps {
   toggleDarkMode: () => void;
@@ -51,10 +52,10 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
           </Link>
           <div className="flex items-center gap-4">
             <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-animate="nav-link">
-              <span className="material-symbols-outlined">{isDarkMode ? 'light_mode' : 'dark_mode'}</span>
+              {isDarkMode ? <Sun className="size-5" aria-hidden="true" /> : <Moon className="size-5" aria-hidden="true" />}
             </button>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#ede7f3] dark:bg-gray-800 text-sm font-bold text-gray-900 dark:text-white">
-              <span className="material-symbols-outlined text-[18px]">lock</span>
+              <Lock className="size-4" aria-hidden="true" />
               <span className="hidden sm:inline">Secure Checkout</span>
             </div>
           </div>
@@ -82,7 +83,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
 
           <div className="flex items-center gap-3">
             <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300" data-animate="nav-link">
-              <span className="material-symbols-outlined">{isDarkMode ? 'light_mode' : 'dark_mode'}</span>
+              {isDarkMode ? <Sun className="size-5" aria-hidden="true" /> : <Moon className="size-5" aria-hidden="true" />}
             </button>
             <Link to="/login" className="hidden sm:flex items-center justify-center h-9 px-4 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" data-animate="nav-link">
               Log In

@@ -2,6 +2,7 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
+import { ArrowLeft, ArrowRight, Bold, CheckCircle, Flag, Image, Italic, Lightbulb, Link as LinkIcon, Wallet } from 'lucide-react';
 
 const CreateCampaign: React.FC = () => {
   const [step, setStep] = useState(1);
@@ -59,7 +60,7 @@ const CreateCampaign: React.FC = () => {
             <React.Fragment key={s}>
               <div className={`flex items-center gap-2 ${step === s ? 'text-primary font-bold' : step > s ? 'text-green-600' : 'text-gray-400'}`}>
                 {step > s ? (
-                  <span className="material-symbols-outlined text-[20px]">check_circle</span>
+                  <CheckCircle className="size-5" aria-hidden="true" />
                 ) : (
                   <span className={`flex items-center justify-center size-5 rounded-full ${step === s ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'} text-xs`}>
                     {s}
@@ -113,9 +114,9 @@ const CreateCampaign: React.FC = () => {
                   <p className="text-gray-500 text-base mb-4">Connect with your audience by sharing details about the cause.</p>
                   <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                     <div className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-2 flex gap-1">
-                      <span className="material-symbols-outlined p-1 rounded hover:bg-gray-200 cursor-pointer">format_bold</span>
-                      <span className="material-symbols-outlined p-1 rounded hover:bg-gray-200 cursor-pointer">format_italic</span>
-                      <span className="material-symbols-outlined p-1 rounded hover:bg-gray-200 cursor-pointer">link</span>
+                      <Bold className="size-4 p-1 rounded hover:bg-gray-200 cursor-pointer" aria-hidden="true" />
+                      <Italic className="size-4 p-1 rounded hover:bg-gray-200 cursor-pointer" aria-hidden="true" />
+                      <LinkIcon className="size-4 p-1 rounded hover:bg-gray-200 cursor-pointer" aria-hidden="true" />
                     </div>
                     <textarea 
                       className="w-full min-h-[300px] p-4 bg-white dark:bg-gray-800 border-none outline-none focus:ring-0 resize-none" 
@@ -141,12 +142,12 @@ const CreateCampaign: React.FC = () => {
                    <h3 className="text-lg font-bold mb-4">Funding Style</h3>
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="p-5 border-2 border-primary bg-primary/5 rounded-xl flex flex-col gap-2">
-                        <span className="material-symbols-outlined text-primary">savings</span>
+                        <Wallet className="size-4 text-primary" aria-hidden="true" />
                         <p className="font-bold">Keep what you raise</p>
                         <p className="text-sm text-gray-500">Keep all donations even if you don't reach the goal.</p>
                       </div>
                       <div className="p-5 border border-gray-200 dark:border-gray-800 rounded-xl flex flex-col gap-2">
-                        <span className="material-symbols-outlined text-gray-400">flag</span>
+                        <Flag className="size-4 text-gray-400" aria-hidden="true" />
                         <p className="font-bold">All or nothing</p>
                         <p className="text-sm text-gray-500">Only receive funds if you reach the target.</p>
                       </div>
@@ -160,7 +161,7 @@ const CreateCampaign: React.FC = () => {
                 <div>
                    <label className="block text-xl font-bold mb-2">Campaign Cover Photo</label>
                    <div className="mt-4 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl p-12 flex flex-col items-center gap-4 text-center">
-                      <span className="material-symbols-outlined text-5xl text-gray-300">image</span>
+                     <Image className="size-12 text-gray-300" aria-hidden="true" />
                       <div>
                         <p className="font-bold">Drag and drop your image here</p>
                         <p className="text-xs text-gray-500 mt-1">Recommended: 1200 x 675px • JPG, PNG, GIF</p>
@@ -175,7 +176,7 @@ const CreateCampaign: React.FC = () => {
           <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
             {step > 1 ? (
               <button onClick={prevStep} className="flex items-center gap-2 px-6 py-3 font-bold text-gray-500 hover:text-gray-900 transition-colors" data-animate="button">
-                <span className="material-symbols-outlined">arrow_back</span> Back
+                <ArrowLeft className="size-4" aria-hidden="true" /> Back
               </button>
             ) : (
               <div />
@@ -186,7 +187,7 @@ const CreateCampaign: React.FC = () => {
               data-animate="button"
             >
               {step === 4 ? 'Launch Campaign' : 'Continue'}
-              <span className="material-symbols-outlined">arrow_forward</span>
+              <ArrowRight className="size-4" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -194,16 +195,16 @@ const CreateCampaign: React.FC = () => {
         <aside className="lg:col-span-4 w-full" data-animate="section">
           <div className="bg-gradient-to-br from-white to-gray-50 dark:from-surface-dark dark:to-gray-900 p-6 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm sticky top-24">
              <div className="flex items-center gap-3 mb-6">
-                <span className="material-symbols-outlined text-primary">lightbulb</span>
+                <Lightbulb className="size-4 text-primary" aria-hidden="true" />
                 <h3 className="font-bold text-lg">Tips for success</h3>
              </div>
              <ul className="space-y-4 text-sm text-gray-600 dark:text-gray-400">
                 <li className="flex gap-2">
-                  <span className="material-symbols-outlined text-green-500 text-sm">check_circle</span>
+                  <CheckCircle className="size-4 text-green-500" aria-hidden="true" />
                   <span><strong>Be descriptive.</strong> Specific titles build more trust.</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="material-symbols-outlined text-green-500 text-sm">check_circle</span>
+                  <CheckCircle className="size-4 text-green-500" aria-hidden="true" />
                   <span><strong>Share your story.</strong> People donate to people, not just causes.</span>
                 </li>
              </ul>

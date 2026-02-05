@@ -3,6 +3,7 @@ import React, { useLayoutEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
+import { BadgeCheck, Heart, Lock, Mail, MapPin, TrendingUp } from 'lucide-react';
 
 const CampaignDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -49,7 +50,7 @@ const CampaignDetail: React.FC = () => {
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
             />
             <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-2 text-white text-xs font-bold uppercase tracking-wide">
-              <span className="material-symbols-outlined text-sm">location_on</span>
+              <MapPin className="size-3.5" aria-hidden="true" />
               <span>Austin, TX</span>
             </div>
           </div>
@@ -60,13 +61,13 @@ const CampaignDetail: React.FC = () => {
               <div>
                 <div className="flex items-center gap-2">
                   <p className="text-lg font-bold text-gray-900 dark:text-white">Sarah Jenkins</p>
-                  <span className="material-symbols-outlined text-primary text-base">verified</span>
+                  <BadgeCheck className="size-4 text-primary" aria-hidden="true" />
                 </div>
                 <p className="text-gray-500 text-sm">Organizer • Verified Charity</p>
               </div>
             </div>
             <button className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition text-sm font-bold">
-              <span className="material-symbols-outlined text-lg">mail</span> Contact
+              <Mail className="size-4" aria-hidden="true" /> Contact
             </button>
           </div>
 
@@ -94,7 +95,7 @@ const CampaignDetail: React.FC = () => {
                   <div className="flex justify-between text-xs font-semibold text-gray-500 mt-1">
                     <span>342 donations</span>
                     <span className="flex items-center gap-1 text-orange-500">
-                      <span className="material-symbols-outlined text-sm">trending_up</span> 12 today
+                      <TrendingUp className="size-3.5" aria-hidden="true" /> 12 today
                     </span>
                   </div>
                 </div>
@@ -111,14 +112,14 @@ const CampaignDetail: React.FC = () => {
                   Donate Now
                 </Link>
                 <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
-                  <span className="material-symbols-outlined text-sm">lock</span>
+                  <Lock className="size-3.5" aria-hidden="true" />
                   Secure donation via Stripe
                 </div>
               </div>
 
               <div className="bg-gray-50 dark:bg-surface-dark p-6 border-t border-gray-100 dark:border-gray-800">
                 <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-primary">favorite</span> Hero Donors
+                  <Heart className="size-4 text-primary" aria-hidden="true" /> Hero Donors
                 </h4>
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">

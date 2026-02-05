@@ -3,6 +3,7 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
+import { ArrowRight, CreditCard, Leaf, ShieldCheck } from 'lucide-react';
 
 const Donate: React.FC = () => {
   const [amount, setAmount] = useState('50');
@@ -58,7 +59,7 @@ const Donate: React.FC = () => {
               Complete your donation
             </h1>
             <div className="flex items-center gap-2 text-primary font-medium">
-              <span className="material-symbols-outlined text-sm">verified_user</span>
+              <ShieldCheck className="size-4" aria-hidden="true" />
               <p>Secure, encrypted transaction</p>
             </div>
           </div>
@@ -139,7 +140,7 @@ const Donate: React.FC = () => {
               <div className="flex flex-col gap-1.5">
                 <label className="text-sm font-semibold">Card Number</label>
                 <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">credit_card</span>
+                  <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" aria-hidden="true" />
                   <input className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900" placeholder="0000 0000 0000 0000" type="text" data-animate="input" />
                 </div>
               </div>
@@ -155,7 +156,7 @@ const Donate: React.FC = () => {
                 data-animate="button"
               >
                 <span>Donate ${amount} Now</span>
-                <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -176,7 +177,7 @@ const Donate: React.FC = () => {
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-100 dark:border-gray-700">
                   <div className="flex gap-3 items-start text-sm">
-                    <span className="material-symbols-outlined text-primary">forest</span>
+                    <Leaf className="size-4 text-primary" aria-hidden="true" />
                     <div>
                       <p className="font-semibold">Your impact</p>
                       <p className="text-gray-500">Your ${amount} donation helps plant trees and restore biodiversity.</p>

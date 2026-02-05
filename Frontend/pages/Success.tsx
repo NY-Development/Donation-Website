@@ -3,6 +3,8 @@ import React, { useLayoutEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
+import { CheckCircle, Heart } from 'lucide-react';
+import { FaRegSmileBeam, FaStar } from 'react-icons/fa';
 
 const Success: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -48,10 +50,10 @@ const Success: React.FC = () => {
       <div className="relative z-10 w-full max-w-[600px] flex flex-col items-center text-center" data-animate="section">
         <div className="mb-8 relative flex items-center justify-center" data-animate="celebrate">
           <div className="flex items-center justify-center w-24 h-24 bg-white dark:bg-surface-dark rounded-full shadow-lg border-4 border-primary/20">
-            <span className="material-symbols-outlined text-5xl text-primary">favorite</span>
+            <Heart className="size-12 text-primary" aria-hidden="true" />
           </div>
-          <span className="material-symbols-outlined absolute top-0 -left-8 text-yellow-400 text-2xl rotate-[-20deg]">celebration</span>
-          <span className="material-symbols-outlined absolute -top-4 right-0 text-primary text-xl">star</span>
+          <FaRegSmileBeam className="absolute top-0 -left-8 text-yellow-400 text-2xl rotate-[-20deg]" aria-hidden="true" />
+          <FaStar className="absolute -top-4 right-0 text-primary text-xl" aria-hidden="true" />
         </div>
 
         <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white leading-tight tracking-tight mb-4">
@@ -66,7 +68,7 @@ const Success: React.FC = () => {
             <p className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-2">Total Donation</p>
             <p className="text-5xl font-black text-primary">$50.00</p>
             <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-600 text-xs font-bold uppercase">
-              <span className="material-symbols-outlined text-sm">check_circle</span>
+              <CheckCircle className="size-4" aria-hidden="true" />
               Processed Successfully
             </div>
           </div>

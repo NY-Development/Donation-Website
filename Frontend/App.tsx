@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Explore from './pages/Explore';
 import CampaignDetail from './pages/CampaignDetail';
@@ -21,6 +22,8 @@ import AboutUs from './pages/AboutUs';
 import Eula from './pages/Eula';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
+import { useAuthStore } from './store';
+import { HelpCircle, X } from 'lucide-react';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -33,6 +36,11 @@ const ScrollToTop = () => {
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const initializeAuth = useAuthStore((state) => state.initialize);
+
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -58,9 +66,31 @@ const App: React.FC = () => {
             <Route path="/explore" element={<Explore />} />
             <Route path="/campaign/:id" element={<CampaignDetail />} />
             <Route path="/donate/:id" element={<Donate />} />
-            <Route path="/create" element={<CreateCampaign />} />
-            <Route path="/dashboard" element={<UserDashboard />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route
+              path="/create"
+              element={
+                <ProtectedRoute>
+                  <CreateCampaign />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <UserDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            {/* <Route path="/admin" element={<AdminDashboard />} /> */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/success" element={<Success />} />
@@ -83,7 +113,7 @@ const App: React.FC = () => {
           onClick={toggleHelp}
           className="fixed bottom-6 right-6 z-50 size-12 rounded-full bg-primary text-white shadow-xl shadow-primary/40 flex items-center justify-center hover:bg-primary-hover transition-all"
         >
-          <span className="material-symbols-outlined">help</span>
+          <HelpCircle className="size-6" aria-hidden="true" />
         </button>
 
         {isHelpOpen && (
@@ -103,7 +133,7 @@ const App: React.FC = () => {
                   onClick={toggleHelp}
                   className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 >
-                  <span className="material-symbols-outlined">close</span>
+                  <X className="size-5" aria-hidden="true" />
                 </button>
               </div>
 
