@@ -13,6 +13,14 @@ import AdminDashboard from './pages/AdminDashboard';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Success from './pages/Success';
+import HowItWorks from './pages/HowItWorks';
+import ForNonprofits from './pages/ForNonprofits';
+import HelpCenter from './pages/HelpCenter';
+import SafetyTrust from './pages/SafetyTrust';
+import AboutUs from './pages/AboutUs';
+import Eula from './pages/Eula';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -54,6 +62,14 @@ const App: React.FC = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/success" element={<Success />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route path="/for-nonprofits" element={<ForNonprofits />} />
+            <Route path="/help-center" element={<HelpCenter />} />
+            <Route path="/safety-trust" element={<SafetyTrust />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/eula" element={<Eula />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
           </Routes>
         </main>
 

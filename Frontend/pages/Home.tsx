@@ -1,13 +1,82 @@
 
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 
 const Home: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const heroTrackRef = useRef<HTMLDivElement | null>(null);
+
+  const heroImages = [
+    'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=2070&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2070&auto=format&fit=crop',
+  ];
+
+  useLayoutEffect(() => {
+    ensureGsap();
+    if (!containerRef.current || prefersReducedMotion()) return;
+
+    const ctx = gsap.context(() => {
+      animatePageIn(containerRef.current as HTMLDivElement);
+      const sections = gsap.utils.toArray<HTMLElement>('[data-animate="section"]', containerRef.current);
+      animateSectionsOnScroll(sections);
+
+      const impactSteps = gsap.utils.toArray<HTMLElement>('[data-animate="impact-step"]', containerRef.current);
+      if (impactSteps.length) {
+        animateStagger(impactSteps, {
+          y: 16,
+          duration: 0.6,
+          stagger: 0.08,
+          scrollTrigger: {
+            trigger: impactSteps[0],
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        });
+      }
+
+      if (heroTrackRef.current) {
+        gsap.to(heroTrackRef.current, {
+          xPercent: -75,
+          duration: 30,
+          ease: 'none',
+          repeat: -1,
+        });
+
+        const panels = gsap.utils.toArray<HTMLElement>('[data-animate="hero-panel"]', heroTrackRef.current);
+        gsap.to(panels, {
+          scale: 1.05,
+          duration: 8,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
+          stagger: 1.5,
+          transformOrigin: 'center center',
+        });
+      }
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div>
+    <div ref={containerRef}>
       {/* Hero Section */}
-      <section className="relative w-full min-h-[600px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-transform duration-[10s] hover:scale-110" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop")' }}></div>
+      <section className="relative w-full min-h-[600px] flex items-center justify-center overflow-hidden" data-animate="section">
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <div ref={heroTrackRef} className="absolute inset-0 flex w-[400%]">
+            {[...heroImages, heroImages[0]].map((image, index) => (
+              <div
+                key={`${image}-${index}`}
+                data-animate="hero-panel"
+                className="w-1/4 h-full bg-cover bg-center bg-no-repeat"
+                style={{ backgroundImage: `url("${image}")` }}
+              />
+            ))}
+          </div>
+        </div>
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-gray-900/60 via-gray-900/50 to-background-light dark:to-background-dark"></div>
         <div className="relative z-20 container mx-auto px-4 flex flex-col items-center text-center pt-10">
           <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-xs font-semibold uppercase tracking-wider mb-6">
@@ -33,7 +102,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="relative z-30 -mt-16 pb-16 px-4">
+      <section className="relative z-30 -mt-16 pb-16 px-4" data-animate="section">
         <div className="max-w-[1000px] mx-auto">
           <div className="bg-white dark:bg-surface-dark rounded-xl shadow-xl shadow-gray-200/50 dark:shadow-black/50 p-8 grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-800 border border-gray-100 dark:border-gray-800">
             <div className="flex flex-col items-center text-center p-2">
@@ -62,7 +131,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Featured Section placeholder */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-[1200px] mx-auto">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-[1200px] mx-auto" data-animate="section">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">Featured Campaigns</h2>
@@ -146,28 +215,28 @@ const Home: React.FC = () => {
       </section>
 
       {/* How it Works */}
-      <section className="py-20 bg-white dark:bg-[#1f1528]">
+      <section className="py-20 bg-white dark:bg-[#1f1528]" data-animate="section">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="max-w-2xl mx-auto mb-16">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">How Impact Works</h2>
             <p className="text-gray-600 dark:text-gray-400">Transparent giving. Visible impact. We make it easy to support the causes you care about.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center" data-animate="impact-step">
               <div className="size-16 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-primary mb-6">
                 <span className="material-symbols-outlined text-3xl">search</span>
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">1. Discover a Cause</h3>
               <p className="text-gray-600 dark:text-gray-400">Browse through hundreds of verified campaigns from trusted non-profits.</p>
             </div>
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center" data-animate="impact-step">
               <div className="size-16 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-primary mb-6">
                 <span className="material-symbols-outlined text-3xl">volunteer_activism</span>
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">2. Donate Securely</h3>
               <p className="text-gray-600 dark:text-gray-400">Make a donation with just a few clicks. Our secure platform ensures safety.</p>
             </div>
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center" data-animate="impact-step">
               <div className="size-16 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-primary mb-6">
                 <span className="material-symbols-outlined text-3xl">mark_email_read</span>
               </div>
@@ -179,7 +248,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Community Section */}
-      <section className="py-20 px-4 bg-primary text-white">
+      <section className="py-20 px-4 bg-primary text-white" data-animate="section">
         <div className="max-w-[800px] mx-auto text-center">
           <span className="material-symbols-outlined text-5xl mb-6 opacity-80">mail</span>
           <h2 className="text-3xl font-bold mb-4">Join Our Community</h2>

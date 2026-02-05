@@ -1,13 +1,29 @@
 
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { animatePageIn, animateSectionsOnScroll, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 
 const CampaignDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    ensureGsap();
+    if (!containerRef.current || prefersReducedMotion()) return;
+
+    const ctx = gsap.context(() => {
+      animatePageIn(containerRef.current as HTMLDivElement);
+      const sections = gsap.utils.toArray<HTMLElement>('[data-animate="section"]', containerRef.current);
+      animateSectionsOnScroll(sections);
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-6">
-      <div className="flex flex-wrap gap-2 mb-6">
+    <div ref={containerRef} className="max-w-7xl mx-auto px-4 md:px-8 py-6">
+      <div className="flex flex-wrap gap-2 mb-6" data-animate="section">
         <Link className="text-primary hover:underline text-sm font-medium" to="/">Home</Link>
         <span className="text-gray-400 text-sm">/</span>
         <Link className="text-primary hover:underline text-sm font-medium" to="/explore">Campaigns</Link>
@@ -16,7 +32,7 @@ const CampaignDetail: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-        <div className="lg:col-span-8 flex flex-col gap-6">
+        <div className="lg:col-span-8 flex flex-col gap-6" data-animate="section">
           <div className="flex flex-col gap-3">
             <h1 className="text-3xl md:text-5xl font-black leading-tight tracking-tight text-gray-900 dark:text-white">
               Help Rebuild the Community Center
@@ -63,7 +79,7 @@ const CampaignDetail: React.FC = () => {
           </article>
         </div>
 
-        <div className="lg:col-span-4 relative">
+        <div className="lg:col-span-4 relative" data-animate="section">
           <div className="sticky top-24 flex flex-col gap-6">
             <div className="bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
               <div className="p-6 flex flex-col gap-6">

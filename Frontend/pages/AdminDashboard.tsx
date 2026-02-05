@@ -1,8 +1,11 @@
 
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { gsap } from 'gsap';
+import { animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 
 const AdminDashboard: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const donationData = [
     { name: 'Week 1', value: 25000 },
     { name: 'Week 2', value: 42000 },
@@ -20,8 +23,33 @@ const AdminDashboard: React.FC = () => {
     { name: 'Sun', value: 290 },
   ];
 
+  useLayoutEffect(() => {
+    ensureGsap();
+    if (!containerRef.current || prefersReducedMotion()) return;
+
+    const ctx = gsap.context(() => {
+      animatePageIn(containerRef.current as HTMLDivElement, 0.6);
+      const sections = gsap.utils.toArray<HTMLElement>('[data-animate="section"]', containerRef.current);
+      animateSectionsOnScroll(sections);
+
+      const cards = gsap.utils.toArray('[data-animate="card"]', containerRef.current);
+      animateStagger(cards, {
+        y: 14,
+        duration: 0.55,
+        stagger: 0.06,
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 75%',
+          toggleActions: 'play none none none',
+        },
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50 dark:bg-background-dark">
+    <div ref={containerRef} className="flex flex-col lg:flex-row min-h-screen bg-gray-50 dark:bg-background-dark">
       {/* Sidebar */}
       <aside className="w-full lg:w-64 bg-white dark:bg-surface-dark border-r border-gray-200 dark:border-gray-800 flex flex-col shrink-0">
         <nav className="flex-1 p-4 space-y-1">
@@ -43,7 +71,7 @@ const AdminDashboard: React.FC = () => {
 
       {/* Main Content */}
       <main className="flex-1 p-6 lg:p-10 space-y-8 overflow-y-auto">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center" data-animate="section">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Platform Health</h1>
             <p className="text-sm text-gray-500">Overview of activities and campaign status</p>
@@ -54,27 +82,27 @@ const AdminDashboard: React.FC = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" data-animate="section">
+          <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm" data-animate="card">
             <p className="text-sm font-medium text-gray-500 mb-1">Total Funds</p>
             <h3 className="text-2xl font-black text-gray-900 dark:text-white">$12.4M</h3>
             <div className="text-green-500 text-xs font-bold mt-2 flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">trending_up</span> +14.2%
             </div>
           </div>
-          <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+          <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm" data-animate="card">
             <p className="text-sm font-medium text-gray-500 mb-1">Active Campaigns</p>
             <h3 className="text-2xl font-black text-gray-900 dark:text-white">1,894</h3>
             <div className="text-green-500 text-xs font-bold mt-2 flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">trending_up</span> +5.1%
             </div>
           </div>
-          <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-amber-200 dark:border-amber-900/30 shadow-sm">
+          <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-amber-200 dark:border-amber-900/30 shadow-sm" data-animate="card">
             <p className="text-sm font-medium text-gray-500 mb-1">Pending Verifications</p>
             <h3 className="text-2xl font-black text-gray-900 dark:text-white">45</h3>
             <div className="text-amber-600 text-xs font-bold mt-2">Needs Action</div>
           </div>
-          <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+          <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm" data-animate="card">
             <p className="text-sm font-medium text-gray-500 mb-1">Total Donors</p>
             <h3 className="text-2xl font-black text-gray-900 dark:text-white">89,432</h3>
             <div className="text-green-500 text-xs font-bold mt-2 flex items-center gap-1">
@@ -84,8 +112,8 @@ const AdminDashboard: React.FC = () => {
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" data-animate="section">
+          <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm" data-animate="card">
             <h3 className="font-bold text-lg mb-6">Donation Volume</h3>
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
@@ -103,7 +131,7 @@ const AdminDashboard: React.FC = () => {
               </ResponsiveContainer>
             </div>
           </div>
-          <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+          <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm" data-animate="card">
             <h3 className="font-bold text-lg mb-6">User Growth</h3>
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
@@ -119,7 +147,7 @@ const AdminDashboard: React.FC = () => {
         </div>
 
         {/* Table Mockup */}
-        <div className="bg-white dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden" data-animate="section">
           <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
             <h3 className="font-bold text-lg">Pending Verifications</h3>
             <button className="text-sm font-bold text-primary">View All</button>

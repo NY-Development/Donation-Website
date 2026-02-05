@@ -1,10 +1,39 @@
 
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 
 const UserDashboard: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    ensureGsap();
+    if (!containerRef.current || prefersReducedMotion()) return;
+
+    const ctx = gsap.context(() => {
+      animatePageIn(containerRef.current as HTMLDivElement);
+      const sections = gsap.utils.toArray<HTMLElement>('[data-animate="section"]', containerRef.current);
+      animateSectionsOnScroll(sections);
+
+      const cards = gsap.utils.toArray('[data-animate="card"]', containerRef.current);
+      animateStagger(cards, {
+        y: 16,
+        duration: 0.6,
+        stagger: 0.08,
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 75%',
+          toggleActions: 'play none none none',
+        },
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+    <div ref={containerRef} className="max-w-6xl mx-auto px-4 py-10">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4" data-animate="section">
         <div>
           <h1 className="text-3xl font-black text-gray-900 dark:text-white">Welcome back, Alex!</h1>
           <p className="text-gray-500">You're making a real difference. Here's your impact overview.</p>
@@ -15,22 +44,22 @@ const UserDashboard: React.FC = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10" data-animate="section">
+        <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-2" data-animate="card">
           <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
             <span className="material-symbols-outlined">payments</span>
           </div>
           <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Donated</p>
           <p className="text-3xl font-black text-gray-900 dark:text-white">$2,450</p>
         </div>
-        <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-2">
+        <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-2" data-animate="card">
           <div className="size-12 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mb-2">
             <span className="material-symbols-outlined">favorite</span>
           </div>
           <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Lives Touched</p>
           <p className="text-3xl font-black text-gray-900 dark:text-white">342</p>
         </div>
-        <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-2">
+        <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-2" data-animate="card">
           <div className="size-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mb-2">
             <span className="material-symbols-outlined">campaign</span>
           </div>
@@ -39,9 +68,9 @@ const UserDashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8" data-animate="section">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8">
+          <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8" data-animate="card">
             <h3 className="text-xl font-bold mb-8 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">timeline</span>
               Timeline of Impact
@@ -83,7 +112,7 @@ const UserDashboard: React.FC = () => {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
+          <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800" data-animate="card">
             <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">sync</span>
               Active Subscriptions
@@ -105,7 +134,7 @@ const UserDashboard: React.FC = () => {
             <button className="w-full mt-6 text-sm font-bold text-primary hover:underline">Manage Subscriptions</button>
           </div>
 
-          <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
+          <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800" data-animate="card">
             <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
               <span className="material-symbols-outlined text-warning">workspace_premium</span>
               Badges Earned

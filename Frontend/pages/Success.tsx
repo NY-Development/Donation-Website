@@ -1,18 +1,52 @@
 
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { animatePageIn, animateSectionsOnScroll, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 
 const Success: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    ensureGsap();
+    if (!containerRef.current || prefersReducedMotion()) return;
+
+    const ctx = gsap.context(() => {
+      animatePageIn(containerRef.current as HTMLDivElement);
+      const sections = gsap.utils.toArray<HTMLElement>('[data-animate="section"]', containerRef.current);
+      animateSectionsOnScroll(sections);
+
+      const celebrate = containerRef.current?.querySelector('[data-animate="celebrate"]');
+      if (celebrate) {
+        gsap.fromTo(
+          celebrate,
+          { autoAlpha: 0, scale: 0.9 },
+          { autoAlpha: 1, scale: 1, duration: 0.6, ease: 'power3.out' }
+        );
+        gsap.to(celebrate, {
+          scale: 1.05,
+          duration: 0.8,
+          ease: 'power1.inOut',
+          repeat: 2,
+          yoyo: true,
+          delay: 0.6,
+        });
+      }
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-background-light dark:bg-background-dark">
+    <div ref={containerRef} className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-background-light dark:bg-background-dark">
       {/* Background patterns */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
         <div className="absolute top-[-5%] left-[10%] w-72 h-72 bg-primary rounded-full blur-3xl"></div>
         <div className="absolute bottom-[10%] right-[5%] w-96 h-96 bg-blue-400 rounded-full blur-3xl"></div>
       </div>
 
-      <div className="relative z-10 w-full max-w-[600px] flex flex-col items-center text-center">
-        <div className="mb-8 relative flex items-center justify-center">
+      <div className="relative z-10 w-full max-w-[600px] flex flex-col items-center text-center" data-animate="section">
+        <div className="mb-8 relative flex items-center justify-center" data-animate="celebrate">
           <div className="flex items-center justify-center w-24 h-24 bg-white dark:bg-surface-dark rounded-full shadow-lg border-4 border-primary/20">
             <span className="material-symbols-outlined text-5xl text-primary">favorite</span>
           </div>

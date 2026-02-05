@@ -1,9 +1,40 @@
 
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { animatePageIn, animateSectionsOnScroll, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 
 const Explore: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('All');
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    ensureGsap();
+    if (!containerRef.current || prefersReducedMotion()) return;
+
+    const ctx = gsap.context(() => {
+      animatePageIn(containerRef.current as HTMLDivElement);
+      const sections = gsap.utils.toArray<HTMLElement>('[data-animate="section"]', containerRef.current);
+      animateSectionsOnScroll(sections);
+
+      const cards = gsap.utils.toArray<HTMLElement>('[data-animate="card"]', containerRef.current);
+      cards.forEach((card) => {
+        gsap.from(card, {
+          autoAlpha: 0,
+          y: 18,
+          duration: 0.6,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 92%',
+            toggleActions: 'play none none none',
+          },
+        });
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
   
   const categories = ['All', 'Education', 'Medical', 'Environment', 'Disaster Relief', 'Community'];
   
@@ -66,15 +97,15 @@ const Explore: React.FC = () => {
     : campaigns.filter(c => c.category === activeCategory);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
+    <div ref={containerRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-8" data-animate="section">
         <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-2">Explore Verified Campaigns</h1>
         <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl">Discover and support causes vetted for transparency and impact.</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Filters Sidebar */}
-        <aside className="w-full lg:w-72 flex-shrink-0">
+        <aside className="w-full lg:w-72 flex-shrink-0" data-animate="section">
           <div className="sticky top-24 space-y-8">
             <div className="space-y-3">
               <label className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Keywords</label>
@@ -110,7 +141,7 @@ const Explore: React.FC = () => {
         </aside>
 
         {/* Campaign Grid */}
-        <main className="flex-1">
+        <main className="flex-1" data-animate="section">
           <div className="flex items-center justify-between mb-6">
             <p className="text-slate-500 dark:text-slate-400 font-medium">
               <span className="text-slate-900 dark:text-white font-bold">{filteredCampaigns.length}</span> campaigns found
@@ -119,11 +150,11 @@ const Explore: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
             {filteredCampaigns.map(campaign => (
-              <article key={campaign.id} className="group bg-white dark:bg-surface-dark rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
+              <article key={campaign.id} className="group bg-white dark:bg-surface-dark rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col" data-animate="card">
                 <Link to={`/campaign/${campaign.id}`} className="relative h-56 overflow-hidden block">
                   <img src={campaign.image} alt={campaign.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   {campaign.verified && (
-                    <div className="absolute top-3 left-3 bg-white/95 dark:bg-slate-900/90 backdrop-blur px-2 py-1 rounded-md text-xs font-bold text-teal-600 flex items-center gap-1 shadow-sm">
+                    <div className="absolute top-3 left-3 bg-white/95 dark:bg-slate-900/90 px-2 py-1 rounded-md text-xs font-bold text-teal-600 flex items-center gap-1 shadow-sm">
                       <span className="material-symbols-outlined text-[14px]">verified</span> Verified Org
                     </div>
                   )}
