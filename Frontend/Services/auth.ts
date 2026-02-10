@@ -1,12 +1,10 @@
 import api from './axios';
 
 export const authService = {
-  register: (payload: unknown) => api.post('/auth/register', payload),
+  signup: (payload: unknown) => api.post('/auth/signup', payload),
   login: (payload: unknown) => api.post('/auth/login', payload),
-  logout: () => api.post('/auth/logout'),
-  refreshToken: () => api.post('/auth/refresh-token'),
-  forgotPassword: (payload: unknown) => api.post('/auth/forgot-password', payload),
-  resetPassword: (payload: unknown) => api.post('/auth/reset-password', payload),
+  refreshToken: (payload: { refreshToken: string }) => api.post('/auth/refresh', payload),
+  me: () => api.get('/auth/me')
 };
 
 export default authService;

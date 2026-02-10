@@ -1,102 +1,57 @@
 import { create } from 'zustand';
 import donationService from '../Services/donations';
+import userService from '../Services/users';
 import { getApiData, getErrorMessage } from './apiHelpers';
-import type { Donation } from '../types';
-
-type DonationRecord = Donation & Record<string, unknown>;
-
-type PaginatedDonations = {
-  donations: DonationRecord[];
-  pagination?: Record<string, unknown>;
-};
+import type { UserDashboard } from '../types';
 
 type DonationState = {
-  donations: DonationRecord[];
-  userHistory: DonationRecord[];
-  current: DonationRecord | null;
-  stats: Record<string, unknown> | null;
+  timeline: UserDashboard['timeline'];
+  totalDonated: number;
+  campaignsSupported: number;
+  nextCursor: string | null;
   isLoading: boolean;
   error: string | null;
-  fetchAll: () => Promise<void>;
-  fetchById: (id: string) => Promise<DonationRecord | null>;
-  fetchUserHistory: () => Promise<void>;
-  fetchStats: () => Promise<void>;
-  createDonation: (payload: unknown) => Promise<DonationRecord | null>;
+  fetchDashboard: (params?: { limit?: number; cursor?: string }, reset?: boolean) => Promise<void>;
+  createCheckout: (payload: { campaignId: string; amount: number }) => Promise<string | null>;
   clearError: () => void;
 };
 
 export const useDonationStore = create<DonationState>((set, get) => ({
-  donations: [],
-  userHistory: [],
-  current: null,
-  stats: null,
+  timeline: [],
+  totalDonated: 0,
+  campaignsSupported: 0,
+  nextCursor: null,
   isLoading: false,
   error: null,
   clearError: () => set({ error: null }),
-  fetchAll: async () => {
+  fetchDashboard: async (params, reset = false) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await donationService.getAll();
-      const data = getApiData<PaginatedDonations | DonationRecord[]>(response);
-      const donations = Array.isArray(data) ? data : data?.donations ?? [];
-      set({ donations, isLoading: false });
+      const response = await userService.getDashboard(params);
+      const data = getApiData<UserDashboard>(response);
+      set({
+        totalDonated: data?.totalDonated ?? 0,
+        campaignsSupported: data?.campaignsSupported ?? 0,
+        nextCursor: data?.nextCursor ?? null,
+        timeline: reset ? data?.timeline ?? [] : [...get().timeline, ...(data?.timeline ?? [])],
+        isLoading: false
+      });
     } catch (error) {
       set({ isLoading: false, error: getErrorMessage(error) });
     }
   },
-  fetchById: async (id) => {
+  createCheckout: async (payload) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await donationService.getById(id);
-      const donation = getApiData<DonationRecord>(response);
-      set({ current: donation ?? null, isLoading: false });
-      return donation ?? null;
-    } catch (error) {
-      set({ isLoading: false, error: getErrorMessage(error) });
-      return null;
-    }
-  },
-  fetchUserHistory: async () => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await donationService.getUserHistory();
-      const data = getApiData<PaginatedDonations | DonationRecord[]>(response);
-      const donations = Array.isArray(data) ? data : data?.donations ?? [];
-      set({ userHistory: donations, isLoading: false });
-    } catch (error) {
-      set({ isLoading: false, error: getErrorMessage(error) });
-    }
-  },
-  fetchStats: async () => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await donationService.getStats();
-      const stats = getApiData<Record<string, unknown>>(response);
-      set({ stats: stats ?? null, isLoading: false });
-    } catch (error) {
-      set({ isLoading: false, error: getErrorMessage(error) });
-    }
-  },
-  createDonation: async (payload) => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await donationService.create(payload);
-      const donation = getApiData<DonationRecord>(response);
-      if (donation) {
-        set({
-          donations: [donation, ...get().donations],
-          userHistory: [donation, ...get().userHistory],
-          isLoading: false,
-        });
-      } else {
-        set({ isLoading: false });
-      }
-      return donation ?? null;
+      const response = await donationService.createCheckout(payload);
+      const data = getApiData<{ clientSecret?: string }>(response);
+      set({ isLoading: false });
+      return data?.clientSecret ?? null;
     } catch (error) {
       set({ isLoading: false, error: getErrorMessage(error) });
       return null;
     }
-  },
+  }
 }));
 
 export default useDonationStore;

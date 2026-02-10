@@ -3,14 +3,45 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { ArrowLeft, ArrowRight, Bold, CheckCircle, Flag, Image, Italic, Lightbulb, Link as LinkIcon, Wallet } from 'lucide-react';
+import { useCampaignStore } from '../store';
+import campaignService from '../Services/campaigns';
 
 const CreateCampaign: React.FC = () => {
   const [step, setStep] = useState(1);
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('');
+  const [story, setStory] = useState('');
+  const [goalAmount, setGoalAmount] = useState('10000');
+  const [formError, setFormError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const hasAnimatedRef = useRef(false);
+  const createCampaign = useCampaignStore((state) => state.createCampaign);
 
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
+
+  const handleSubmit = async () => {
+    const parsedGoal = Number(goalAmount.replace(/,/g, ''));
+    if (!title.trim() || !category || !story.trim() || !Number.isFinite(parsedGoal) || parsedGoal <= 0) {
+      setFormError('Please complete all required fields before submitting.');
+      return;
+    }
+
+    const campaign = await createCampaign({
+      title: title.trim(),
+      category,
+      story: story.trim(),
+      goalAmount: parsedGoal
+    });
+
+    if (!campaign?._id) {
+      setFormError('Unable to create campaign. Please try again.');
+      return;
+    }
+
+    await campaignService.submit(campaign._id);
+    window.location.hash = '#/dashboard';
+  };
 
   useLayoutEffect(() => {
     ensureGsap();
@@ -92,12 +123,29 @@ const CreateCampaign: React.FC = () => {
                 <div>
                   <label className="block text-xl font-bold mb-2">Give your campaign a title</label>
                   <p className="text-gray-500 text-sm mb-4">This is the first thing people will see. Make it clear and brief.</p>
-                  <input className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-lg outline-none focus:ring-2 focus:ring-primary" placeholder="e.g., Help the Smith Family Rebuild" data-animate="input" />
+                  <input
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-lg outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="e.g., Help the Smith Family Rebuild"
+                    data-animate="input"
+                    value={title}
+                    onChange={(event) => {
+                      setTitle(event.target.value);
+                      if (formError) setFormError(null);
+                    }}
+                  />
                 </div>
                 <div>
                   <label className="block text-xl font-bold mb-2">Select a category</label>
-                  <select className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary outline-none" data-animate="input">
-                    <option>Choose a category...</option>
+                  <select
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                    data-animate="input"
+                    value={category}
+                    onChange={(event) => {
+                      setCategory(event.target.value);
+                      if (formError) setFormError(null);
+                    }}
+                  >
+                    <option value="">Choose a category...</option>
                     <option>Education</option>
                     <option>Medical</option>
                     <option>Environment</option>
@@ -122,6 +170,11 @@ const CreateCampaign: React.FC = () => {
                       className="w-full min-h-[300px] p-4 bg-white dark:bg-gray-800 border-none outline-none focus:ring-0 resize-none" 
                       placeholder="Hi, my name is [Name] and I am raising funds for..."
                       data-animate="input"
+                      value={story}
+                      onChange={(event) => {
+                        setStory(event.target.value);
+                        if (formError) setFormError(null);
+                      }}
                     ></textarea>
                   </div>
                 </div>
@@ -134,7 +187,15 @@ const CreateCampaign: React.FC = () => {
                   <label className="block text-xl font-bold mb-4">How much would you like to raise?</label>
                   <div className="relative">
                     <span className="absolute left-6 top-1/2 -translate-y-1/2 text-4xl font-bold text-gray-300">$</span>
-                    <input className="w-full pl-14 pr-20 py-8 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 rounded-xl text-5xl font-black focus:ring-2 focus:ring-primary" defaultValue="10,000" data-animate="input" />
+                    <input
+                      className="w-full pl-14 pr-20 py-8 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 rounded-xl text-5xl font-black focus:ring-2 focus:ring-primary"
+                      value={goalAmount}
+                      onChange={(event) => {
+                        setGoalAmount(event.target.value);
+                        if (formError) setFormError(null);
+                      }}
+                      data-animate="input"
+                    />
                     <span className="absolute right-6 top-1/2 -translate-y-1/2 font-bold text-gray-400">USD</span>
                   </div>
                 </div>
@@ -182,7 +243,7 @@ const CreateCampaign: React.FC = () => {
               <div />
             )}
             <button 
-              onClick={step < 4 ? nextStep : () => window.location.hash = '#/dashboard'} 
+              onClick={step < 4 ? nextStep : handleSubmit} 
               className="w-full sm:w-auto px-10 py-3 bg-primary hover:bg-primary-hover text-white font-bold rounded-lg shadow-lg flex items-center justify-center gap-2"
               data-animate="button"
             >
@@ -190,6 +251,11 @@ const CreateCampaign: React.FC = () => {
               <ArrowRight className="size-4" aria-hidden="true" />
             </button>
           </div>
+          {formError && (
+            <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {formError}
+            </div>
+          )}
         </div>
 
         <aside className="lg:col-span-4 w-full" data-animate="section">

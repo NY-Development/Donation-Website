@@ -1,13 +1,21 @@
 
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { AlertTriangle, BadgeCheck, Heart, Search } from 'lucide-react';
+import { useCampaignStore } from '../store';
 
 const Explore: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('All');
+  const [urgentOnly, setUrgentOnly] = useState(false);
+  const [status, setStatus] = useState<'approved' | 'pending_verification' | 'rejected' | 'draft' | 'all'>('approved');
+  const [query, setQuery] = useState('');
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const campaigns = useCampaignStore((state) => state.campaigns);
+  const nextCursor = useCampaignStore((state) => state.nextCursor);
+  const isLoading = useCampaignStore((state) => state.isLoading);
+  const fetchAll = useCampaignStore((state) => state.fetchAll);
 
   useLayoutEffect(() => {
     ensureGsap();
@@ -38,64 +46,22 @@ const Explore: React.FC = () => {
   }, []);
   
   const categories = ['All', 'Education', 'Medical', 'Environment', 'Disaster Relief', 'Community'];
-  
-  const campaigns = [
-    {
-      id: '1',
-      title: 'Digital Literacy for Rural Schools',
-      description: 'Providing laptops and internet access to 500 students in remote villages.',
-      category: 'Education',
-      raised: 12450,
-      goal: 15000,
-      image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2000&auto=format&fit=crop',
-      verified: true
-    },
-    {
-      id: '2',
-      title: 'Amazon Reforestation 2024',
-      description: 'Help us plant 10,000 trees to restore local biodiversity.',
-      category: 'Environment',
-      raised: 45200,
-      goal: 100000,
-      image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=2000&auto=format&fit=crop',
-      location: 'Amazon, Brazil',
-      verified: true
-    },
-    {
-      id: '3',
-      title: 'Emergency Aid for Flood Victims',
-      description: 'Urgent supplies, food, and medical attention needed for displaced families.',
-      category: 'Disaster Relief',
-      raised: 8900,
-      goal: 10000,
-      image: 'https://images.unsplash.com/photo-1547619292-24040a7a5056?q=80&w=2000&auto=format&fit=crop',
-      urgent: true
-    },
-    {
-      id: '4',
-      title: 'Clean Water Initiative',
-      description: 'Building sustainable wells to provide safe drinking water for communities.',
-      category: 'Medical',
-      raised: 28900,
-      goal: 30000,
-      image: 'https://images.unsplash.com/photo-1541544537156-7627a7a4aa1c?q=80&w=2000&auto=format&fit=crop',
-      verified: true
-    },
-    {
-      id: '5',
-      title: 'Community Center Renovation',
-      description: 'Revitalizing our downtown center to provide safe spaces for youth mentorship.',
-      category: 'Community',
-      raised: 2300,
-      goal: 15000,
-      image: 'https://images.unsplash.com/photo-1529070538774-1843cb3265df?q=80&w=2000&auto=format&fit=crop',
-      verified: true
-    }
-  ];
 
-  const filteredCampaigns = activeCategory === 'All' 
-    ? campaigns 
-    : campaigns.filter(c => c.category === activeCategory);
+  useEffect(() => {
+    const params = {
+      category: activeCategory === 'All' ? undefined : activeCategory,
+      urgent: urgentOnly ? true : undefined,
+      status: status === 'all' ? undefined : status,
+      limit: 12,
+      sort: 'desc' as const
+    };
+
+    fetchAll(params, true);
+  }, [activeCategory, urgentOnly, status, fetchAll]);
+
+  const filteredCampaigns = query.trim()
+    ? campaigns.filter((campaign) => campaign.title.toLowerCase().includes(query.trim().toLowerCase()))
+    : campaigns;
 
   return (
     <div ref={containerRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -114,7 +80,13 @@ const Explore: React.FC = () => {
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Search className="size-4 text-slate-400" aria-hidden="true" />
                 </span>
-                <input className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-primary focus:border-primary placeholder-slate-400" placeholder="Refine search..." type="text" />
+                <input
+                  className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-primary focus:border-primary placeholder-slate-400"
+                  placeholder="Refine search..."
+                  type="text"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                />
               </div>
             </div>
 
@@ -138,6 +110,34 @@ const Explore: React.FC = () => {
                 ))}
               </div>
             </div>
+
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Urgency</label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={urgentOnly}
+                  onChange={(event) => setUrgentOnly(event.target.checked)}
+                  className="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent"
+                />
+                <span className="text-slate-600 dark:text-slate-300">Urgent only</span>
+              </label>
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Status</label>
+              <select
+                value={status}
+                onChange={(event) => setStatus(event.target.value as typeof status)}
+                className="w-full px-3 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-sm"
+              >
+                <option value="approved">Approved</option>
+                <option value="pending_verification">Pending</option>
+                <option value="rejected">Rejected</option>
+                <option value="draft">Draft</option>
+                <option value="all">All</option>
+              </select>
+            </div>
           </div>
         </aside>
 
@@ -150,48 +150,74 @@ const Explore: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
-            {filteredCampaigns.map(campaign => (
-              <article key={campaign.id} className="group bg-white dark:bg-surface-dark rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col" data-animate="card">
-                <Link to={`/campaign/${campaign.id}`} className="relative h-56 overflow-hidden block">
-                  <img src={campaign.image} alt={campaign.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                  {campaign.verified && (
-                    <div className="absolute top-3 left-3 bg-white/95 dark:bg-slate-900/90 px-2 py-1 rounded-md text-xs font-bold text-teal-600 flex items-center gap-1 shadow-sm">
-                      <BadgeCheck className="size-3.5" aria-hidden="true" /> Verified Org
-                    </div>
-                  )}
-                  {campaign.urgent && (
-                    <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1 shadow-sm animate-pulse">
-                      <AlertTriangle className="size-3.5" aria-hidden="true" /> Urgent
-                    </div>
-                  )}
-                </Link>
-                <div className="p-5 flex flex-col flex-1">
-                  <div className="mb-3">
-                    <span className="text-xs font-semibold tracking-wide text-primary uppercase">{campaign.category}</span>
-                  </div>
-                  <Link to={`/campaign/${campaign.id}`} className="text-lg font-bold text-slate-900 dark:text-white leading-tight mb-2 group-hover:text-primary transition-colors">
-                    {campaign.title}
+            {filteredCampaigns.map((campaign) => {
+              const raised = campaign.raisedAmount ?? 0;
+              const goal = campaign.goalAmount ?? 1;
+              const percent = Math.min(100, Math.round((raised / goal) * 100));
+              const image = campaign.media?.[0] ?? 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2000&auto=format&fit=crop';
+
+              return (
+                <article key={campaign._id} className="group bg-white dark:bg-surface-dark rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col" data-animate="card">
+                  <Link to={`/campaign/${campaign._id}`} className="relative h-56 overflow-hidden block">
+                    <img src={image} alt={campaign.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                    {campaign.status === 'approved' && (
+                      <div className="absolute top-3 left-3 bg-white/95 dark:bg-slate-900/90 px-2 py-1 rounded-md text-xs font-bold text-teal-600 flex items-center gap-1 shadow-sm">
+                        <BadgeCheck className="size-3.5" aria-hidden="true" /> Verified Org
+                      </div>
+                    )}
+                    {campaign.urgent && (
+                      <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1 shadow-sm animate-pulse">
+                        <AlertTriangle className="size-3.5" aria-hidden="true" /> Urgent
+                      </div>
+                    )}
                   </Link>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-2 mb-4">
-                    {campaign.description}
-                  </p>
-                  <div className="mt-auto space-y-4">
-                    <div>
-                      <div className="flex justify-between text-sm font-medium mb-1.5">
-                        <span className="text-slate-900 dark:text-slate-200">${campaign.raised.toLocaleString()} raised</span>
-                        <span className="text-slate-500">{Math.round((campaign.raised / campaign.goal) * 100)}%</span>
-                      </div>
-                      <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
-                        <div className="bg-primary h-2 rounded-full transition-all duration-1000" style={{ width: `${(campaign.raised / campaign.goal) * 100}%` }}></div>
-                      </div>
+                  <div className="p-5 flex flex-col flex-1">
+                    <div className="mb-3">
+                      <span className="text-xs font-semibold tracking-wide text-primary uppercase">{campaign.category}</span>
                     </div>
-                    <Link to={`/donate/${campaign.id}`} className="w-full py-2.5 px-4 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg shadow-sm flex items-center justify-center gap-2">
-                      Donate Now <Heart className="size-4" aria-hidden="true" />
+                    <Link to={`/campaign/${campaign._id}`} className="text-lg font-bold text-slate-900 dark:text-white leading-tight mb-2 group-hover:text-primary transition-colors">
+                      {campaign.title}
                     </Link>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-2 mb-4">
+                      {campaign.story}
+                    </p>
+                    <div className="mt-auto space-y-4">
+                      <div>
+                        <div className="flex justify-between text-sm font-medium mb-1.5">
+                          <span className="text-slate-900 dark:text-slate-200">${raised.toLocaleString()} raised</span>
+                          <span className="text-slate-500">{percent}%</span>
+                        </div>
+                        <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
+                          <div className="bg-primary h-2 rounded-full transition-all duration-1000" style={{ width: `${percent}%` }}></div>
+                        </div>
+                      </div>
+                      <Link to={`/donate/${campaign._id}`} className="w-full py-2.5 px-4 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg shadow-sm flex items-center justify-center gap-2">
+                        Donate Now <Heart className="size-4" aria-hidden="true" />
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
+          </div>
+
+          <div className="mt-8 flex justify-center">
+            {nextCursor && (
+              <button
+                onClick={() => fetchAll({
+                  category: activeCategory === 'All' ? undefined : activeCategory,
+                  urgent: urgentOnly ? true : undefined,
+                  status: status === 'all' ? undefined : status,
+                  limit: 12,
+                  sort: 'desc',
+                  cursor: nextCursor
+                })}
+                className="px-6 py-2.5 rounded-lg bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 text-sm font-semibold hover:border-primary hover:text-primary transition"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Loading...' : 'Load more'}
+              </button>
+            )}
           </div>
         </main>
       </div>

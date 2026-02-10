@@ -1,16 +1,11 @@
 import { create } from 'zustand';
 import authService from '../Services/auth';
 import userService from '../Services/users';
+import { tokenStorage } from '../Services/tokenStorage';
 import { getApiData, getErrorMessage } from './apiHelpers';
+import type { UserProfile, UserRole } from '../types';
 
-type AuthUser = {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role?: string;
-  createdAt?: string;
-};
+type AuthUser = UserProfile;
 
 type LoginPayload = {
   email: string;
@@ -18,15 +13,16 @@ type LoginPayload = {
 };
 
 type RegisterPayload = {
+  name: string;
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  role?: UserRole;
 };
 
 type AuthState = {
   user: AuthUser | null;
   token: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -39,20 +35,24 @@ type AuthState = {
 };
 
 const clearStoredToken = () => {
-  localStorage.removeItem('authToken');
+  tokenStorage.clear();
 };
 
-const persistToken = (token: string | null) => {
-  if (token) {
-    localStorage.setItem('authToken', token);
-  } else {
-    clearStoredToken();
-  }
+const persistTokens = (accessToken: string | null, refreshToken: string | null) => {
+  tokenStorage.setAccessToken(accessToken);
+  tokenStorage.setRefreshToken(refreshToken);
 };
 
 export const useAuthStore = create<AuthState>((set, get) => ({
+  ...(typeof window !== 'undefined' && (() => {
+    window.addEventListener('auth:logout', () => {
+      set({ user: null, token: null, refreshToken: null, isAuthenticated: false });
+    });
+    return {};
+  })()),
   user: null,
   token: null,
+  refreshToken: null,
   isAuthenticated: false,
   isLoading: false,
   error: null,
@@ -61,12 +61,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await authService.login(payload);
-      const data = getApiData(response) as { user?: AuthUser; token?: string } | null;
-      const token = data?.token ?? null;
+      const data = getApiData(response) as { user?: AuthUser; accessToken?: string; refreshToken?: string } | null;
+      const token = data?.accessToken ?? null;
+      const refreshToken = data?.refreshToken ?? null;
       const user = data?.user ?? null;
 
-      persistToken(token);
-      set({ user, token, isAuthenticated: Boolean(token), isLoading: false });
+      persistTokens(token, refreshToken);
+      set({ user, token, refreshToken, isAuthenticated: Boolean(token), isLoading: false });
       return Boolean(token);
     } catch (error) {
       clearStoredToken();
@@ -83,13 +84,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   register: async (payload) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await authService.register(payload);
-      const data = getApiData(response) as { user?: AuthUser; token?: string } | null;
-      const token = data?.token ?? null;
+      const response = await authService.signup(payload);
+      const data = getApiData(response) as { user?: AuthUser; accessToken?: string; refreshToken?: string } | null;
+      const token = data?.accessToken ?? null;
+      const refreshToken = data?.refreshToken ?? null;
       const user = data?.user ?? null;
 
-      persistToken(token);
-      set({ user, token, isAuthenticated: Boolean(token), isLoading: false });
+      persistTokens(token, refreshToken);
+      set({ user, token, refreshToken, isAuthenticated: Boolean(token), isLoading: false });
       return Boolean(token);
     } catch (error) {
       clearStoredToken();
@@ -106,21 +108,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   logout: async () => {
     set({ isLoading: true, error: null });
     try {
-      await authService.logout();
+      await Promise.resolve();
     } finally {
       clearStoredToken();
-      set({ user: null, token: null, isAuthenticated: false, isLoading: false });
+      set({ user: null, token: null, refreshToken: null, isAuthenticated: false, isLoading: false });
     }
   },
   loadUser: async () => {
-    const token = get().token || localStorage.getItem('authToken');
+    const token = get().token || tokenStorage.getAccessToken();
     if (!token) {
       return false;
     }
 
     set({ isLoading: true, error: null, isAuthenticated: true, token });
     try {
-      const response = await userService.getMe();
+      const response = await authService.me();
       const user = getApiData(response) as AuthUser | null;
       set({ user: user ?? null, isLoading: false });
       return Boolean(user);
@@ -137,12 +139,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
   initialize: async () => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
+    const token = tokenStorage.getAccessToken();
+    const refreshToken = tokenStorage.getRefreshToken();
+    if (!token && !refreshToken) {
       return;
     }
 
-    set({ token, isAuthenticated: true });
+    set({ token: token ?? null, refreshToken: refreshToken ?? null, isAuthenticated: Boolean(token) });
     await get().loadUser();
   },
 }));

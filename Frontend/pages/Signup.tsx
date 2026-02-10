@@ -20,16 +20,13 @@ const Signup: React.FC = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    const nameParts = fullName.trim().split(' ').filter(Boolean);
-    const firstName = nameParts.shift() || '';
-    const lastName = nameParts.join(' ').trim();
-
-    if (firstName.length < 2 || lastName.length < 2) {
-      setFormError('Please enter your first and last name.');
+    const trimmedName = fullName.trim();
+    if (trimmedName.length < 3) {
+      setFormError('Please enter your full name.');
       return;
     }
 
-    const success = await register({ email, password, firstName, lastName });
+    const success = await register({ name: trimmedName, email, password });
     if (success) {
       navigate('/dashboard');
     }
@@ -46,7 +43,7 @@ const Signup: React.FC = () => {
 
       const forms = gsap.utils.toArray<HTMLElement>('[data-animate="form"]', containerRef.current);
       forms.forEach((form) => {
-        const inputs = gsap.utils.toArray('[data-animate="input"]', form);
+        const inputs = gsap.utils.toArray<HTMLElement>('[data-animate="input"]', form);
         animateStagger(inputs, {
           y: 10,
           duration: 0.5,

@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { ArrowRight, BadgeCheck, Heart, Mail, MailCheck, Megaphone, Search, Wallet } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import campaignService from '../Services/campaigns';
+import { getApiData } from '../store/apiHelpers';
+import type { Campaign, GlobalStats } from '../types';
 
 const Home: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -62,6 +66,22 @@ const Home: React.FC = () => {
     return () => ctx.revert();
   }, []);
 
+  const { data: stats } = useQuery({
+    queryKey: ['stats', 'global'],
+    queryFn: async () => {
+      const response = await campaignService.getGlobalStats();
+      return getApiData<GlobalStats>(response);
+    }
+  });
+
+  const { data: featured } = useQuery({
+    queryKey: ['campaigns', 'featured'],
+    queryFn: async () => {
+      const response = await campaignService.getFeatured();
+      return getApiData<Campaign[]>(response) ?? [];
+    }
+  });
+
   return (
     <div ref={containerRef}>
       {/* Hero Section */}
@@ -110,21 +130,27 @@ const Home: React.FC = () => {
               <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-3 text-primary">
                 <Wallet className="size-7" aria-hidden="true" />
               </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">$2M+</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">
+                ${stats?.totalDonated?.toLocaleString() ?? '0'}
+              </p>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total Raised</p>
             </div>
             <div className="flex flex-col items-center text-center p-2">
               <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-3 text-primary">
                 <Megaphone className="size-7" aria-hidden="true" />
               </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">500+</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">
+                {stats?.livesImpacted?.toLocaleString() ?? '0'}
+              </p>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Active Campaigns</p>
             </div>
             <div className="flex flex-col items-center text-center p-2">
               <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-3 text-primary">
                 <Heart className="size-7" aria-hidden="true" />
               </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">10k+</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">
+                {stats?.donorsCount?.toLocaleString() ?? '0'}
+              </p>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Lives Changed</p>
             </div>
           </div>
@@ -143,75 +169,37 @@ const Home: React.FC = () => {
           </Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-           {/* Card 1 */}
-           <div className="group flex flex-col bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all border border-gray-100 dark:border-gray-800">
-            <div className="relative h-48 w-full overflow-hidden">
-              <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1541976590-71394168159b?q=80&w=2000&auto=format&fit=crop")' }}></div>
-              <div className="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur text-xs font-bold px-2 py-1 rounded text-primary">Environment</div>
-            </div>
-            <div className="flex flex-col flex-1 p-5">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Reforestation Project: Amazon</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 flex-1">Protect biodiversity and fight climate change by planting native trees.</p>
-              <div className="mb-4">
-                <div className="flex justify-between text-xs font-semibold mb-1.5">
-                  <span className="text-primary">$15,400 raised</span>
-                  <span className="text-gray-500">77%</span>
+          {(featured ?? []).map((campaign) => {
+            const raised = campaign.raisedAmount ?? 0;
+            const goal = campaign.goalAmount ?? 1;
+            const percent = Math.min(100, Math.round((raised / goal) * 100));
+            const image = campaign.media?.[0] ?? 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2000&auto=format&fit=crop';
+
+            return (
+              <div key={campaign._id} className="group flex flex-col bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all border border-gray-100 dark:border-gray-800">
+                <div className="relative h-48 w-full overflow-hidden">
+                  <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: `url("${image}")` }}></div>
+                  <div className="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur text-xs font-bold px-2 py-1 rounded text-primary">{campaign.category}</div>
                 </div>
-                <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2">
-                  <div className="bg-primary h-2 rounded-full" style={{ width: '77%' }}></div>
-                </div>
-              </div>
-              <Link to="/donate/1" className="w-full h-10 rounded-lg bg-primary/10 hover:bg-primary hover:text-white text-primary text-sm font-bold transition-colors flex items-center justify-center gap-2">
-                Donate Now
-              </Link>
-            </div>
-          </div>
-          {/* Card 2 */}
-          <div className="group flex flex-col bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all border border-gray-100 dark:border-gray-800">
-            <div className="relative h-48 w-full overflow-hidden">
-              <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=2070&auto=format&fit=crop")' }}></div>
-              <div className="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur text-xs font-bold px-2 py-1 rounded text-primary">Education</div>
-            </div>
-            <div className="flex flex-col flex-1 p-5">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Digital Literacy for Kids</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 flex-1">Bridging the gap with technology for underprivileged rural students.</p>
-              <div className="mb-4">
-                <div className="flex justify-between text-xs font-semibold mb-1.5">
-                  <span className="text-primary">$4,200 raised</span>
-                  <span className="text-gray-500">42%</span>
-                </div>
-                <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2">
-                  <div className="bg-primary h-2 rounded-full" style={{ width: '42%' }}></div>
+                <div className="flex flex-col flex-1 p-5">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{campaign.title}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 flex-1 line-clamp-2">{campaign.story}</p>
+                  <div className="mb-4">
+                    <div className="flex justify-between text-xs font-semibold mb-1.5">
+                      <span className="text-primary">${raised.toLocaleString()} raised</span>
+                      <span className="text-gray-500">{percent}%</span>
+                    </div>
+                    <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2">
+                      <div className="bg-primary h-2 rounded-full" style={{ width: `${percent}%` }}></div>
+                    </div>
+                  </div>
+                  <Link to={`/donate/${campaign._id}`} className="w-full h-10 rounded-lg bg-primary/10 hover:bg-primary hover:text-white text-primary text-sm font-bold transition-colors flex items-center justify-center gap-2">
+                    Donate Now
+                  </Link>
                 </div>
               </div>
-              <Link to="/donate/2" className="w-full h-10 rounded-lg bg-primary/10 hover:bg-primary hover:text-white text-primary text-sm font-bold transition-colors flex items-center justify-center gap-2">
-                Donate Now
-              </Link>
-            </div>
-          </div>
-          {/* Card 3 */}
-          <div className="group flex flex-col bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all border border-gray-100 dark:border-gray-800">
-            <div className="relative h-48 w-full overflow-hidden">
-              <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1578496479914-7ef3b0193be3?q=80&w=2070&auto=format&fit=crop")' }}></div>
-              <div className="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur text-xs font-bold px-2 py-1 rounded text-primary">Emergency</div>
-            </div>
-            <div className="flex flex-col flex-1 p-5">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Emergency Aid for Refugees</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 flex-1">Providing food, blankets, and medicine to displaced families.</p>
-              <div className="mb-4">
-                <div className="flex justify-between text-xs font-semibold mb-1.5">
-                  <span className="text-primary">$45,900 raised</span>
-                  <span className="text-gray-500">91%</span>
-                </div>
-                <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2">
-                  <div className="bg-primary h-2 rounded-full" style={{ width: '91%' }}></div>
-                </div>
-              </div>
-              <Link to="/donate/3" className="w-full h-10 rounded-lg bg-primary/10 hover:bg-primary hover:text-white text-primary text-sm font-bold transition-colors flex items-center justify-center gap-2">
-                Donate Now
-              </Link>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </section>
 

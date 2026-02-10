@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -33,6 +34,15 @@ const ScrollToTop = () => {
   return null;
 };
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30000,
+      retry: 1
+    }
+  }
+});
+
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
@@ -54,9 +64,10 @@ const App: React.FC = () => {
   const toggleHelp = () => setIsHelpOpen((prev) => !prev);
 
   return (
-    <HashRouter>
-      <ScrollToTop />
-      <div className="min-h-screen flex flex-col">
+    <QueryClientProvider client={queryClient}>
+      <HashRouter>
+        <ScrollToTop />
+        <div className="min-h-screen flex flex-col">
         {/* Hide default navbar on checkout or admin pages if needed, but for simplicity we show it or a variant */}
         <Navbar toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
         
@@ -69,7 +80,7 @@ const App: React.FC = () => {
             <Route
               path="/create"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute roles={['organizer', 'admin']}>
                   <CreateCampaign />
                 </ProtectedRoute>
               }
@@ -85,7 +96,7 @@ const App: React.FC = () => {
             <Route
               path="/admin"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute roles={['admin']}>
                   <AdminDashboard />
                 </ProtectedRoute>
               }
@@ -163,8 +174,9 @@ const App: React.FC = () => {
             </div>
           </div>
         )}
-      </div>
-    </HashRouter>
+        </div>
+      </HashRouter>
+    </QueryClientProvider>
   );
 };
 

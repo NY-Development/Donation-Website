@@ -1,17 +1,47 @@
 
 import React, { useLayoutEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { ArrowRight, CreditCard, Leaf, ShieldCheck } from 'lucide-react';
+import { useDonationStore } from '../store';
+import { useQuery } from '@tanstack/react-query';
+import campaignService from '../Services/campaigns';
+import { getApiData } from '../store/apiHelpers';
+import type { Campaign } from '../types';
 
 const Donate: React.FC = () => {
   const [amount, setAmount] = useState('50');
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const createCheckout = useDonationStore((state) => state.createCheckout);
+  const isLoading = useDonationStore((state) => state.isLoading);
+  const error = useDonationStore((state) => state.error);
 
-  const handleDonate = () => {
-    navigate('/success');
+  const { data: campaign } = useQuery({
+    queryKey: ['campaign', id],
+    queryFn: async () => {
+      if (!id) return null;
+      const response = await campaignService.getById(id);
+      return getApiData<Campaign>(response);
+    },
+    enabled: Boolean(id)
+  });
+
+  const handleDonate = async () => {
+    if (!id) {
+      return;
+    }
+    const numericAmount = Number(amount);
+    if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
+      return;
+    }
+
+    const clientSecret = await createCheckout({ campaignId: id, amount: numericAmount });
+    if (clientSecret) {
+      navigate('/success');
+    }
   };
 
   useLayoutEffect(() => {
@@ -62,6 +92,11 @@ const Donate: React.FC = () => {
               <ShieldCheck className="size-4" aria-hidden="true" />
               <p>Secure, encrypted transaction</p>
             </div>
+            {error && (
+              <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
+                {error}
+              </div>
+            )}
           </div>
 
           {/* Step 1: Amount */}
@@ -150,12 +185,14 @@ const Donate: React.FC = () => {
               </div>
             </div>
             <div className="px-6 py-6 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-100 dark:border-gray-800 flex flex-col items-center gap-4">
-              <button 
+                <button 
                 onClick={handleDonate}
                 className="w-full py-4 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-lg shadow-lg shadow-primary/30 transition-all flex items-center justify-center gap-2 group"
                 data-animate="button"
+                  disabled={isLoading}
+                  aria-busy={isLoading}
               >
-                <span>Donate ${amount} Now</span>
+                <span>{isLoading ? 'Processing...' : `Donate $${amount} Now`}</span>
                 <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
               </button>
             </div>
@@ -167,20 +204,20 @@ const Donate: React.FC = () => {
             <div className="bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
               <div className="w-full aspect-video relative bg-gradient-to-br from-green-400 to-emerald-700 flex items-end p-4">
                 <div className="bg-black/30 px-3 py-1 rounded text-white text-xs font-bold uppercase tracking-wider">
-                  Environment
+                  {campaign?.category ?? 'Campaign'}
                 </div>
               </div>
               <div className="p-6 flex flex-col gap-4">
                 <div>
                   <p className="text-primary text-xs font-bold uppercase tracking-widest mb-1">Supporting</p>
-                  <h3 className="text-xl font-bold leading-tight">Reforestation Project: Amazon</h3>
+                  <h3 className="text-xl font-bold leading-tight">{campaign?.title ?? 'Campaign'}</h3>
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-100 dark:border-gray-700">
                   <div className="flex gap-3 items-start text-sm">
                     <Leaf className="size-4 text-primary" aria-hidden="true" />
                     <div>
                       <p className="font-semibold">Your impact</p>
-                      <p className="text-gray-500">Your ${amount} donation helps plant trees and restore biodiversity.</p>
+                      <p className="text-gray-500">Your ${amount} donation supports this cause directly.</p>
                     </div>
                   </div>
                 </div>

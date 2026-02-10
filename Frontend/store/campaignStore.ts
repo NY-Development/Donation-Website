@@ -1,27 +1,22 @@
 import { create } from 'zustand';
-import campaignService from '../Services/campaigns';
+import campaignService, { CampaignListParams } from '../Services/campaigns';
 import { getApiData, getErrorMessage } from './apiHelpers';
-import type { Campaign } from '../types';
+import type { Campaign, CampaignListResponse } from '../types';
 
-type CampaignRecord = Campaign & Record<string, unknown>;
-
-type PaginatedCampaigns = {
-  campaigns: CampaignRecord[];
-  pagination?: Record<string, unknown>;
-};
+type CampaignRecord = Campaign;
 
 type CampaignState = {
   campaigns: CampaignRecord[];
   featured: CampaignRecord[];
   current: CampaignRecord | null;
+  nextCursor: string | null;
   isLoading: boolean;
   error: string | null;
-  fetchAll: () => Promise<void>;
+  fetchAll: (params?: CampaignListParams, reset?: boolean) => Promise<void>;
   fetchFeatured: () => Promise<void>;
   fetchById: (id: string) => Promise<CampaignRecord | null>;
   createCampaign: (payload: unknown) => Promise<CampaignRecord | null>;
   updateCampaign: (id: string, payload: unknown) => Promise<CampaignRecord | null>;
-  deleteCampaign: (id: string) => Promise<boolean>;
   clearError: () => void;
 };
 
@@ -29,16 +24,22 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
   campaigns: [],
   featured: [],
   current: null,
+  nextCursor: null,
   isLoading: false,
   error: null,
   clearError: () => set({ error: null }),
-  fetchAll: async () => {
+  fetchAll: async (params, reset = false) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await campaignService.getAll();
-      const data = getApiData<PaginatedCampaigns | CampaignRecord[]>(response);
-      const campaigns = Array.isArray(data) ? data : data?.campaigns ?? [];
-      set({ campaigns, isLoading: false });
+      const response = await campaignService.getAll(params);
+      const data = getApiData<CampaignListResponse>(response);
+      const campaigns = data?.data ?? [];
+      const nextCursor = data?.nextCursor ?? null;
+      set({
+        campaigns: reset ? campaigns : [...get().campaigns, ...campaigns],
+        nextCursor,
+        isLoading: false
+      });
     } catch (error) {
       set({ isLoading: false, error: getErrorMessage(error) });
     }
@@ -88,7 +89,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       const campaign = getApiData<CampaignRecord>(response);
       if (campaign) {
         set({
-          campaigns: get().campaigns.map((item) => (item.id === id ? campaign : item)),
+          campaigns: get().campaigns.map((item) => (item._id === id ? campaign : item)),
           current: campaign,
           isLoading: false,
         });
@@ -100,22 +101,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       set({ isLoading: false, error: getErrorMessage(error) });
       return null;
     }
-  },
-  deleteCampaign: async (id) => {
-    set({ isLoading: true, error: null });
-    try {
-      await campaignService.delete(id);
-      set({
-        campaigns: get().campaigns.filter((item) => item.id !== id),
-        current: get().current?.id === id ? null : get().current,
-        isLoading: false,
-      });
-      return true;
-    } catch (error) {
-      set({ isLoading: false, error: getErrorMessage(error) });
-      return false;
-    }
-  },
+  }
 }));
 
 export default useCampaignStore;

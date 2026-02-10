@@ -1,5 +1,14 @@
-import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosHeaders, AxiosRequestConfig } from 'axios';
 import { tokenStorage } from './tokenStorage';
+
+declare global {
+  interface ImportMeta {
+    env: {
+      VITE_API_URL?: string;
+      [key: string]: any;
+    };
+  }
+}
 
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -26,7 +35,9 @@ const resolveQueue = (token: string | null) => {
 api.interceptors.request.use((config) => {
   const token = tokenStorage.getAccessToken();
   if (token) {
-    config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
+    const headers = AxiosHeaders.from(config.headers);
+    headers.set('Authorization', `Bearer ${token}`);
+    config.headers = headers;
   }
   return config;
 });

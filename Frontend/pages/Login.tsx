@@ -63,7 +63,7 @@ const Login: React.FC = () => {
       <div className="w-full max-w-[1000px] bg-white dark:bg-surface-dark rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row border border-gray-100 dark:border-gray-800" data-animate="section">
         <div className="md:w-1/2 relative min-h-[400px]" data-animate="section">
           <img 
-            src="https://images.unsplash.com/photo-1559027615-cd837c92d5fd?q=80&w=1000&auto=format&fit=crop" 
+            src="./image.png"
             alt="Community" 
             className="absolute inset-0 w-full h-full object-cover" 
           />

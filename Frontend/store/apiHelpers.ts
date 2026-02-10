@@ -1,9 +1,11 @@
-type ApiResponseEnvelope<T> = {
+type ApiResponse<T> = {
+  success?: boolean;
+  message?: string;
   data?: T;
 };
 
-type ApiResponse<T> = {
-  data?: ApiResponseEnvelope<T> | T;
+type AxiosResponse<T> = {
+  data?: ApiResponse<T> | T;
 };
 
 export const getApiData = <T>(response: unknown): T | null => {
@@ -11,9 +13,9 @@ export const getApiData = <T>(response: unknown): T | null => {
     return null;
   }
 
-  const payload = (response as ApiResponse<T>).data;
+  const payload = (response as AxiosResponse<T>).data;
   if (payload && typeof payload === 'object' && 'data' in payload) {
-    return (payload as ApiResponseEnvelope<T>).data ?? null;
+    return (payload as ApiResponse<T>).data ?? null;
   }
 
   return (payload as T) ?? null;

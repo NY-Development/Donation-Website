@@ -1,11 +1,16 @@
 
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { Activity, Award, CheckCircle, GraduationCap, Heart, Image, Leaf, Megaphone, RefreshCw, Repeat, Star, Wallet } from 'lucide-react';
+import { useDonationStore } from '../store';
 
 const UserDashboard: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const totalDonated = useDonationStore((state) => state.totalDonated);
+  const campaignsSupported = useDonationStore((state) => state.campaignsSupported);
+  const timeline = useDonationStore((state) => state.timeline);
+  const fetchDashboard = useDonationStore((state) => state.fetchDashboard);
 
   useLayoutEffect(() => {
     ensureGsap();
@@ -32,6 +37,10 @@ const UserDashboard: React.FC = () => {
     return () => ctx.revert();
   }, []);
 
+  useEffect(() => {
+    fetchDashboard({ limit: 10 }, true);
+  }, [fetchDashboard]);
+
   return (
     <div ref={containerRef} className="max-w-6xl mx-auto px-4 py-10">
       <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4" data-animate="section">
@@ -51,21 +60,21 @@ const UserDashboard: React.FC = () => {
             <Wallet className="size-5" aria-hidden="true" />
           </div>
           <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Donated</p>
-          <p className="text-3xl font-black text-gray-900 dark:text-white">$2,450</p>
+          <p className="text-3xl font-black text-gray-900 dark:text-white">${totalDonated.toLocaleString()}</p>
         </div>
         <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-2" data-animate="card">
           <div className="size-12 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mb-2">
             <Heart className="size-5" aria-hidden="true" />
           </div>
           <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Lives Touched</p>
-          <p className="text-3xl font-black text-gray-900 dark:text-white">342</p>
+          <p className="text-3xl font-black text-gray-900 dark:text-white">{timeline.length}</p>
         </div>
         <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-2" data-animate="card">
           <div className="size-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mb-2">
             <Megaphone className="size-5" aria-hidden="true" />
           </div>
           <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Projects Supported</p>
-          <p className="text-3xl font-black text-gray-900 dark:text-white">18</p>
+          <p className="text-3xl font-black text-gray-900 dark:text-white">{campaignsSupported}</p>
         </div>
       </div>
 
@@ -77,37 +86,29 @@ const UserDashboard: React.FC = () => {
               Timeline of Impact
             </h3>
             <div className="space-y-12">
-              <div className="relative pl-8 border-l-2 border-primary/20">
-                <div className="absolute top-0 -left-[9px] size-4 rounded-full bg-primary ring-4 ring-primary/10"></div>
-                <div className="flex flex-col gap-4">
-                  <div>
-                    <span className="text-sm font-bold text-primary">Clean Water Initiative</span>
-                    <span className="text-sm text-gray-400 mx-2">•</span>
-                    <span className="text-xs text-gray-500">2 days ago</span>
-                  </div>
-                  <h4 className="text-lg font-bold">Construction complete on the village well!</h4>
-                  <p className="text-gray-600 dark:text-gray-400">We are thrilled to announce that the new solar-powered well in Kajiado is fully operational. Over 200 families now have access to clean, safe water.</p>
-                  <div className="w-full aspect-video rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                    <Image className="size-12 text-gray-400" aria-hidden="true" />
-                  </div>
-                </div>
-              </div>
-              <div className="relative pl-8 border-l-2 border-primary/20">
-                <div className="absolute top-0 -left-[9px] size-4 rounded-full bg-green-500 ring-4 ring-green-500/10"></div>
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-gray-900 dark:text-white">You made a donation</span>
-                    <span className="text-xs text-gray-500">1 week ago</span>
-                  </div>
-                  <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl flex items-center justify-between border border-gray-100 dark:border-gray-800">
-                    <div className="flex items-center gap-3">
-                      <CheckCircle className="size-4 text-primary" aria-hidden="true" />
-                      <span className="font-bold">Emergency Medical Relief</span>
+              {timeline.map((item) => (
+                <div key={item.id} className="relative pl-8 border-l-2 border-primary/20">
+                  <div className="absolute top-0 -left-[9px] size-4 rounded-full bg-green-500 ring-4 ring-green-500/10"></div>
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-gray-900 dark:text-white">You made a donation</span>
+                      <span className="text-xs text-gray-500">{new Date(item.createdAt).toLocaleDateString()}</span>
                     </div>
-                    <span className="font-bold">$50.00</span>
+                    <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl flex items-center justify-between border border-gray-100 dark:border-gray-800">
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="size-4 text-primary" aria-hidden="true" />
+                        <span className="font-bold">Campaign {item.campaign}</span>
+                      </div>
+                      <span className="font-bold">${item.amount.toFixed(2)}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
+              {timeline.length === 0 && (
+                <div className="flex items-center justify-center rounded-xl border border-dashed border-gray-200 dark:border-gray-800 p-8 text-sm text-gray-500">
+                  No donations yet.
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -7,6 +7,11 @@ import { ColumnDirective, ColumnsDirective, GridComponent, Inject, Page, Sort, F
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { Download, Filter, Gavel, LayoutDashboard, Menu, Search, TrendingUp, Users, Wallet } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import campaignService from '../Services/campaigns';
+import adminService from '../Services/admin';
+import { getApiData } from '../store/apiHelpers';
+import type { AdminOverview, Campaign } from '../types';
 
 type CampaignRow = {
   id: string;
@@ -25,79 +30,12 @@ const navItems = [
   { id: 'financials', label: 'Financials', icon: Wallet },
 ];
 
-const initialCampaigns: CampaignRow[] = [
-  {
-    id: 'CMP-1021',
-    title: 'Clean Water for Village A',
-    organizer: 'John Doe',
-    goal: 25000,
-    raised: 18200,
-    status: 'pending',
-    updatedAt: '2026-02-03',
-  },
-  {
-    id: 'CMP-1034',
-    title: 'Education for All',
-    organizer: 'Sarah Smith',
-    goal: 40000,
-    raised: 32150,
-    status: 'active',
-    updatedAt: '2026-02-02',
-  },
-  {
-    id: 'CMP-1042',
-    title: 'Emergency Relief Fund',
-    organizer: 'Kenny Young',
-    goal: 50000,
-    raised: 49800,
-    status: 'completed',
-    updatedAt: '2026-01-30',
-  },
-  {
-    id: 'CMP-1057',
-    title: 'Amazon Reforestation',
-    organizer: 'Lina Park',
-    goal: 100000,
-    raised: 55200,
-    status: 'active',
-    updatedAt: '2026-02-01',
-  },
-  {
-    id: 'CMP-1063',
-    title: 'Flood Recovery Support',
-    organizer: 'Maya Lewis',
-    goal: 15000,
-    raised: 6200,
-    status: 'flagged',
-    updatedAt: '2026-01-28',
-  },
-  {
-    id: 'CMP-1072',
-    title: 'Community Health Clinic',
-    organizer: 'Omar Davis',
-    goal: 60000,
-    raised: 37450,
-    status: 'pending',
-    updatedAt: '2026-02-04',
-  },
-];
-
-const donationSeries = [
-  { label: 'Week 1', value: 25000 },
-  { label: 'Week 2', value: 42000 },
-  { label: 'Week 3', value: 65000 },
-  { label: 'Week 4', value: 89000 },
-];
-
-const userGrowthSeries = [
-  { label: 'Mon', value: 120 },
-  { label: 'Tue', value: 155 },
-  { label: 'Wed', value: 130 },
-  { label: 'Thu', value: 210 },
-  { label: 'Fri', value: 180 },
-  { label: 'Sat', value: 245 },
-  { label: 'Sun', value: 290 },
-];
+const mapStatus = (status: Campaign['status']): CampaignRow['status'] => {
+  if (status === 'approved') return 'active';
+  if (status === 'pending_verification') return 'pending';
+  if (status === 'rejected') return 'flagged';
+  return 'pending';
+};
 
 const statusStyles: Record<CampaignRow['status'], string> = {
   pending: 'bg-amber-50 text-amber-700',
@@ -110,10 +48,72 @@ const AdminDashboard: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeNav, setActiveNav] = useState('overview');
-  const [campaigns, setCampaigns] = useState<CampaignRow[]>(initialCampaigns);
+  const [campaigns, setCampaigns] = useState<CampaignRow[]>([]);
   const [selectedCampaign, setSelectedCampaign] = useState<CampaignRow | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | CampaignRow['status']>('all');
+  const [actionLoading, setActionLoading] = useState(false);
+
+  const { data: overview } = useQuery({
+    queryKey: ['admin', 'overview'],
+    queryFn: async () => {
+      const response = await adminService.getOverview();
+      return getApiData<AdminOverview>(response);
+    }
+  });
+
+  const { data: moderationData } = useQuery({
+    queryKey: ['admin', 'campaigns', statusFilter],
+    queryFn: async () => {
+      const statusMap: Record<CampaignRow['status'], Campaign['status']> = {
+        pending: 'pending_verification',
+        active: 'approved',
+        flagged: 'rejected',
+        completed: 'approved'
+      };
+
+      const response = await campaignService.getAll({
+        status: statusFilter === 'all' ? undefined : statusMap[statusFilter],
+        limit: 25,
+        sort: 'desc'
+      });
+      return getApiData<{ data: Campaign[]; nextCursor: string | null }>(response);
+    }
+  });
+
+  useEffect(() => {
+    const mapped = (moderationData?.data ?? []).map((campaign) => ({
+      id: campaign._id,
+      title: campaign.title,
+      organizer: campaign.organizer,
+      goal: campaign.goalAmount,
+      raised: campaign.raisedAmount,
+      status: mapStatus(campaign.status),
+      updatedAt: campaign.createdAt
+    }));
+
+    setCampaigns(mapped);
+  }, [moderationData]);
+
+  const handleVerify = async (status: 'approved' | 'rejected') => {
+    if (!selectedCampaign) {
+      return;
+    }
+    setActionLoading(true);
+    try {
+      await adminService.verifyCampaign(selectedCampaign.id, { status });
+      setCampaigns((prev) =>
+        prev.map((item) =>
+          item.id === selectedCampaign.id
+            ? { ...item, status: status === 'approved' ? 'active' : 'flagged' }
+            : item
+        )
+      );
+      setSelectedCampaign(null);
+    } finally {
+      setActionLoading(false);
+    }
+  };
 
   useEffect(() => {
     const media = window.matchMedia('(min-width: 1024px)');
@@ -135,7 +135,7 @@ const AdminDashboard: React.FC = () => {
     () => campaigns.filter((campaign) => campaign.status === 'pending').length,
     [campaigns]
   );
-  const totalDonors = 89432;
+  const totalDonors = overview?.donorsCount ?? 0;
 
   const filteredCampaigns = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -153,7 +153,7 @@ const AdminDashboard: React.FC = () => {
       grid: { left: 10, right: 10, top: 20, bottom: 10, containLabel: true },
       xAxis: {
         type: 'category',
-        data: donationSeries.map((item) => item.label),
+        data: ['Total'],
         axisTick: { show: false },
         axisLine: { lineStyle: { color: '#e5e7eb' } },
         axisLabel: { color: '#6b7280' },
@@ -168,7 +168,7 @@ const AdminDashboard: React.FC = () => {
       },
       series: [
         {
-          data: donationSeries.map((item) => item.value),
+          data: [overview?.totalDonated ?? 0],
           type: 'line',
           smooth: true,
           symbol: 'circle',
@@ -188,7 +188,7 @@ const AdminDashboard: React.FC = () => {
       grid: { left: 10, right: 10, top: 20, bottom: 10, containLabel: true },
       xAxis: {
         type: 'category',
-        data: userGrowthSeries.map((item) => item.label),
+        data: ['Users'],
         axisTick: { show: false },
         axisLine: { lineStyle: { color: '#e5e7eb' } },
         axisLabel: { color: '#6b7280' },
@@ -200,7 +200,7 @@ const AdminDashboard: React.FC = () => {
       },
       series: [
         {
-          data: userGrowthSeries.map((item) => item.value),
+          data: [overview?.usersCount ?? 0],
           type: 'bar',
           barWidth: 18,
           itemStyle: { color: '#7f13ec', borderRadius: [6, 6, 0, 0] },
@@ -462,24 +462,14 @@ const AdminDashboard: React.FC = () => {
                 <ButtonComponent
                   content="Approve"
                   cssClass="e-success"
-                  onClick={() => {
-                    setCampaigns((prev) =>
-                      prev.map((item) =>
-                        item.id === selectedCampaign.id ? { ...item, status: 'active' } : item
-                      )
-                    );
-                  }}
+                  disabled={actionLoading}
+                  onClick={() => handleVerify('approved')}
                 />
                 <ButtonComponent
                   content="Flag"
                   cssClass="e-warning"
-                  onClick={() => {
-                    setCampaigns((prev) =>
-                      prev.map((item) =>
-                        item.id === selectedCampaign.id ? { ...item, status: 'flagged' } : item
-                      )
-                    );
-                  }}
+                  disabled={actionLoading}
+                  onClick={() => handleVerify('rejected')}
                 />
                 <ButtonComponent
                   content="Close"

@@ -1,23 +1,78 @@
 
+export type UserRole = 'donor' | 'organizer' | 'admin';
+
+export type ApiResponse<T> = {
+  success: boolean;
+  message: string;
+  data: T;
+};
+
+export interface UserProfile {
+  _id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  totalDonated: number;
+  createdAt: string;
+}
+
 export interface Campaign {
-  id: string;
+  _id: string;
   title: string;
-  description: string;
   category: string;
-  raisedAmount: number;
+  story: string;
   goalAmount: number;
-  imageUrl: string;
+  raisedAmount: number;
+  status: 'draft' | 'pending_verification' | 'approved' | 'rejected';
+  media: string[];
   organizer: string;
+  createdAt: string;
   location?: string;
   urgent?: boolean;
-  verified?: boolean;
 }
 
 export interface Donation {
-  id: string;
-  campaignId: string;
+  _id: string;
+  user?: string;
+  campaign: string;
   amount: number;
-  donorName: string;
-  timestamp: string;
-  isAnonymous: boolean;
+  paymentProvider: string;
+  status: 'pending' | 'succeeded' | 'failed';
+  createdAt: string;
+}
+
+export interface CampaignDonor {
+  amount: number;
+  user?: string;
+  createdAt: string;
+}
+
+export interface GlobalStats {
+  totalDonated: number;
+  donorsCount: number;
+  livesImpacted: number;
+}
+
+export interface CampaignListResponse {
+  data: Campaign[];
+  nextCursor: string | null;
+}
+
+export interface UserDashboard {
+  totalDonated: number;
+  campaignsSupported: number;
+  nextCursor: string | null;
+  timeline: Array<{
+    id: string;
+    amount: number;
+    campaign: string;
+    createdAt: string;
+  }>;
+}
+
+export interface AdminOverview {
+  totalDonated: number;
+  donorsCount: number;
+  campaignsApproved: number;
+  usersCount: number;
 }
