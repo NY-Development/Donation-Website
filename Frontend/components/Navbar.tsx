@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { addHoverScale, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { Lock, Moon, Sun } from 'lucide-react';
+import { useAuthStore } from '@/store/authStore';
 
 interface NavbarProps {
   toggleDarkMode: () => void;
@@ -15,6 +16,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
   const isCheckout = location.pathname.startsWith('/donate');
   const isAdmin = location.pathname.startsWith('/admin');
   const navRef = useRef<HTMLElement | null>(null);
+  const { isAuthenticated, logout } = useAuthStore();
 
   useLayoutEffect(() => {
     ensureGsap();
@@ -85,9 +87,17 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
             <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300" data-animate="nav-link">
               {isDarkMode ? <Sun className="size-5" aria-hidden="true" /> : <Moon className="size-5" aria-hidden="true" />}
             </button>
-            <Link to="/login" className="hidden sm:flex items-center justify-center h-9 px-4 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" data-animate="nav-link">
-              Log In
-            </Link>
+            {isAuthenticated ? (
+              <button 
+              onClick={() => {logout()}}
+              className="hidden sm:flex items-center justify-center h-9 px-4 rounded-lg text-white bg-red-500 dark:bg-red-600 dark:text-white text-sm font-bold hover:bg-red-600 dark:hover:bg-gray-700 transition-colors font-bold" data-animate="nav-link">
+                Log Out
+              </button>
+            ) : (
+              <Link to="/login" className="hidden sm:flex items-center justify-center h-9 px-4 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" data-animate="nav-link">
+                Log In
+              </Link>
+            )}
             <Link to="/explore" className="flex items-center justify-center h-9 px-4 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary-hover transition-colors shadow-lg shadow-primary/30" data-animate="nav-link">
               Donate
             </Link>

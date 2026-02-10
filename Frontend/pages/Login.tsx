@@ -71,9 +71,9 @@ const Login: React.FC = () => {
             <Quote className="size-10 mb-4" aria-hidden="true" />
             <p className="text-2xl font-bold leading-tight mb-4">"Your contribution changes lives every single day. We are building a future where everyone thrives."</p>
             <div className="flex items-center gap-3">
-              <div className="size-10 rounded-full border-2 border-white/50 bg-gray-200 bg-cover bg-center" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&auto=format&fit=crop")' }}></div>
+              <div className="size-10 rounded-full border-2 border-white/50 bg-gray-200 bg-cover bg-center" style={{ backgroundImage: 'url("./yitbarek.jpg")' }}></div>
               <div>
-                <p className="text-sm font-bold">Sarah Jenkins</p>
+                <p className="text-sm font-bold">Yitbarek Alemu</p>
                 <p className="text-xs opacity-70">Community Leader</p>
               </div>
             </div>

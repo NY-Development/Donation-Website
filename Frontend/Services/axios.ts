@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosHeaders, AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { tokenStorage } from './tokenStorage';
 
 declare global {
@@ -35,9 +35,7 @@ const resolveQueue = (token: string | null) => {
 api.interceptors.request.use((config) => {
   const token = tokenStorage.getAccessToken();
   if (token) {
-    const headers = AxiosHeaders.from(config.headers);
-    headers.set('Authorization', `Bearer ${token}`);
-    config.headers = headers;
+    config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
   }
   return config;
 });
