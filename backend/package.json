@@ -1,41 +1,45 @@
 {
-  "name": "donation-website-backend",
+  "name": "donation-platform-backend",
   "version": "1.0.0",
-  "description": "Backend API for Donation Website",
-  "main": "src/server.js",
+  "description": "Backend API for the Donation Platform",
+  "main": "dist/server.js",
+  "type": "module",
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "start": "node src/server.js",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio",
-    "lint": "eslint src/**/*.js",
-    "test": "jest"
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "lint": "tsc --noEmit"
   },
-  "keywords": [
-    "donation",
-    "charity",
-    "backend",
-    "api"
-  ],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^6.0.0",
-    "@prisma/adapter-pg": "^6.0.0",
-    "pg": "^8.11.3",
-    "bcryptjs": "^2.4.3",
+    "bcrypt": "^5.1.1",
+    "bullmq": "^5.17.0",
+    "cloudinary": "^2.5.1",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "express-rate-limit": "^7.1.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.3.1",
     "helmet": "^7.1.0",
+    "hpp": "^0.2.3",
+    "ioredis": "^5.4.1",
     "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0",
-    "zod": "^3.22.4"
+    "mongoose": "^8.8.2",
+    "stripe": "^16.10.0",
+    "uuid": "^10.0.0",
+    "winston": "^3.15.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2",
-    "prisma": "^6.0.0"
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/hpp": "^0.2.3",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^22.14.0",
+    "@types/uuid": "^10.0.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.8.2"
   }
 }
