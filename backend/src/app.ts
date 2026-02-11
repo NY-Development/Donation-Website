@@ -13,6 +13,7 @@ import organizerRoutes from './modules/organizer/organizer.routes';
 import { campaignController } from './modules/campaigns/campaign.controller';
 
 export const app = express();
+app.set('trust proxy', 1);
 
 const jsonParser = express.json({ limit: '2mb' });
 
