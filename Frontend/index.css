@@ -1,1 +1,41 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+@theme {
+  /* Primary Brand Colors */
+  --color-primary-light: #9D7BFF;
+  --color-primary: #6D28D9;        /* DEFAULT maps to the base name */
+  --color-primary-dark: #4C1D95;
+
+  /* Accent Colors */
+  --color-accent-success: #10B981;
+  --color-accent-gold: #F59E0B;
+  --color-accent-glow: #A78BFA;
+
+  /* Neutral Palette */
+  --color-background-light: #F9FAFB;
+  --color-background: #FFFFFF;
+  --color-background-glass: rgba(255, 255, 255, 0.7);
+
+  /* UI Text Colors (Surface) */
+  --color-surface-heading: #111827;
+  --color-surface-body: #4B5563;
+  --color-surface-muted: #9CA3AF;
+
+  /* Typography */
+  --font-sans: "Inter", "Poppins", sans-serif;
+
+  /* Custom Shadows & Glows */
+  --shadow-glow-purple: 0 0 20px rgba(109, 40, 217, 0.3);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+
+  /* Backdrop Blur */
+  --blur-xs: 2px;
+
+  /* Border Radius */
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  /* Gradients - The V4 way is to define the full image variable */
+  --background-image-primary-gradient: linear-gradient(to bottom right, #4C1D95, #6D28D9, #9D7BFF);
+}
