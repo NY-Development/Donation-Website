@@ -1,34 +1,59 @@
-const config = {
+import { defineConfig } from 'tailwindcss'
+
+export default defineConfig({
   content: [
-    './index.html',       // Vite's root HTML
-    './src/**/*.{ts,tsx}', // All TSX/TS files in src
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
   ],
-  darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
       colors: {
-        primary: '#7f13ec',
-        'primary-hover': '#6b10c6',
-        'background-light': '#f7f6f8',
-        'background-dark': '#191022',
-        'surface-light': '#ffffff',
-        'surface-dark': '#251b2e',
+        // Primary Brand Colors (Trust & Compassion)
+        primary: {
+          light: '#9D7BFF',   // Soft Purple
+          DEFAULT: '#6D28D9', // Deep Violet
+          dark: '#4C1D95',    // Rich Purple
+        },
+        // Accent Colors (Success & Confirmation)
+        accent: {
+          success: '#10B981', // Soft Green
+          gold: '#F59E0B',    // Impact/Highlight
+          glow: '#A78BFA',    // For 3D/Futuristic glow effects
+        },
+        // Neutral Palette (Clarity & Cleanliness)
+        background: {
+          light: '#F9FAFB',   // Light Gray
+          DEFAULT: '#FFFFFF',  // White
+          glass: 'rgba(255, 255, 255, 0.7)', // Glassmorphism base
+        },
+        // UI Text Colors
+        surface: {
+          heading: '#111827', // Deep Gray/Black
+          body: '#4B5563',    // Readable Gray
+          muted: '#9CA3AF',   // Subtle text
+        },
       },
       fontFamily: {
-        display: ['Inter', 'sans-serif'],
+        sans: ['Inter', 'Poppins', 'sans-serif'], // Professional & Accessible
+      },
+      boxShadow: {
+        'glow-purple': '0 0 20px rgba(109, 40, 217, 0.3)', // Futuristic glow
+        glass: '0 8px 32px 0 rgba(31, 38, 135, 0.07)',     // Glassmorphism shadow
+      },
+      backdropBlur: {
+        xs: '2px',
       },
       borderRadius: {
-        DEFAULT: '0.25rem',
-        lg: '0.5rem',
-        xl: '0.75rem',
-        full: '9999px',
+        xl: '1rem',
+        '2xl': '1.5rem',
+      },
+      gradientColorStops: {
+        'primary-gradient': ['#4C1D95', '#6D28D9', '#9D7BFF'], // For hero/3D effects
       },
     },
   },
   plugins: [
-    require('@tailwindcss/forms'), // Forms plugin
-    require('@tailwindcss/container-queries'), // Container queries plugin
+    require('@tailwindcss/forms'), // Keep form styling consistent
   ],
-};
-
-export default config;
+  darkMode: 'class', // Optional: dark mode support
+})
