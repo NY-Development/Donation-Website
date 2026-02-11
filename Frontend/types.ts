@@ -13,7 +13,16 @@ export interface UserProfile {
   email: string;
   role: UserRole;
   totalDonated: number;
+  isOrganizerVerified?: boolean;
   createdAt: string;
+}
+
+export interface OrganizerVerificationStatus {
+  isOrganizerVerified: boolean;
+  status: 'pending' | 'approved' | 'rejected';
+  submittedAt?: string;
+  reviewedAt?: string;
+  rejectionReason?: string;
 }
 
 export interface Campaign {

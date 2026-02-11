@@ -10,6 +10,7 @@ import Explore from './src/pages/Explore';
 import CampaignDetail from './src/pages/CampaignDetail';
 import Donate from './src/pages/Donate';
 import CreateCampaign from './src/pages/CreateCampaign';
+import OrganizerVerification from './src/pages/OrganizerVerification';
 import UserDashboard from './src/pages/UserDashboard';
 import AdminDashboard from './src/pages/AdminDashboard';
 import Login from './src/pages/Login';
@@ -82,6 +83,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute roles={['organizer', 'admin']}>
                   <CreateCampaign />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/organizer/verify"
+              element={
+                <ProtectedRoute roles={['organizer']}>
+                  <OrganizerVerification />
                 </ProtectedRoute>
               }
             />

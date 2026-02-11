@@ -1,10 +1,13 @@
 
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { ArrowLeft, ArrowRight, Bold, CheckCircle, Flag, Image, Italic, Lightbulb, Link as LinkIcon, Wallet } from 'lucide-react';
 import { useCampaignStore } from '../store';
 import campaignService from '../Services/campaigns';
+import organizerService from '../Services/organizer';
+import { useAuthStore } from '../store';
+import { useNavigate } from 'react-router-dom';
 
 const CreateCampaign: React.FC = () => {
   const [step, setStep] = useState(1);
@@ -13,9 +16,12 @@ const CreateCampaign: React.FC = () => {
   const [story, setStory] = useState('');
   const [goalAmount, setGoalAmount] = useState('10000');
   const [formError, setFormError] = useState<string | null>(null);
+  const [isCheckingVerification, setIsCheckingVerification] = useState(true);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const hasAnimatedRef = useRef(false);
   const createCampaign = useCampaignStore((state) => state.createCampaign);
+  const user = useAuthStore((state) => state.user);
+  const navigate = useNavigate();
 
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
@@ -81,6 +87,49 @@ const CreateCampaign: React.FC = () => {
       ctx.revert();
     };
   }, [step]);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const checkVerification = async () => {
+      if (!user || user.role !== 'organizer') {
+        if (isActive) setIsCheckingVerification(false);
+        return;
+      }
+
+      try {
+        const response = await organizerService.status();
+        const data = response.data?.data as { isOrganizerVerified?: boolean } | undefined;
+
+        if (!data?.isOrganizerVerified) {
+          navigate('/organizer/verify', { replace: true, state: { from: '/create' } });
+          return;
+        }
+      } catch {
+        if (isActive) {
+          setFormError('Unable to verify organizer status. Please try again.');
+        }
+      } finally {
+        if (isActive) setIsCheckingVerification(false);
+      }
+    };
+
+    checkVerification();
+    return () => {
+      isActive = false;
+    };
+  }, [navigate, user]);
+
+  if (isCheckingVerification) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center px-6">
+        <div className="text-center">
+          <p className="text-lg font-semibold text-gray-900 dark:text-white">Checking verification...</p>
+          <p className="text-sm text-gray-500">Preparing your campaign workspace.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="max-w-[1120px] mx-auto py-8 md:py-12 px-4 sm:px-6 lg:px-8">
