@@ -3,7 +3,7 @@ import authService from '../Services/auth';
 import userService from '../Services/users';
 import { tokenStorage } from '../Services/tokenStorage';
 import { getApiData, getErrorMessage } from './apiHelpers';
-import type { UserProfile, UserRole } from '../types';
+import type { UserProfile, UserRole } from '../../types';
 
 type AuthUser = UserProfile;
 

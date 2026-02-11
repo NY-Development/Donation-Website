@@ -9,6 +9,7 @@ import userRoutes from './modules/users/user.routes';
 import campaignRoutes from './modules/campaigns/campaign.routes';
 import donationRoutes from './modules/donations/donation.routes';
 import adminRoutes from './modules/admin/admin.routes';
+import organizerRoutes from './modules/organizer/organizer.routes';
 import { campaignController } from './modules/campaigns/campaign.controller';
 
 export const app = express();
@@ -45,5 +46,6 @@ app.use('/api/users', userRoutes);
 app.use('/api/campaigns', campaignRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/organizer', organizerRoutes);
 
 app.use(errorHandler);

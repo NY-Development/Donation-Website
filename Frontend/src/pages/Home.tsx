@@ -7,7 +7,7 @@ import { ArrowRight, BadgeCheck, Heart, Mail, MailCheck, Megaphone, Search, Wall
 import { useQuery } from '@tanstack/react-query';
 import campaignService from '../Services/campaigns';
 import { getApiData } from '../store/apiHelpers';
-import type { Campaign, GlobalStats } from '../types';
+import type { Campaign, GlobalStats } from '../../types';
 
 const Home: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);

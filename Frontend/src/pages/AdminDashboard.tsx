@@ -11,7 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import campaignService from '../Services/campaigns';
 import adminService from '../Services/admin';
 import { getApiData } from '../store/apiHelpers';
-import type { AdminOverview, Campaign } from '../types';
+import type { AdminOverview, Campaign } from '../../types';
 
 type CampaignRow = {
   id: string;

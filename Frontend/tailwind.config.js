@@ -1,7 +1,9 @@
-
-
-tailwind.config = {
-  darkMode: 'class',
+const config = {
+  content: [
+    './index.html',       // Vite's root HTML
+    './src/**/*.{ts,tsx}', // All TSX/TS files in src
+  ],
+  darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
       colors: {
@@ -23,4 +25,10 @@ tailwind.config = {
       },
     },
   },
+  plugins: [
+    require('@tailwindcss/forms'), // Forms plugin
+    require('@tailwindcss/container-queries'), // Container queries plugin
+  ],
 };
+
+export default config;

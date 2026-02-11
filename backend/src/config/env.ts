@@ -16,7 +16,7 @@ const envSchema = z.object({
   CLOUDINARY_CLOUD_NAME: z.string().min(1),
   CLOUDINARY_API_KEY: z.string().min(1),
   CLOUDINARY_API_SECRET: z.string().min(1),
-  PAYMENT_PROVIDER: z.enum(['stripe', 'chapa']).default('stripe'),
+  PAYMENT_PROVIDER: z.enum(['stripe', 'chapa']).default('chapa'),
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
   CHAPA_SECRET_KEY: z.string().optional(),

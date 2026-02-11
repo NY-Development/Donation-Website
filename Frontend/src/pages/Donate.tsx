@@ -8,7 +8,7 @@ import { useDonationStore } from '../store';
 import { useQuery } from '@tanstack/react-query';
 import campaignService from '../Services/campaigns';
 import { getApiData } from '../store/apiHelpers';
-import type { Campaign } from '../types';
+import type { Campaign } from '../../types';
 
 const Donate: React.FC = () => {
   const [amount, setAmount] = useState('50');

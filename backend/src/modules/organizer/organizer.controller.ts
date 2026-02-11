@@ -1,0 +1,28 @@
+import { NextFunction, Response } from 'express';
+import type { AuthRequest } from '../../middlewares/auth.middleware';
+import { organizerService } from './organizer.service';
+
+export const organizerController = {
+  status: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const user = await organizerService.getStatus(req.user?.id ?? '');
+      res.json({ success: true, message: 'Organizer status fetched', data: user });
+    } catch (error) {
+      next(error);
+    }
+  },
+  verify: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const files = req.files as { [field: string]: Express.Multer.File[] } | undefined;
+      const payload = {
+        idFront: files?.idFront?.[0],
+        idBack: files?.idBack?.[0],
+        livePhoto: files?.livePhoto?.[0]
+      };
+      const data = await organizerService.submitVerification(req.user?.id ?? '', payload);
+      res.status(201).json({ success: true, message: 'Verification submitted', data });
+    } catch (error) {
+      next(error);
+    }
+  }
+};

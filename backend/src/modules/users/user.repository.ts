@@ -5,7 +5,7 @@ export const userRepository = {
   create: (data: Partial<UserDocument>) => UserModel.create(data),
   findByEmail: (email: string) => UserModel.findOne({ email }).select('+password'),
   findById: (id: string) => UserModel.findById(id),
-  findByIdLean: (id: string) => UserModel.findById(id).select('-password -refreshTokens').lean(),
+  findByIdLean: (id: string) => UserModel.findById(id).select('-password -refreshTokens -organizerVerification').lean(),
   updateById: (id: string, data: Partial<UserDocument>) => UserModel.findByIdAndUpdate(id, data, { new: true }),
   addRefreshToken: (id: string, tokenId: string) =>
     UserModel.findByIdAndUpdate(id, { $addToSet: { refreshTokens: tokenId } }),

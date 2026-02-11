@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import donationService from '../Services/donations';
 import userService from '../Services/users';
 import { getApiData, getErrorMessage } from './apiHelpers';
-import type { UserDashboard } from '../types';
+import type { UserDashboard } from '../../types';
 
 type DonationState = {
   timeline: UserDashboard['timeline'];

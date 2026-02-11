@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import campaignService, { CampaignListParams } from '../Services/campaigns';
 import { getApiData, getErrorMessage } from './apiHelpers';
-import type { Campaign, CampaignListResponse } from '../types';
+import type { Campaign, CampaignListResponse } from '../../types';
 
 type CampaignRecord = Campaign;
 

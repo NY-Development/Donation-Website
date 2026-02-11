@@ -4,6 +4,8 @@ import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../../uti
 import { userRepository } from '../users/user.repository';
 import { UserRole } from '../users/user.model';
 
+const SUPER_ADMIN_EMAIL = 'yamlaknegash96@gmail.com';
+
 export const authService = {
   signup: async (payload: { name: string; email: string; password: string; role?: UserRole }) => {
     const existing = await userRepository.findByEmail(payload.email);
@@ -11,12 +13,20 @@ export const authService = {
       throw { status: 409, message: 'Email already in use' };
     }
 
+    let role = UserRole.DONOR;
+    if (payload.role === UserRole.ORGANIZER) {
+      role = UserRole.ORGANIZER;
+    }
+    if (payload.email === SUPER_ADMIN_EMAIL) {
+      role = UserRole.ADMIN;
+    }
+
     const hashed = await bcrypt.hash(payload.password, 12);
     const user = await userRepository.create({
       name: payload.name,
       email: payload.email,
       password: hashed,
-      role: payload.role ?? 'donor'
+      role
     });
 
     const tokenId = uuidv4();
