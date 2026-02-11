@@ -52,8 +52,31 @@ const Success: React.FC = () => {
           <div className="flex items-center justify-center w-24 h-24 bg-white dark:bg-surface-dark rounded-full shadow-lg border-4 border-primary/20">
             <Heart className="size-12 text-primary" aria-hidden="true" />
           </div>
-          <FaRegSmileBeam className="absolute top-0 -left-8 text-yellow-400 text-2xl rotate-[-20deg]" aria-hidden="true" />
-          <FaStar className="absolute -top-4 right-0 text-primary text-xl" aria-hidden="true" />
+          <span
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: '-2rem',
+              color: '#FACC15', // Tailwind 'text-yellow-400'
+              fontSize: '1.5rem',
+              transform: 'rotate(-20deg)'
+            }}
+            aria-hidden="true"
+          >
+            <FaRegSmileBeam size={24} />
+          </span>
+          <span
+            style={{
+              position: 'absolute',
+              top: '-1rem',
+              right: 0,
+              color: '#2563eb', // Tailwind 'text-primary'
+              fontSize: '1.25rem'
+            }}
+            aria-hidden="true"
+          >
+            <FaStar size={20} />
+          </span>
         </div>
 
         <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white leading-tight tracking-tight mb-4">

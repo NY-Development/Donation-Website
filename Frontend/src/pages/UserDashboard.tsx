@@ -21,7 +21,7 @@ const UserDashboard: React.FC = () => {
       const sections = gsap.utils.toArray<HTMLElement>('[data-animate="section"]', containerRef.current);
       animateSectionsOnScroll(sections);
 
-      const cards = gsap.utils.toArray('[data-animate="card"]', containerRef.current);
+      const cards = gsap.utils.toArray<HTMLElement>('[data-animate="card"]', containerRef.current);
       animateStagger(cards, {
         y: 16,
         duration: 0.6,

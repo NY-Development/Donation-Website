@@ -63,7 +63,7 @@ const CreateCampaign: React.FC = () => {
 
       const forms = gsap.utils.toArray<HTMLElement>('[data-animate="form"]', containerRef.current);
       forms.forEach((form) => {
-        const inputs = gsap.utils.toArray('[data-animate="input"]', form);
+        const inputs = gsap.utils.toArray<HTMLElement>('[data-animate="input"]', form);
         animateStagger(inputs, {
           y: 12,
           duration: 0.5,

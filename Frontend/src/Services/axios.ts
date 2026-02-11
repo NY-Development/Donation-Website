@@ -35,7 +35,9 @@ const resolveQueue = (token: string | null) => {
 api.interceptors.request.use((config) => {
   const token = tokenStorage.getAccessToken();
   if (token) {
-    config.headers = { ...config.headers, Authorization: `Bearer ${token}` };
+    if (config.headers) {
+      (config.headers as any).Authorization = `Bearer ${token}`;
+    }
   }
   return config;
 });
