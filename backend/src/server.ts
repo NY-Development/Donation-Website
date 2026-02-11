@@ -4,11 +4,16 @@ import { env } from './config/env';
 import { validatePaymentProvider } from './config/payment';
 import { logger } from './utils/logger';
 
+const isServerless = Boolean(process.env.VERCEL);
+
+const bootstrap = async () => {
+  validatePaymentProvider();
+  await connectDb();
+};
+
 const startServer = async () => {
   try {
-    validatePaymentProvider();
-    await connectDb();
-
+    await bootstrap();
     app.listen(env.PORT, () => {
       logger.info(`Server running on port ${env.PORT}`);
     });
@@ -18,4 +23,12 @@ const startServer = async () => {
   }
 };
 
-startServer();
+if (isServerless) {
+  bootstrap().catch((error) => {
+    logger.error('Failed to bootstrap serverless runtime', { error });
+  });
+} else {
+  startServer();
+}
+
+export default app;
