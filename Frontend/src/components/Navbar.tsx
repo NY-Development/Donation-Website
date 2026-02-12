@@ -1,8 +1,8 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { addHoverScale, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
-import { HeartHandshake, Lock, Moon, Sun } from 'lucide-react';
+import { HeartHandshake, Lock, Menu, Moon, Sun, X } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 interface NavbarProps {
@@ -15,6 +15,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
   const isCheckout = location.pathname.startsWith('/donate');
   const isAdmin = location.pathname.startsWith('/admin');
   const navRef = useRef<HTMLElement | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, logout, user } = useAuthStore();
   const profileInitial = user?.name?.trim()?.[0]?.toUpperCase() || user?.email?.trim()?.[0]?.toUpperCase() || 'U';
 
@@ -66,6 +67,10 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
     );
   }
 
+  if (isAdmin) {
+    return null;
+  }
+
   return (
     <nav ref={navRef} className="sticky top-0 z-50 w-full bg-white dark:bg-surface-dark border-b border-gray-200 dark:border-gray-800">
       <div className="max-w-300 mx-auto px-4 sm:px-6 lg:px-8">
@@ -112,8 +117,77 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                 Donate
               </Link>
             )}
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+              className="md:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300"
+              aria-label="Toggle navigation"
+              aria-expanded={isMenuOpen}
+            >
+              {isMenuOpen ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
+            </button>
           </div>
         </div>
+
+        {isMenuOpen && (
+          <div className="md:hidden pb-4">
+            <div className="mt-2 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark p-4 shadow-lg">
+              <div className="flex flex-col gap-3">
+                <Link
+                  to="/explore"
+                  className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Campaigns
+                </Link>
+                <Link
+                  to="/create"
+                  className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Start Campaign
+                </Link>
+                <Link
+                  to="/dashboard"
+                  className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  My Impact
+                </Link>
+                <div className="h-px bg-gray-100 dark:bg-gray-800" />
+                {isAuthenticated ? (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await logout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full text-left text-sm font-semibold text-red-500 hover:text-red-600"
+                  >
+                    Log Out
+                  </button>
+                ) : (
+                  <Link
+                    to="/login"
+                    className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Log In
+                  </Link>
+                )}
+                {!isAuthenticated && (
+                  <Link
+                    to="/signup"
+                    className="text-sm font-semibold text-primary"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Create account
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
