@@ -1,34 +1,29 @@
 import { app } from './app';
-import { connectDb } from './config/db';
 import { env } from './config/env';
 import { validatePaymentProvider } from './config/payment';
 import { logger } from './utils/logger';
 
 const isServerless = Boolean(process.env.VERCEL);
 
-const bootstrap = async () => {
-  validatePaymentProvider();
-  await connectDb();
-};
-
 const startServer = async () => {
   try {
-    await bootstrap();
-    app.listen(env.PORT, () => {
-      logger.info(`Server running on port ${env.PORT}`);
-    });
+    validatePaymentProvider();
+
+    if (!isServerless) {
+      const serverPort = env.PORT || 3000;
+      app.listen(serverPort, () => {
+        // Explicit log you requested:
+        logger.info(`SERVER_STATUS: Online ✅ | LISTENING_ON_PORT: ${serverPort}`);
+      });
+    } else {
+      logger.info('RUNTIME_MODE: Serverless (Vercel) ☁️');
+    }
   } catch (error) {
-    logger.error('Failed to start server', { error });
+    logger.error('SERVER_BOOT_FAILED 💥', { error });
     process.exit(1);
   }
 };
 
-if (isServerless) {
-  bootstrap().catch((error) => {
-    logger.error('Failed to bootstrap serverless runtime', { error });
-  });
-} else {
-  startServer();
-}
+startServer();
 
 export default app;

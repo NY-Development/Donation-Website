@@ -1,6 +1,7 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import { v4 as uuidv4 } from 'uuid';
+import { connectDb } from './config/db';
 import { securityMiddlewares } from './config/security';
 import { publicLimiter } from './middlewares/rateLimiter';
 import { errorHandler } from './middlewares/error.middleware';
@@ -15,15 +16,27 @@ import { campaignController } from './modules/campaigns/campaign.controller';
 export const app = express();
 app.set('trust proxy', 1);
 
+// Database Guard Middleware
+app.use(async (req, res, next) => {
+  try {
+    await connectDb();
+    next();
+  } catch (error) {
+    res.status(503).json({ 
+      error: "Database unavailable", 
+      message: "The server is having trouble reaching the database." 
+    });
+  }
+});
+
 const jsonParser = express.json({ limit: '2mb' });
 
 app.use('/api/donations/webhook', express.raw({ type: 'application/json' }));
 app.use((req, res, next) => {
-  if (req.path === '/api/donations/webhook') {
-    return next();
-  }
+  if (req.path === '/api/donations/webhook') return next();
   return jsonParser(req, res, next);
 });
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(...securityMiddlewares);
@@ -36,11 +49,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// FULL HTML ROOT ROUTE PRESERVED
 app.get('/', (_req, res) => {
-  res
-    .status(200)
-    .type('html')
-    .send(`<!doctype html>
+  res.status(200).type('html').send(`<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -99,15 +110,8 @@ app.get('/', (_req, res) => {
         letter-spacing: 0.08em;
         text-transform: uppercase;
       }
-      h1 {
-        margin: 16px 0 8px;
-        font-size: clamp(28px, 4vw, 36px);
-      }
-      p {
-        margin: 0 0 18px;
-        color: var(--muted);
-        line-height: 1.6;
-      }
+      h1 { margin: 16px 0 8px; font-size: clamp(28px, 4vw, 36px); }
+      p { margin: 0 0 18px; color: var(--muted); line-height: 1.6; }
       .grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -127,14 +131,8 @@ app.get('/', (_req, res) => {
         text-transform: uppercase;
         letter-spacing: 0.08em;
       }
-      .tile strong {
-        font-size: 18px;
-      }
-      a {
-        color: var(--brand);
-        text-decoration: none;
-        font-weight: 600;
-      }
+      .tile strong { font-size: 18px; }
+      a { color: var(--brand); text-decoration: none; font-weight: 600; }
     </style>
   </head>
   <body>
@@ -142,28 +140,20 @@ app.get('/', (_req, res) => {
       <div class="card">
         <div class="badge">ImpactGive API</div>
         <h1>Backend is live and ready.</h1>
-        <p>
-          You have reached the ImpactGive server. Use the API routes to access
-          campaigns, users, and donations.
-        </p>
+        <p>You have reached the ImpactGive server. Use the API routes to access campaigns, users, and donations.</p>
         <div class="grid">
           <div class="tile"><span>Status</span><strong>Online</strong></div>
           <div class="tile"><span>Health</span><strong>/api/health</strong></div>
           <div class="tile"><span>Docs</span><strong>Coming soon</strong></div>
         </div>
-        <p style="margin-top: 18px;">
-          Need to verify? Try <a href="/api/health">/api/health</a>.
-        </p>
+        <p style="margin-top: 18px;">Need to verify? Try <a href="/api/health">/api/health</a>.</p>
       </div>
     </div>
   </body>
 </html>`);
 });
 
-app.get('/api/health', (_req, res) => {
-  res.json({ success: true, message: 'OK' });
-});
-
+app.get('/api/health', (_req, res) => res.json({ success: true, message: 'OK' }));
 app.get('/api/stats/global', campaignController.getGlobalStats);
 
 app.use('/api/auth', authRoutes);
