@@ -13,7 +13,10 @@ const Explore = React.lazy(() => import('./src/pages/Explore'));
 const CampaignDetail = React.lazy(() => import('./src/pages/CampaignDetail'));
 const Donate = React.lazy(() => import('./src/pages/Donate'));
 const CreateCampaign = React.lazy(() => import('./src/pages/CreateCampaign'));
-const OrganizerVerification = React.lazy(() => import('./src/pages/OrganizerVerification'));
+const VerificationIntro = React.lazy(() => import('./src/pages/VerificationIntro'));
+const VerificationUpload = React.lazy(() => import('./src/pages/VerificationUpload'));
+const VerificationSelfie = React.lazy(() => import('./src/pages/VerificationSelfie'));
+const VerificationPending = React.lazy(() => import('./src/pages/VerificationPending'));
 const UserDashboard = React.lazy(() => import('./src/pages/UserDashboard'));
 const AdminDashboard = React.lazy(() => import('./src/pages/AdminDashboard'));
 const Login = React.lazy(() => import('./src/pages/Login'));
@@ -99,7 +102,39 @@ const App: React.FC = () => {
                 path="/organizer/verify"
                 element={
                   <ProtectedRoute>
-                    <OrganizerVerification />
+                    <VerificationIntro />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/verIntro"
+                element={
+                  <ProtectedRoute>
+                    <VerificationIntro />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/uploadID"
+                element={
+                  <ProtectedRoute>
+                    <VerificationUpload />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/liveSelfie"
+                element={
+                  <ProtectedRoute>
+                    <VerificationSelfie />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/verPending"
+                element={
+                  <ProtectedRoute>
+                    <VerificationPending />
                   </ProtectedRoute>
                 }
               />
