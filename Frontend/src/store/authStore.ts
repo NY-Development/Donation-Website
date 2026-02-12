@@ -90,9 +90,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const refreshToken = data?.refreshToken ?? null;
       const user = data?.user ?? null;
 
-      persistTokens(token, refreshToken);
-      set({ user, token, refreshToken, isAuthenticated: Boolean(token), isLoading: false });
-      return Boolean(token);
+      if (token) {
+        persistTokens(token, refreshToken);
+      }
+
+      set({
+        user,
+        token,
+        refreshToken,
+        isAuthenticated: Boolean(token),
+        isLoading: false
+      });
+      return true;
     } catch (error) {
       clearStoredToken();
       set({

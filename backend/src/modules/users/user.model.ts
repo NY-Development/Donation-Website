@@ -26,6 +26,9 @@ export interface UserDocument extends Document {
   name: string;
   email: string;
   password: string;
+  emailVerified: boolean;
+  emailVerificationOtpHash?: string;
+  emailVerificationOtpExpires?: Date;
   role: UserRole;
   totalDonated: number;
   isOrganizerVerified: boolean;
@@ -40,6 +43,9 @@ const userSchema = new Schema<UserDocument>(
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, index: true },
     password: { type: String, required: true, select: false },
+    emailVerified: { type: Boolean, default: false },
+    emailVerificationOtpHash: { type: String, select: false },
+    emailVerificationOtpExpires: { type: Date, select: false },
     role: { type: String, enum: Object.values(UserRole), default: UserRole.DONOR },
     totalDonated: { type: Number, default: 0 },
     isOrganizerVerified: { type: Boolean, default: false },

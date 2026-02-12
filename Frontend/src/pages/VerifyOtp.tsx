@@ -1,0 +1,148 @@
+import React, { useLayoutEffect, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { z } from 'zod';
+import { gsap } from 'gsap';
+import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
+import authService from '../Services/auth';
+
+const VerifyOtp: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const params = new URLSearchParams(location.search);
+  const [email, setEmail] = useState(params.get('email') ?? '');
+  const [otp, setOtp] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  const handleVerify = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    const schema = z.object({
+      email: z.string().email('Enter a valid email address.'),
+      otp: z.string().min(6, 'Enter the 6-digit code.').max(6, 'Enter the 6-digit code.')
+    });
+    const parsed = schema.safeParse({ email, otp });
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? 'Please check the code and try again.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await authService.verifyOtp({ email: parsed.data.email, otp: parsed.data.otp });
+      setSuccess('Email verified successfully. You can now log in.');
+      setTimeout(() => {
+        navigate('/login');
+      }, 800);
+    } catch (err: any) {
+      const message = err?.response?.data?.message ?? 'Unable to verify. Please try again.';
+      setError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  useLayoutEffect(() => {
+    ensureGsap();
+    if (!containerRef.current || prefersReducedMotion()) return;
+
+    const ctx = gsap.context(() => {
+      animatePageIn(containerRef.current as HTMLDivElement);
+      const sections = gsap.utils.toArray<HTMLElement>('[data-animate="section"]', containerRef.current);
+      animateSectionsOnScroll(sections);
+
+      const forms = gsap.utils.toArray<HTMLElement>('[data-animate="form"]', containerRef.current);
+      forms.forEach((form) => {
+        const inputs = gsap.utils.toArray<HTMLElement>('[data-animate="input"]', form);
+        animateStagger(inputs, {
+          y: 10,
+          duration: 0.5,
+          stagger: 0.06
+        });
+      });
+    }, containerRef);
+
+    const cleanupHover = addHoverScale(
+      gsap.utils.toArray('[data-animate="button"]', containerRef.current),
+      1.02
+    );
+
+    return () => {
+      cleanupHover();
+      ctx.revert();
+    };
+  }, []);
+
+  return (
+    <div ref={containerRef} className="min-h-[calc(100vh-64px)] flex items-center justify-center p-4 bg-gray-50 dark:bg-background-dark">
+      <div className="w-full max-w-140 bg-white dark:bg-surface-dark rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 p-8 md:p-12" data-animate="section">
+        <div className="text-center mb-8">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Verify your email</p>
+          <h1 className="text-3xl font-black mt-3 text-gray-900 dark:text-white">Enter the 6-digit code</h1>
+          <p className="text-gray-500 mt-3">We sent a verification code to your email address.</p>
+        </div>
+
+        {(error || success) && (
+          <div
+            className={`mb-6 rounded-xl border px-4 py-3 text-sm ${
+              error
+                ? 'border-red-200 bg-red-50 text-red-700'
+                : 'border-green-200 bg-green-50 text-green-700'
+            }`}
+          >
+            {error ?? success}
+          </div>
+        )}
+
+        <form onSubmit={handleVerify} className="space-y-6" data-animate="form">
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Email</label>
+            <input
+              className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-primary outline-none"
+              type="email"
+              required
+              data-animate="input"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Verification Code</label>
+            <input
+              className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-primary outline-none tracking-[0.4em] text-center"
+              type="text"
+              maxLength={6}
+              placeholder="123456"
+              required
+              data-animate="input"
+              value={otp}
+              onChange={(event) => setOtp(event.target.value.replace(/\D/g, ''))}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-4 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg transition-all transform active:scale-[0.98] disabled:opacity-70"
+            data-animate="button"
+            disabled={isSubmitting}
+            aria-busy={isSubmitting}
+          >
+            {isSubmitting ? 'Verifying...' : 'Verify Email'}
+          </button>
+
+          <div className="text-center">
+            <p className="text-sm text-gray-500">
+              Already verified? <Link to="/login" className="text-primary font-bold hover:underline">Log in</Link>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default VerifyOtp;

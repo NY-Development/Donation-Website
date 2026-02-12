@@ -26,7 +26,12 @@ const envSchema = z.object({
   RATE_LIMIT_AUTH_MAX: z.string().default('30'),
   RATE_LIMIT_ADMIN_WINDOW_MS: z.string().default('60000'),
   RATE_LIMIT_ADMIN_MAX: z.string().default('60'),
-  REDIS_URL: z.string().optional()
+  REDIS_URL: z.string().optional(),
+  SMTP_HOST: z.string().min(1),
+  SMTP_PORT: z.string().min(1),
+  SMTP_USER: z.string().min(1),
+  SMTP_PASS: z.string().min(1),
+  SENDER_EMAIL: z.string().min(1)
 });
 
 const parsed = envSchema.safeParse(process.env);

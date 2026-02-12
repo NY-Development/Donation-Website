@@ -14,13 +14,17 @@ const VerificationIntro: React.FC = () => {
     const loadStatus = async () => {
       try {
         const response = await organizerService.status();
-        const data = response.data?.data as { isOrganizerVerified?: boolean; status?: string } | undefined;
+        const data = response.data?.data as {
+          isOrganizerVerified?: boolean;
+          status?: string;
+          submittedAt?: string;
+        } | undefined;
         if (!isActive) return;
         if (data?.isOrganizerVerified) {
           navigate('/create', { replace: true });
           return;
         }
-        if (data?.status === 'pending') {
+        if (data?.status === 'pending' && data.submittedAt) {
           navigate('/verPending', { replace: true });
           return;
         }
@@ -51,7 +55,7 @@ const VerificationIntro: React.FC = () => {
   }
 
   return (
-    <div className="min-h-[70vh] bg-gradient-to-br from-gray-50 via-white to-primary/5 dark:from-surface-dark dark:via-slate-950 dark:to-primary/10">
+    <div className="min-h-[70vh] bg-linear-to-br from-gray-50 via-white to-primary/5 dark:from-surface-dark dark:via-slate-950 dark:to-primary/10">
       <div className="max-w-5xl mx-auto px-6 py-12">
         {error && (
           <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-red-700">

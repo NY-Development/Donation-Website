@@ -14,9 +14,18 @@ const VerificationPending: React.FC = () => {
     const loadStatus = async () => {
       try {
         const response = await organizerService.status();
-        const data = response.data?.data as { isOrganizerVerified?: boolean } | undefined;
-        if (isActive && data?.isOrganizerVerified) {
+        const data = response.data?.data as {
+          isOrganizerVerified?: boolean;
+          submittedAt?: string;
+          status?: string;
+        } | undefined;
+        if (!isActive) return;
+        if (data?.isOrganizerVerified) {
           setIsVerified(true);
+          return;
+        }
+        if (!data?.submittedAt) {
+          navigate('/verIntro', { replace: true });
         }
       } catch {
         if (isActive) {

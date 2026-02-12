@@ -15,3 +15,8 @@ export const loginSchema = z.object({
 export const refreshSchema = z.object({
   refreshToken: z.string().min(10)
 });
+
+export const verifyOtpSchema = z.object({
+  email: z.string().email(),
+  otp: z.string().min(6).max(6)
+});

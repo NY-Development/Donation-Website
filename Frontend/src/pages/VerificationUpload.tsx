@@ -18,13 +18,17 @@ const VerificationUpload: React.FC = () => {
     const loadStatus = async () => {
       try {
         const response = await organizerService.status();
-        const data = response.data?.data as { isOrganizerVerified?: boolean; status?: string } | undefined;
+        const data = response.data?.data as {
+          isOrganizerVerified?: boolean;
+          status?: string;
+          submittedAt?: string;
+        } | undefined;
         if (!isActive) return;
         if (data?.isOrganizerVerified) {
           navigate('/create', { replace: true });
           return;
         }
-        if (data?.status === 'pending') {
+        if (data?.status === 'pending' && data.submittedAt) {
           navigate('/verPending', { replace: true });
           return;
         }
@@ -63,7 +67,7 @@ const VerificationUpload: React.FC = () => {
   }
 
   return (
-    <div className="min-h-[70vh] bg-gradient-to-br from-gray-50 via-white to-primary/5 dark:from-surface-dark dark:via-slate-950 dark:to-primary/10">
+    <div className="min-h-[70vh] bg-linear-to-br from-gray-50 via-white to-primary/5 dark:from-surface-dark dark:via-slate-950 dark:to-primary/10">
       <div className="max-w-5xl mx-auto px-6 py-12">
         <div className="flex items-center justify-center gap-4 mb-10 text-sm">
           <div className="flex items-center gap-2">

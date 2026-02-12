@@ -41,7 +41,7 @@ const Signup: React.FC = () => {
       role: wantsOrganizer ? 'organizer' : undefined
     });
     if (success) {
-      navigate('/dashboard');
+      navigate(`/verify-otp?email=${encodeURIComponent(parsed.data.email)}`);
     }
   };
 

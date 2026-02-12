@@ -21,6 +21,7 @@ const UserDashboard = React.lazy(() => import('./src/pages/UserDashboard'));
 const AdminDashboard = React.lazy(() => import('./src/pages/AdminDashboard'));
 const Login = React.lazy(() => import('./src/pages/Login'));
 const Signup = React.lazy(() => import('./src/pages/Signup'));
+const VerifyOtp = React.lazy(() => import('./src/pages/VerifyOtp'));
 const Success = React.lazy(() => import('./src/pages/Success'));
 const HowItWorks = React.lazy(() => import('./src/pages/HowItWorks'));
 const ForNonprofits = React.lazy(() => import('./src/pages/ForNonprofits'));
@@ -83,7 +84,7 @@ const App: React.FC = () => {
         {/* Hide default navbar on checkout or admin pages if needed, but for simplicity we show it or a variant */}
         <Navbar toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
         
-        <main className="flex-grow">
+        <main className="grow">
           <Suspense fallback={<PageFallback />}>
             <Routes>
               <Route path="/" element={<Home />} />
@@ -156,6 +157,7 @@ const App: React.FC = () => {
               />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/verify-otp" element={<VerifyOtp />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/success" element={<Success />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
@@ -189,7 +191,7 @@ const App: React.FC = () => {
               className="absolute inset-0 bg-black/40"
               onClick={toggleHelp}
             />
-            <div className="relative w-full sm:w-[420px] bg-white dark:bg-surface-dark rounded-t-2xl sm:rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 p-6 m-0 sm:m-4">
+            <div className="relative w-full sm:w-105 bg-white dark:bg-surface-dark rounded-t-2xl sm:rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 p-6 m-0 sm:m-4">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">Need help?</h3>
                 <button

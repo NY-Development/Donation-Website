@@ -8,14 +8,32 @@ export const authController = {
   signup: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await authService.signup(req.body);
-      res.cookie('accessToken', result.accessToken, { httpOnly: true, secure: env.COOKIE_SECURE });
       res.json({
         success: true,
-        message: 'Signup successful',
+        message: 'Signup successful. Verification code sent.',
         data: {
-          user: { id: result.user._id, name: result.user.name, email: result.user.email, role: result.user.role },
-          accessToken: result.accessToken,
-          refreshToken: result.refreshToken
+          user: {
+            id: result.user._id,
+            name: result.user.name,
+            email: result.user.email,
+            role: result.user.role,
+            emailVerified: result.user.emailVerified
+          },
+          requiresOtp: result.requiresOtp
+        }
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  verifyOtp: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const user = await authService.verifyOtp(req.body);
+      res.json({
+        success: true,
+        message: 'Email verified successfully',
+        data: {
+          user: { id: user._id, name: user.name, email: user.email, role: user.role, emailVerified: user.emailVerified }
         }
       });
     } catch (error) {
@@ -30,7 +48,13 @@ export const authController = {
         success: true,
         message: 'Login successful',
         data: {
-          user: { id: result.user._id, name: result.user.name, email: result.user.email, role: result.user.role },
+          user: {
+            id: result.user._id,
+            name: result.user.name,
+            email: result.user.email,
+            role: result.user.role,
+            emailVerified: result.user.emailVerified
+          },
           accessToken: result.accessToken,
           refreshToken: result.refreshToken
         }

@@ -12,6 +12,7 @@ export interface UserProfile {
   name: string;
   email: string;
   role: UserRole;
+  emailVerified?: boolean;
   totalDonated: number;
   isOrganizerVerified?: boolean;
   createdAt: string;
