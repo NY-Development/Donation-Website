@@ -30,6 +30,7 @@ export interface Campaign {
   title: string;
   category: string;
   story: string;
+  fundingStyle?: 'keep' | 'all_or_nothing';
   goalAmount: number;
   raisedAmount: number;
   status: 'draft' | 'pending_verification' | 'approved' | 'rejected';

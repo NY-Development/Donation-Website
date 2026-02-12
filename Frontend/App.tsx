@@ -1,31 +1,33 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useMemo, useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Navbar from './src/components/Navbar';
 import Footer from './src/components/Footer';
 import ProtectedRoute from './src/components/ProtectedRoute';
-import Home from './src/pages/Home';
-import Explore from './src/pages/Explore';
-import CampaignDetail from './src/pages/CampaignDetail';
-import Donate from './src/pages/Donate';
-import CreateCampaign from './src/pages/CreateCampaign';
-import OrganizerVerification from './src/pages/OrganizerVerification';
-import UserDashboard from './src/pages/UserDashboard';
-import AdminDashboard from './src/pages/AdminDashboard';
-import Login from './src/pages/Login';
-import Signup from './src/pages/Signup';
-import Success from './src/pages/Success';
-import HowItWorks from './src/pages/HowItWorks';
-import ForNonprofits from './src/pages/ForNonprofits';
-import HelpCenter from './src/pages/HelpCenter';
-import SafetyTrust from './src/pages/SafetyTrust';
-import AboutUs from './src/pages/AboutUs';
-import Eula from './src/pages/Eula';
-import Terms from './src/pages/Terms';
-import Privacy from './src/pages/Privacy';
 import { useAuthStore } from './src/store';
 import { HelpCircle, X } from 'lucide-react';
+
+const Home = React.lazy(() => import('./src/pages/Home'));
+const Explore = React.lazy(() => import('./src/pages/Explore'));
+const CampaignDetail = React.lazy(() => import('./src/pages/CampaignDetail'));
+const Donate = React.lazy(() => import('./src/pages/Donate'));
+const CreateCampaign = React.lazy(() => import('./src/pages/CreateCampaign'));
+const OrganizerVerification = React.lazy(() => import('./src/pages/OrganizerVerification'));
+const UserDashboard = React.lazy(() => import('./src/pages/UserDashboard'));
+const AdminDashboard = React.lazy(() => import('./src/pages/AdminDashboard'));
+const Login = React.lazy(() => import('./src/pages/Login'));
+const Signup = React.lazy(() => import('./src/pages/Signup'));
+const Success = React.lazy(() => import('./src/pages/Success'));
+const HowItWorks = React.lazy(() => import('./src/pages/HowItWorks'));
+const ForNonprofits = React.lazy(() => import('./src/pages/ForNonprofits'));
+const HelpCenter = React.lazy(() => import('./src/pages/HelpCenter'));
+const SafetyTrust = React.lazy(() => import('./src/pages/SafetyTrust'));
+const AboutUs = React.lazy(() => import('./src/pages/AboutUs'));
+const Eula = React.lazy(() => import('./src/pages/Eula'));
+const Terms = React.lazy(() => import('./src/pages/Terms'));
+const Privacy = React.lazy(() => import('./src/pages/Privacy'));
+const ForgotPassword = React.lazy(() => import('./src/pages/ForgotPassword'));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -43,6 +45,12 @@ const queryClient = new QueryClient({
     }
   }
 });
+
+const PageFallback = () => (
+  <div className="min-h-[50vh] flex items-center justify-center text-sm text-gray-500">
+    Loading...
+  </div>
+);
 
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -73,56 +81,58 @@ const App: React.FC = () => {
         <Navbar toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
         
         <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/explore" element={<Explore />} />
-            <Route path="/campaign/:id" element={<CampaignDetail />} />
-            <Route path="/donate/:id" element={<Donate />} />
-            <Route
-              path="/create"
-              element={
-                <ProtectedRoute roles={['organizer', 'admin']}>
-                  <CreateCampaign />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/organizer/verify"
-              element={
-                <ProtectedRoute roles={['organizer']}>
-                  <OrganizerVerification />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <UserDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute roles={['admin']}>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              }
-            />
-            {/* <Route path="/admin" element={<AdminDashboard />} /> */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/success" element={<Success />} />
-            <Route path="/how-it-works" element={<HowItWorks />} />
-            <Route path="/for-nonprofits" element={<ForNonprofits />} />
-            <Route path="/help-center" element={<HelpCenter />} />
-            <Route path="/safety-trust" element={<SafetyTrust />} />
-            <Route path="/about" element={<AboutUs />} />
-            <Route path="/eula" element={<Eula />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
-          </Routes>
+          <Suspense fallback={<PageFallback />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/explore" element={<Explore />} />
+              <Route path="/campaign/:id" element={<CampaignDetail />} />
+              <Route path="/donate/:id" element={<Donate />} />
+              <Route
+                path="/create"
+                element={
+                  <ProtectedRoute>
+                    <CreateCampaign />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/organizer/verify"
+                element={
+                  <ProtectedRoute>
+                    <OrganizerVerification />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <UserDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute roles={['admin']}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/success" element={<Success />} />
+              <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/for-nonprofits" element={<ForNonprofits />} />
+              <Route path="/help-center" element={<HelpCenter />} />
+              <Route path="/safety-trust" element={<SafetyTrust />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/eula" element={<Eula />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+            </Routes>
+          </Suspense>
         </main>
 
         <Footer />

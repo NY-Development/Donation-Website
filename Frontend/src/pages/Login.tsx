@@ -1,6 +1,7 @@
 
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { z } from 'zod';
 import { gsap } from 'gsap';
 import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { useAuthStore } from '../store';
@@ -19,11 +20,18 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await login({ email, password });
+    const schema = z.object({
+      email: z.string().email('Enter a valid email address.'),
+      password: z.string().min(8, 'Password must be at least 8 characters.')
+    });
+    const parsed = schema.safeParse({ email, password });
+    if (!parsed.success) {
+      return;
+    }
+
+    const success = await login(parsed.data);
     if (success) {
       navigate('/dashboard');
-    } else{
-      navigate('/login');
     }
   };
 
@@ -113,7 +121,7 @@ const Login: React.FC = () => {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Password</label>
-                  <a href="#" className="text-xs font-bold text-primary hover:underline">Forgot password?</a>
+                  <Link to="/forgot-password" className="text-xs font-bold text-primary hover:underline">Forgot password?</Link>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" aria-hidden="true" />

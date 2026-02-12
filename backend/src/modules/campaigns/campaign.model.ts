@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export type CampaignStatus = 'draft' | 'pending_verification' | 'approved' | 'rejected';
+export type FundingStyle = 'keep' | 'all_or_nothing';
 
 export interface CampaignDocument extends Document {
   title: string;
@@ -8,6 +9,7 @@ export interface CampaignDocument extends Document {
   story: string;
   location?: string;
   urgent?: boolean;
+  fundingStyle: FundingStyle;
   goalAmount: number;
   raisedAmount: number;
   status: CampaignStatus;
@@ -24,6 +26,7 @@ const campaignSchema = new Schema<CampaignDocument>(
     story: { type: String, required: true },
     location: { type: String, trim: true },
     urgent: { type: Boolean, default: false },
+    fundingStyle: { type: String, enum: ['keep', 'all_or_nothing'], default: 'keep' },
     goalAmount: { type: Number, required: true },
     raisedAmount: { type: Number, default: 0 },
     status: {

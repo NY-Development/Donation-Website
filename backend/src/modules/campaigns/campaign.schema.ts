@@ -6,7 +6,8 @@ export const createCampaignSchema = z.object({
   story: z.string().min(10),
   goalAmount: z.number().positive(),
   location: z.string().min(2).optional(),
-  urgent: z.boolean().optional()
+  urgent: z.boolean().optional(),
+  fundingStyle: z.enum(['keep', 'all_or_nothing']).optional()
 });
 
 export const updateCampaignSchema = z.object({
@@ -15,7 +16,8 @@ export const updateCampaignSchema = z.object({
   story: z.string().min(10).optional(),
   goalAmount: z.number().positive().optional(),
   location: z.string().min(2).optional(),
-  urgent: z.boolean().optional()
+  urgent: z.boolean().optional(),
+  fundingStyle: z.enum(['keep', 'all_or_nothing']).optional()
 });
 
 export const mediaSchema = z.object({

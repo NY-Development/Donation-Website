@@ -71,6 +71,7 @@ export const campaignService = {
     organizerId: string;
     location?: string;
     urgent?: boolean;
+    fundingStyle?: 'keep' | 'all_or_nothing';
   }) => {
     const campaign = await campaignRepository.create({
       title: payload.title,
@@ -79,6 +80,7 @@ export const campaignService = {
       goalAmount: payload.goalAmount,
       location: payload.location,
       urgent: payload.urgent,
+      fundingStyle: payload.fundingStyle ?? 'keep',
       organizer: new Types.ObjectId(payload.organizerId),
       status: 'draft'
     });

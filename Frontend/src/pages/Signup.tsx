@@ -1,6 +1,7 @@
 
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { z } from 'zod';
 import { gsap } from 'gsap';
 import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { useAuthStore } from '../store';
@@ -12,6 +13,7 @@ const Signup: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [wantsOrganizer, setWantsOrganizer] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const register = useAuthStore((state) => state.register);
   const isLoading = useAuthStore((state) => state.isLoading);
@@ -20,13 +22,24 @@ const Signup: React.FC = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmedName = fullName.trim();
-    if (trimmedName.length < 3) {
-      setFormError('Please enter your full name.');
+    const schema = z.object({
+      name: z.string().min(3, 'Please enter your full name.'),
+      email: z.string().email('Enter a valid email address.'),
+      password: z.string().min(8, 'Password must be at least 8 characters.')
+    });
+
+    const parsed = schema.safeParse({ name: fullName.trim(), email, password });
+    if (!parsed.success) {
+      setFormError(parsed.error.issues[0]?.message ?? 'Please check your details.');
       return;
     }
 
-    const success = await register({ name: trimmedName, email, password });
+    const success = await register({
+      name: parsed.data.name,
+      email: parsed.data.email,
+      password: parsed.data.password,
+      role: wantsOrganizer ? 'organizer' : undefined
+    });
     if (success) {
       navigate('/dashboard');
     }
@@ -128,10 +141,10 @@ const Signup: React.FC = () => {
                   <img
                     alt="User avatar"
                     className="w-full h-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFPhwJ9jwi4K2_uR-cwL7w2rpPm7GPBp_VYbxdKPNz4aPJtVE8adWlTaA2OWoCaBZ0kStkROVWyTl9wtHYABoqkQt7vGRLXAhOyO933EJwtRkXzQYRZGDgNYGM4EqVqnOiHe-2J3dVP1oEb2HFz_iOtHsw6iEK9D456g2am__n9bF4qOPA2a0PyuPXQWD_QKUay3_WlPnzM2vTPhAYSjoQ_cgExTmMTbwYmDpD71NdmwR81Q0Q71IMKm2qYwq9Q9le1JLlVI8Ti66j"
+                    src="/yitbarek.jpg"
                   />
                 </div>
-                <span className="text-sm font-semibold">Sarah J., Donor since 2021</span>
+                <span className="text-sm font-semibold">YItbarek Alemu</span>
               </div>
             </div>
           </div>
@@ -218,6 +231,17 @@ const Signup: React.FC = () => {
 
               <div className="flex flex-col gap-3 mt-2">
                 <label className="inline-flex items-start gap-3 cursor-pointer group">
+                  <input
+                    className="form-checkbox mt-1 h-4 w-4 rounded border-[#dbcfe7] dark:border-[#4a3b5a] dark:bg-[#2a1f36] text-primary focus:ring-primary/50 transition duration-150 ease-in-out"
+                    type="checkbox"
+                    checked={wantsOrganizer}
+                    onChange={(event) => setWantsOrganizer(event.target.checked)}
+                  />
+                  <span className="text-sm text-[#140d1b] dark:text-white/90 leading-normal select-none">
+                    I want to start campaigns and I am ready to verify my identity on mobile.
+                  </span>
+                </label>
+                <label className="inline-flex items-start gap-3 cursor-pointer group">
                   <input className="form-checkbox mt-1 h-4 w-4 rounded border-[#dbcfe7] dark:border-[#4a3b5a] dark:bg-[#2a1f36] text-primary focus:ring-primary/50 transition duration-150 ease-in-out" type="checkbox" />
                   <span className="text-sm text-[#140d1b] dark:text-white/90 leading-normal select-none">
                     Subscribe to inspiring impact stories and weekly updates.
@@ -226,7 +250,7 @@ const Signup: React.FC = () => {
                 <label className="inline-flex items-start gap-3 cursor-pointer group">
                   <input className="form-checkbox mt-1 h-4 w-4 rounded border-[#dbcfe7] dark:border-[#4a3b5a] dark:bg-[#2a1f36] text-primary focus:ring-primary/50 transition duration-150 ease-in-out" type="checkbox" required />
                   <span className="text-sm text-[#140d1b] dark:text-white/90 leading-normal select-none">
-                    I agree to the <a className="text-primary hover:underline font-medium" href="#">Terms of Service</a> and <a className="text-primary hover:underline font-medium" href="#">Privacy Policy</a>.
+                    I agree to the <Link className="text-primary hover:underline font-medium" to="/terms">Terms of Service</Link> and <Link className="text-primary hover:underline font-medium" to="/privacy">Privacy Policy</Link>.
                   </span>
                 </label>
               </div>

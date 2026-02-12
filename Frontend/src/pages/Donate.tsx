@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { ArrowRight, CreditCard, Leaf, ShieldCheck } from 'lucide-react';
-import { useDonationStore } from '../store';
+import { useDonationStore, useAuthStore } from '../store';
 import { useQuery } from '@tanstack/react-query';
 import campaignService from '../Services/campaigns';
 import { getApiData } from '../store/apiHelpers';
@@ -18,6 +18,7 @@ const Donate: React.FC = () => {
   const createCheckout = useDonationStore((state) => state.createCheckout);
   const isLoading = useDonationStore((state) => state.isLoading);
   const error = useDonationStore((state) => state.error);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const { data: campaign } = useQuery({
     queryKey: ['campaign', id],
@@ -92,6 +93,11 @@ const Donate: React.FC = () => {
               <ShieldCheck className="size-4" aria-hidden="true" />
               <p>Secure, encrypted transaction</p>
             </div>
+            {!isAuthenticated && (
+              <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-800">
+                You can donate without an account, but we can only track your impact if you log in.
+              </div>
+            )}
             {error && (
               <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
                 {error}

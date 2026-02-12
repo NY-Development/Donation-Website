@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
 import { requireAuth } from '../../middlewares/auth.middleware';
-import { requireRole } from '../../middlewares/role.middleware';
 import { organizerController } from './organizer.controller';
 
 const upload = multer({
@@ -11,12 +10,11 @@ const upload = multer({
 
 const router = Router();
 
-router.get('/status', requireAuth, requireRole(['organizer', 'admin']), organizerController.status);
+router.get('/status', requireAuth, organizerController.status);
 
 router.post(
   '/verify',
   requireAuth,
-  requireRole(['organizer']),
   upload.fields([
     { name: 'idFront', maxCount: 1 },
     { name: 'idBack', maxCount: 1 },

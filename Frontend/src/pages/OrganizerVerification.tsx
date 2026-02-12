@@ -120,6 +120,9 @@ const OrganizerVerification: React.FC = () => {
         <p className="text-gray-500 mt-3 max-w-2xl">
           To protect donors and beneficiaries, we require a national ID and a live photo before you can launch campaigns.
         </p>
+        <p className="text-sm text-gray-500 mt-2">
+          For the live photo, please use a mobile device with a front camera.
+        </p>
       </div>
 
       {status?.status === 'pending' && status.submittedAt && (

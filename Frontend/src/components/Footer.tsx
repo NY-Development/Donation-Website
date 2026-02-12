@@ -3,7 +3,7 @@ import React, { useLayoutEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
-import { Heart } from 'lucide-react';
+import { HeartHandshake } from 'lucide-react';
 
 const Footer: React.FC = () => {
   const footerRef = useRef<HTMLElement | null>(null);
@@ -35,7 +35,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
           <div className="col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <Heart className="size-7 text-primary" aria-hidden="true" />
+              <HeartHandshake className="size-7 text-primary" aria-hidden="true" />
               <span className="text-xl font-bold text-gray-900 dark:text-white">Impact</span>
             </div>
             <p className="text-gray-600 dark:text-gray-400 max-w-xs mb-6 text-sm leading-relaxed">
