@@ -16,4 +16,11 @@ export const campaignRepository = {
   incrementRaisedAmount: (id: string, amount: number) =>
     CampaignModel.findByIdAndUpdate(id, { $inc: { raisedAmount: amount } }, { new: true }),
   countByStatus: (status?: string) => CampaignModel.countDocuments(status ? { status } : {})
+  ,
+  findTopByRaised: (limit: number) =>
+    CampaignModel.find({ status: 'approved' })
+      .sort({ raisedAmount: -1 })
+      .limit(limit)
+      .select('title raisedAmount goalAmount category createdAt')
+      .lean()
 };

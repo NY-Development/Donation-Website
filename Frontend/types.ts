@@ -64,6 +64,21 @@ export interface GlobalStats {
   livesImpacted: number;
 }
 
+export interface DonationTrendPoint {
+  date: string;
+  total: number;
+  count: number;
+}
+
+export interface AdminTopCampaign {
+  id: string;
+  title: string;
+  raisedAmount: number;
+  goalAmount: number;
+  category?: string;
+  createdAt?: string;
+}
+
 export interface CampaignListResponse {
   data: Campaign[];
   nextCursor: string | null;

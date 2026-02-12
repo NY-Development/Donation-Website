@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import adminService from '../../Services/admin';
 import { getApiData } from '../../store/apiHelpers';
-import type { AdminOverview as AdminOverviewStats } from '../../../types';
+import type { AdminOverview as AdminOverviewStats, AdminTopCampaign, DonationTrendPoint } from '../../../types';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 
 const AdminOverview: React.FC = () => {
@@ -14,10 +14,31 @@ const AdminOverview: React.FC = () => {
     }
   });
 
+  const { data: trends } = useQuery({
+    queryKey: ['admin', 'trends'],
+    queryFn: async () => {
+      const response = await adminService.getTrends({ days: 7 });
+      return getApiData<DonationTrendPoint[]>(response) ?? [];
+    }
+  });
+
+  const { data: topCampaigns } = useQuery({
+    queryKey: ['admin', 'top-campaigns'],
+    queryFn: async () => {
+      const response = await adminService.getTopCampaigns({ limit: 3 });
+      return getApiData<AdminTopCampaign[]>(response) ?? [];
+    }
+  });
+
   const totalDonated = data?.totalDonated ?? 0;
   const donorsCount = data?.donorsCount ?? 0;
   const campaignsApproved = data?.campaignsApproved ?? 0;
   const usersCount = data?.usersCount ?? 0;
+  const trendSeries = trends ?? [];
+  const maxTrend = useMemo(
+    () => Math.max(1, ...trendSeries.map((point) => point.total)),
+    [trendSeries]
+  );
 
   return (
     <div className="min-h-screen">
@@ -115,15 +136,28 @@ const AdminOverview: React.FC = () => {
             </div>
             <div className="flex-1 relative min-h-65 flex flex-col justify-end">
               <div className="flex items-end justify-between gap-2 h-44">
-                {[40, 60, 45, 75, 90, 65, 80].map((value, index) => (
-                  <div key={index} className="w-full bg-slate-100 dark:bg-slate-800 rounded-t-sm h-[40%] relative group" style={{ height: `${value}%` }}>
-                    <div className={`absolute inset-0 ${value > 80 ? 'bg-primary opacity-60' : 'bg-primary opacity-20'} rounded-t-sm`} />
-                  </div>
-                ))}
+                {trendSeries.map((point) => {
+                  const height = Math.max(10, Math.round((point.total / maxTrend) * 100));
+                  return (
+                    <div
+                      key={point.date}
+                      className="w-full bg-slate-100 dark:bg-slate-800 rounded-t-sm relative group"
+                      style={{ height: `${height}%` }}
+                      title={`$${point.total.toLocaleString()}`}
+                    >
+                      <div
+                        className={`absolute inset-0 ${height > 70 ? 'bg-primary opacity-60' : 'bg-primary opacity-20'} rounded-t-sm`}
+                      />
+                    </div>
+                  );
+                })}
+                {trendSeries.length === 0 && (
+                  <div className="text-xs text-slate-400">No trend data</div>
+                )}
               </div>
               <div className="flex justify-between mt-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">
-                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((label) => (
-                  <span key={label}>{label}</span>
+                {trendSeries.map((point) => (
+                  <span key={point.date}>{new Date(point.date).toLocaleDateString(undefined, { weekday: 'short' })}</span>
                 ))}
               </div>
             </div>
@@ -132,24 +166,28 @@ const AdminOverview: React.FC = () => {
           <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
             <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-6">Top Campaigns</h3>
             <div className="space-y-6">
-              {[
-                { name: 'Education for All', progress: 75 },
-                { name: 'Clean Water Initiative', progress: 42 },
-                { name: 'Women in Tech Scholarships', progress: 58 }
-              ].map((campaign) => (
-                <div key={campaign.name} className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                    <span className="material-icons">campaign</span>
-                  </div>
-                  <div className="flex-1 overflow-hidden">
-                    <p className="text-sm font-bold truncate">{campaign.name}</p>
-                    <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mt-2">
-                      <div className="bg-primary h-full rounded-full" style={{ width: `${campaign.progress}%` }}></div>
+              {(topCampaigns ?? []).map((campaign) => {
+                const progress = campaign.goalAmount
+                  ? Math.min(100, Math.round((campaign.raisedAmount / campaign.goalAmount) * 100))
+                  : 0;
+                return (
+                  <div key={campaign.id} className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                      <span className="material-icons">campaign</span>
                     </div>
+                    <div className="flex-1 overflow-hidden">
+                      <p className="text-sm font-bold truncate">{campaign.title}</p>
+                      <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mt-2">
+                        <div className="bg-primary h-full rounded-full" style={{ width: `${progress}%` }}></div>
+                      </div>
+                    </div>
+                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{progress}%</span>
                   </div>
-                  <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{campaign.progress}%</span>
-                </div>
-              ))}
+                );
+              })}
+              {(topCampaigns ?? []).length === 0 && (
+                <p className="text-sm text-slate-500">No campaigns yet.</p>
+              )}
             </div>
           </div>
         </div>

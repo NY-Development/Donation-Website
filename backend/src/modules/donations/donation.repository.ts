@@ -29,5 +29,28 @@ export const donationRepository = {
   countDistinctDonors: async () =>
     DonationModel.distinct('user', { status: 'succeeded', user: { $ne: null } }).then((list) => list.length),
   countDistinctCampaignsByUser: async (userId: string) =>
-    DonationModel.distinct('campaign', { status: 'succeeded', user: userId }).then((list) => list.length)
+    DonationModel.distinct('campaign', { status: 'succeeded', user: userId }).then((list) => list.length),
+  aggregateDailyTotals: async (filter: Record<string, unknown>, days: number) => {
+    const start = new Date();
+    start.setDate(start.getDate() - (days - 1));
+    start.setHours(0, 0, 0, 0);
+
+    const results = await DonationModel.aggregate([
+      { $match: { status: 'succeeded', createdAt: { $gte: start }, ...filter } },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          total: { $sum: '$amount' },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
+
+    return results.map((item) => ({
+      date: item._id as string,
+      total: item.total as number,
+      count: item.count as number
+    }));
+  }
 };

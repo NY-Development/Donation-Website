@@ -1,10 +1,13 @@
 
-import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
-import { Activity, Award, CheckCircle, GraduationCap, Heart, Image, Leaf, Megaphone, RefreshCw, Repeat, Star, Wallet } from 'lucide-react';
+import { Activity, Award, CheckCircle, Heart, Megaphone, RefreshCw, Repeat, Star, Wallet } from 'lucide-react';
 import { useDonationStore, useAuthStore } from '../store';
+import userService from '../Services/users';
+import { getApiData } from '../store/apiHelpers';
+import type { DonationTrendPoint } from '../../types';
 
 const UserDashboard: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -14,6 +17,7 @@ const UserDashboard: React.FC = () => {
   const campaignsSupported = useDonationStore((state) => state.campaignsSupported);
   const timeline = useDonationStore((state) => state.timeline);
   const fetchDashboard = useDonationStore((state) => state.fetchDashboard);
+  const [trends, setTrends] = useState<DonationTrendPoint[]>([]);
 
   useLayoutEffect(() => {
     ensureGsap();
@@ -47,6 +51,47 @@ const UserDashboard: React.FC = () => {
     }
     fetchDashboard({ limit: 10 }, true);
   }, [fetchDashboard, navigate, user]);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const loadTrends = async () => {
+      try {
+        const response = await userService.getTrends({ days: 7 });
+        const data = getApiData<DonationTrendPoint[]>(response) ?? [];
+        if (isActive) {
+          setTrends(data);
+        }
+      } catch {
+        if (isActive) {
+          setTrends([]);
+        }
+      }
+    };
+
+    loadTrends();
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  const maxTrend = useMemo(() => Math.max(1, ...trends.map((point) => point.total)), [trends]);
+  const earnedBadges = useMemo(() => {
+    const badges = [] as Array<{ label: string; icon: React.ReactNode }>
+    if (timeline.length > 0) {
+      badges.push({ label: 'First Donation', icon: <Star className="size-4" aria-hidden="true" /> });
+    }
+    if (campaignsSupported >= 3) {
+      badges.push({ label: 'Impact Builder', icon: <Heart className="size-4" aria-hidden="true" /> });
+    }
+    if (totalDonated >= 250) {
+      badges.push({ label: 'Generous Giver', icon: <Award className="size-4" aria-hidden="true" /> });
+    }
+    if (timeline.length >= 5) {
+      badges.push({ label: 'Consistent Supporter', icon: <Repeat className="size-4" aria-hidden="true" /> });
+    }
+    return badges;
+  }, [campaignsSupported, timeline.length, totalDonated]);
 
   return (
     <div ref={containerRef} className="max-w-6xl mx-auto px-4 py-10">
@@ -95,7 +140,7 @@ const UserDashboard: React.FC = () => {
             <div className="space-y-12">
               {timeline.map((item) => (
                 <div key={item.id} className="relative pl-8 border-l-2 border-primary/20">
-                  <div className="absolute top-0 -left-[9px] size-4 rounded-full bg-green-500 ring-4 ring-green-500/10"></div>
+                  <div className="absolute top-0 -left-2.25 size-4 rounded-full bg-green-500 ring-4 ring-green-500/10"></div>
                   <div className="flex flex-col gap-4">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-bold text-gray-900 dark:text-white">You made a donation</span>
@@ -124,23 +169,28 @@ const UserDashboard: React.FC = () => {
           <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800" data-animate="card">
             <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
               <RefreshCw className="size-4 text-primary" aria-hidden="true" />
-              Active Subscriptions
+              Donation Trends (7 days)
             </h3>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
-                <div className="flex items-center gap-3">
-                  <div className="size-10 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600">
-                    <GraduationCap className="size-4" aria-hidden="true" />
+            <div className="flex items-end justify-between gap-2 h-32">
+              {trends.map((point) => {
+                const height = Math.max(10, Math.round((point.total / maxTrend) * 100));
+                return (
+                  <div key={point.date} className="flex-1 flex flex-col items-center gap-2">
+                    <div
+                      className="w-full rounded-lg bg-primary/20"
+                      style={{ height: `${height}%` }}
+                      title={`$${point.total.toFixed(2)}`}
+                    />
+                    <span className="text-[10px] text-gray-400 uppercase">
+                      {new Date(point.date).toLocaleDateString(undefined, { weekday: 'short' })}
+                    </span>
                   </div>
-                  <div>
-                    <p className="text-sm font-bold">Education Fund</p>
-                    <p className="text-xs text-gray-500">Monthly • Next: Oct 15</p>
-                  </div>
-                </div>
-                <span className="font-bold text-sm">$25</span>
-              </div>
+                );
+              })}
+              {trends.length === 0 && (
+                <div className="text-sm text-gray-500">No trend data yet.</div>
+              )}
             </div>
-            <button className="w-full mt-6 text-sm font-bold text-primary hover:underline">Manage Subscriptions</button>
           </div>
 
           <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800" data-animate="card">
@@ -148,23 +198,23 @@ const UserDashboard: React.FC = () => {
               <Award className="size-4 text-warning" aria-hidden="true" />
               Badges Earned
             </h3>
-            <div className="grid grid-cols-4 gap-3">
-              <div className="aspect-square rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600" title="First Donation">
-                <Star className="size-4" aria-hidden="true" />
+            {earnedBadges.length > 0 ? (
+              <div className="grid grid-cols-2 gap-3">
+                {earnedBadges.map((badge) => (
+                  <div
+                    key={badge.label}
+                    className="flex items-center gap-3 rounded-xl border border-gray-100 dark:border-gray-800 p-3 bg-gray-50 dark:bg-gray-900"
+                  >
+                    <div className="size-9 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                      {badge.icon}
+                    </div>
+                    <span className="text-xs font-bold text-gray-700 dark:text-gray-300">{badge.label}</span>
+                  </div>
+                ))}
               </div>
-              <div className="aspect-square rounded-full bg-purple-100 flex items-center justify-center text-purple-600" title="Monthly Supporter">
-                <Repeat className="size-4" aria-hidden="true" />
-              </div>
-              <div className="aspect-square rounded-full bg-pink-100 flex items-center justify-center text-pink-600" title="Life Changer">
-                <Heart className="size-4" aria-hidden="true" />
-              </div>
-              <div className="aspect-square rounded-full bg-blue-100 flex items-center justify-center text-blue-600" title="Eco Hero">
-                <Leaf className="size-4" aria-hidden="true" />
-              </div>
-            </div>
-            <button className="w-full mt-6 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-xs font-bold text-gray-500 hover:bg-gray-50 transition-colors">
-              + View All Badges
-            </button>
+            ) : (
+              <p className="text-sm text-gray-500">No badges yet. Make a donation to start earning.</p>
+            )}
           </div>
         </div>
       </div>

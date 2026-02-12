@@ -20,5 +20,14 @@ export const userController = {
     } catch (error) {
       next(error);
     }
+  },
+  getTrends: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const days = req.query.days ? Number(req.query.days) : 7;
+      const trends = await userService.getTrends(req.user?.id ?? '', days);
+      res.json({ success: true, message: 'Trends fetched', data: trends });
+    } catch (error) {
+      next(error);
+    }
   }
 };

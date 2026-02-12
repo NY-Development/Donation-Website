@@ -41,7 +41,17 @@ const settingsSchema = z.object({
     .optional()
 });
 
+const trendsQuerySchema = z.object({
+  days: z.coerce.number().min(3).max(30).optional()
+});
+
+const topCampaignsQuerySchema = z.object({
+  limit: z.coerce.number().min(1).max(10).optional()
+});
+
 router.get('/overview', requireAuth, requireRole(['admin']), adminLimiter, adminController.overview);
+router.get('/trends', requireAuth, requireRole(['admin']), adminLimiter, validate(trendsQuerySchema, 'query'), adminController.getTrends);
+router.get('/top-campaigns', requireAuth, requireRole(['admin']), adminLimiter, validate(topCampaignsQuerySchema, 'query'), adminController.getTopCampaigns);
 router.get('/users', requireAuth, requireRole(['admin']), adminLimiter, adminController.getUsers);
 router.patch('/campaigns/:id/verify', requireAuth, requireRole(['admin']), adminLimiter, validate(idSchema, 'params'), validate(verifySchema, 'body'), adminController.verifyCampaign);
 router.get('/organizer-verifications', requireAuth, requireRole(['admin']), adminLimiter, adminController.getOrganizerVerifications);

@@ -1,10 +1,13 @@
 import React, { useMemo, useState } from 'react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { BarChart3, FileText, LayoutDashboard, Settings, ShieldCheck, Users } from 'lucide-react';
+import { useAuthStore } from '../../store';
 
 const AdminLayout: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
+  const logout = useAuthStore((state) => state.logout);
 
   const navItems = useMemo(
     () => [
@@ -56,13 +59,25 @@ const AdminLayout: React.FC = () => {
             );
           })}
         </nav>
-        <button
-          type="button"
-          onClick={() => setIsOpen((prev) => !prev)}
-          className="m-4 px-3 py-2 text-xs font-semibold text-slate-500 hover:text-primary rounded-lg border border-slate-200 dark:border-slate-800"
-        >
-          {isOpen ? 'Collapse' : 'Expand'}
-        </button>
+        <div className="mt-auto">
+          <button
+            type="button"
+            onClick={() => setIsOpen((prev) => !prev)}
+            className="m-4 px-3 py-2 text-xs font-semibold text-slate-500 hover:text-primary rounded-lg border border-slate-200 dark:border-slate-800"
+          >
+            {isOpen ? 'Collapse' : 'Expand'}
+          </button>
+          <button
+            type="button"
+            onClick={async () => {
+              await logout();
+              navigate('/login');
+            }}
+            className="mx-4 mb-6 w-[calc(100%-2rem)] rounded-lg bg-red-600 text-white font-bold py-2.5 hover:bg-red-700 transition-colors"
+          >
+            Log Out
+          </button>
+        </div>
       </aside>
 
       <div className="flex-1 min-w-0">

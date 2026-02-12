@@ -11,6 +11,24 @@ export const adminController = {
       next(error);
     }
   },
+  getTrends: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const days = req.query.days ? Number(req.query.days) : 7;
+      const data = await adminService.getTrends(days);
+      res.json({ success: true, message: 'Trends fetched', data });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getTopCampaigns: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const limit = req.query.limit ? Number(req.query.limit) : 5;
+      const data = await adminService.getTopCampaigns(limit);
+      res.json({ success: true, message: 'Top campaigns fetched', data });
+    } catch (error) {
+      next(error);
+    }
+  },
   verifyCampaign: async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const data = await adminService.verifyCampaign(req.params.id, req.body.status);

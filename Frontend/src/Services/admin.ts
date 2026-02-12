@@ -2,6 +2,8 @@ import api from './axios';
 
 export const adminService = {
   getOverview: () => api.get('/admin/overview'),
+  getTrends: (params?: { days?: number }) => api.get('/admin/trends', { params }),
+  getTopCampaigns: (params?: { limit?: number }) => api.get('/admin/top-campaigns', { params }),
   getUsers: (params?: {
     search?: string;
     role?: string;

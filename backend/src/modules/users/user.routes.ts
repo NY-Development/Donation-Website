@@ -12,6 +12,11 @@ const dashboardQuerySchema = z.object({
 	cursor: z.string().optional()
 });
 
+const trendsQuerySchema = z.object({
+  days: z.coerce.number().min(3).max(30).optional()
+});
+
 router.get('/me/dashboard', requireAuth, validate(dashboardQuerySchema, 'query'), userController.getDashboard);
+router.get('/me/trends', requireAuth, validate(trendsQuerySchema, 'query'), userController.getTrends);
 
 export default router;
