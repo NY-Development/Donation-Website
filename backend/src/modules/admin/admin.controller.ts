@@ -27,6 +27,36 @@ export const adminController = {
       next(error);
     }
   },
+  getUsers: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const data = await adminService.getUsers({
+        search: req.query.search as string | undefined,
+        role: req.query.role as string | undefined,
+        verification: req.query.verification as 'pending' | 'approved' | 'rejected' | undefined,
+        page: req.query.page ? Number(req.query.page) : undefined,
+        limit: req.query.limit ? Number(req.query.limit) : undefined
+      });
+      res.json({ success: true, message: 'Users fetched', data });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getSettings: async (_req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const data = await adminService.getSettings();
+      res.json({ success: true, message: 'Settings fetched', data });
+    } catch (error) {
+      next(error);
+    }
+  },
+  updateSettings: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const data = await adminService.updateSettings(req.body ?? {});
+      res.json({ success: true, message: 'Settings updated', data });
+    } catch (error) {
+      next(error);
+    }
+  },
   approveOrganizer: async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const data = await adminService.approveOrganizer(req.params.userId, req.user?.id ?? '');

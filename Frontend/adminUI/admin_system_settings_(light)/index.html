@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin System Settings - Donation Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-100 min-h-screen">
+<!-- Header / Breadcrumbs -->
+<header class="sticky top-0 z-30 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="p-2 bg-primary/10 rounded-lg">
+<span class="material-icons-round text-primary">settings</span>
+</div>
+<div>
+<h1 class="text-lg font-bold">System Settings</h1>
+<div class="flex items-center gap-2 text-xs text-slate-500">
+<span>Admin Dashboard</span>
+<span class="material-icons-round text-[10px]">chevron_right</span>
+<span class="text-primary font-medium">Settings</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-primary/20 rounded-full transition-colors">
+<span class="material-icons-round text-slate-500">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border-2 border-primary/20">
+<img alt="Admin Profile" data-alt="Professional male administrator profile portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5gxV4v5VScT86eJRI4h7IcBkAI9mkWCGx7Pe8OnfGJ44f1xhDIv5fMwwwqtqbktColWv_aa5KzgUbQ0j0-Bs9lj0VHfDc8OPbhFgamwyff8g893gy9WGDrT2JHaQpzcv7l7N8pYfWj0ioMCy3bjrlEOPBD8eueuzAF_7fU0jJccKQVOMDV4ENcIbVc7KLAKMq7p2xLXlAZ03bfqAjDOXbBvINcG7QHqXRb8cR6GqEQAWmL7IN088CmxNqPA-b-_7ltTlWEyfWpGci"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-5xl mx-auto px-6 py-8 pb-32">
+<div class="flex flex-col gap-8">
+<!-- General Settings Section -->
+<section class="scroll-mt-24" id="general">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-icons-round text-primary/60">public</span>
+<h2 class="text-xl font-bold">General Configuration</h2>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-primary/5 p-6 flex flex-col gap-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Platform Name</label>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border-primary/10 rounded-lg focus:ring-primary focus:border-primary transition-all" type="text" value="HeartBound Giving"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Support Email Address</label>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border-primary/10 rounded-lg focus:ring-primary focus:border-primary transition-all" type="email" value="support@heartbound.org"/>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-primary/5 rounded-lg border border-primary/10">
+<div>
+<p class="font-semibold">Maintenance Mode</p>
+<p class="text-xs text-slate-500">Disable all public fundraising pages and show a "Site Under Maintenance" message.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- Payments Section -->
+<section class="scroll-mt-24" id="payments">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-icons-round text-primary/60">payments</span>
+<h2 class="text-xl font-bold">Payment Gateways &amp; Fees</h2>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-primary/5 p-6 flex flex-col gap-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-1.5">
+<div class="flex items-center gap-1">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Platform Fee</label>
+<span class="material-icons-round text-[14px] text-slate-400 cursor-help" title="Percentage taken from each donation to cover operating costs">info</span>
+</div>
+<div class="relative">
+<input class="w-full bg-slate-50 dark:bg-slate-800 border-primary/10 rounded-lg focus:ring-primary focus:border-primary transition-all pr-8" type="number" value="2.5"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium">%</span>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Settlement Currency</label>
+<select class="w-full bg-slate-50 dark:bg-slate-800 border-primary/10 rounded-lg focus:ring-primary focus:border-primary transition-all">
+<option>USD - US Dollar ($)</option>
+<option>EUR - Euro (€)</option>
+<option>GBP - British Pound (£)</option>
+</select>
+</div>
+</div>
+<hr class="border-primary/5"/>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-slate-50 rounded flex items-center justify-center border border-slate-100">
+<span class="material-icons-round text-[#635BFF]">credit_card</span>
+</div>
+<div>
+<p class="font-bold">Stripe Connect</p>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-green-500"></span>
+<span class="text-xs text-green-600 font-medium uppercase tracking-wider">Connected</span>
+</div>
+</div>
+</div>
+<button class="text-sm text-primary font-semibold hover:underline">Manage Account</button>
+</div>
+<div class="space-y-3 pl-13">
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-slate-500 uppercase tracking-tight">Secret API Key</label>
+<div class="relative">
+<input class="w-full font-mono text-sm bg-slate-50 dark:bg-slate-800 border-primary/10 rounded-lg focus:ring-primary focus:border-primary" type="password" value="sk_live_51Mxxxxxxxxxxxxxxxxxx"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary">
+<span class="material-icons-round text-lg">visibility</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Security Section -->
+<section class="scroll-mt-24" id="security">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-icons-round text-primary/60">security</span>
+<h2 class="text-xl font-bold">Security &amp; Compliance</h2>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-primary/5 p-6">
+<div class="space-y-6">
+<div class="flex items-start justify-between">
+<div>
+<p class="font-semibold">Enforce Two-Factor Authentication</p>
+<p class="text-sm text-slate-500">Require all administrator accounts to use 2FA for login.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-start justify-between">
+<div>
+<p class="font-semibold">Session Timeout Limit</p>
+<p class="text-sm text-slate-500">Automatically logout inactive admins after a period of time.</p>
+</div>
+<select class="bg-slate-50 dark:bg-slate-800 border-primary/10 rounded-lg text-sm font-medium">
+<option>15 Minutes</option>
+<option>30 Minutes</option>
+<option selected="">1 Hour</option>
+<option>4 Hours</option>
+</select>
+</div>
+<div class="flex items-start justify-between">
+<div>
+<p class="font-semibold">Audit Logging</p>
+<p class="text-sm text-slate-500">Keep detailed records of all administrative actions for 90 days.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+</section>
+<!-- Notifications Section -->
+<section class="scroll-mt-24" id="notifications">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-icons-round text-primary/60">notifications_active</span>
+<h2 class="text-xl font-bold">Automated Notifications</h2>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-primary/5 p-6 space-y-6">
+<div class="space-y-4">
+<label class="text-sm font-bold text-slate-400 uppercase tracking-widest">Email Alerts</label>
+<div class="grid grid-cols-1 gap-4">
+<div class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-icons-round">volunteer_activism</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">Large Donation Alerts</p>
+<p class="text-xs text-slate-500">Notify admins when a single donation exceeds $1,000.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors group cursor-pointer border border-transparent hover:border-primary/10">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-icons-round">campaign</span>
+</div>
+<div class="flex-1">
+<p class="font-medium">New Campaign Verification</p>
+<p class="text-xs text-slate-500">Alert staff when a new non-profit campaign is submitted for review.</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+<div class="space-y-4 pt-4">
+<label class="text-sm font-bold text-slate-400 uppercase tracking-widest">Third-Party Integrations</label>
+<div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-lg">
+<div class="flex items-center gap-3">
+<img alt="Slack Logo" class="w-6 h-6 object-contain" data-alt="Slack messaging app logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANCCh1GZJVJDoXyKfpEiyEO5DsLWk0H4HLYxdMbPrl_s1eu4XPn2EZ4bgNhqmKTVYJbB5W4gNbUuWQNl7D85lCfwKozukEWLB2JhCT1CESvQcGfpBE1VLH06aEJvrQhbcA5kqKikbvlINRZ3KWmHnyg_19fQax9B65yo6J98uhsU2BlmiEdT41S0Oiiz1TtHq7YBLNMbea8ILxITVtOQTfUCxFRlQUwCkE5uCOWD7iiDnhjM7pFFgElKQ7sDsva3LKE1Ubug2R2hF7"/>
+<p class="font-medium">Slack Webhook</p>
+</div>
+<button class="px-3 py-1.5 text-xs font-bold border border-primary/20 text-primary rounded-lg hover:bg-primary hover:text-white transition-all uppercase tracking-wide">Connect Slack</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Sticky Bottom Actions Bar -->
+<div class="fixed bottom-0 inset-x-0 bg-white/90 dark:bg-background-dark/90 backdrop-blur-lg border-t border-primary/10 py-4 px-6 z-40">
+<div class="max-w-5xl mx-auto flex items-center justify-between">
+<div class="hidden md:flex items-center gap-2 text-sm text-slate-500">
+<span class="material-icons-round text-amber-500 text-sm">info</span>
+<span>You have unsaved changes in 'Payments' and 'Security'</span>
+</div>
+<div class="flex items-center gap-4 w-full md:w-auto">
+<button class="flex-1 md:flex-none px-6 py-2.5 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-primary/20 rounded-lg transition-colors">
+                    Discard Changes
+                </button>
+<button class="flex-1 md:flex-none px-8 py-2.5 bg-primary text-white text-sm font-bold rounded-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                    Save Changes
+                </button>
+</div>
+</div>
+</div>
+</body></html>

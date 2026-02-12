@@ -17,6 +17,7 @@ const Login: React.FC = () => {
   const isLoading = useAuthStore((state) => state.isLoading);
   const authError = useAuthStore((state) => state.error);
   const clearError = useAuthStore((state) => state.clearError);
+  const user = useAuthStore((state) => state.user);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +32,7 @@ const Login: React.FC = () => {
 
     const success = await login(parsed.data);
     if (success) {
-      navigate('/dashboard');
+      navigate(user?.role === 'admin' ? '/admin' : '/dashboard');
     }
   };
 

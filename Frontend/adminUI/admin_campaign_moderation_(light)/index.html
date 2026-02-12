@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Campaign Moderation - TrustGive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#7f13ec",
+              "background-light": "#f7f6f8",
+              "background-dark": "#191022",
+              "neutral-subtle": "#f3f0f7",
+              "neutral-border": "#e2daeb",
+            },
+            fontFamily: {
+              "display": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      body { font-family: 'Inter', sans-serif; }
+      .sidebar-link.active {
+        background-color: #7f13ec;
+        color: white;
+      }
+      .sidebar-link:not(.active) {
+        color: #6b7280;
+      }
+      .sidebar-link:not(.active):hover {
+        background-color: #f3f0f7;
+        color: #7f13ec;
+      }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200">
+<div class="flex min-h-screen">
+<!-- Sidebar -->
+<aside class="w-64 bg-white dark:bg-zinc-900 border-r border-neutral-border dark:border-zinc-800 flex flex-col fixed h-full">
+<div class="p-6 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-icons text-white">volunteer_activism</span>
+</div>
+<span class="text-xl font-bold tracking-tight text-primary">TrustGive</span>
+</div>
+<nav class="flex-1 px-4 space-y-1 mt-4">
+<a class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" href="#">
+<span class="material-icons text-[20px]">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" href="#">
+<span class="material-icons text-[20px]">campaign</span>
+<span class="font-medium">Campaigns</span>
+</a>
+<a class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" href="#">
+<span class="material-icons text-[20px]">group</span>
+<span class="font-medium">Users</span>
+</a>
+<a class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" href="#">
+<span class="material-icons text-[20px]">payments</span>
+<span class="font-medium">Transactions</span>
+</a>
+<a class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" href="#">
+<span class="material-icons text-[20px]">report</span>
+<span class="font-medium">Reports</span>
+</a>
+</nav>
+<div class="p-4 border-t border-neutral-border dark:border-zinc-800">
+<div class="flex items-center gap-3 px-4 py-2">
+<img alt="Admin" class="w-10 h-10 rounded-full border-2 border-primary/20" data-alt="Admin user profile headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsSMyk-8eWqifGp428VFge_alF4x4T91-FrGmy1p_16UYc4MmgnrHYwex4_T7o4G6EFZqYmvwlEsPp4b08XWJQ7adl4cClBZ1-yG2xs8VRztIX0XicJJ-Yrrir7gJDbir0SEjrivKTC2b6_Bz5h473gvR9vPMYX1gc80MsykKex6WX-WdiN57gAradCqT05rAo96wuOhvEUeEK1pCZOR2n4nTfvKhoLI7Rt4VUARxGHk9XRHYK-M1wzi-Fp8nYFVLc9-ZJVsgBsVgO"/>
+<div>
+<p class="text-sm font-semibold">Alex Rivera</p>
+<p class="text-xs text-slate-500">Super Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 flex-1 p-8">
+<!-- Header -->
+<header class="flex justify-between items-end mb-8">
+<div>
+<nav class="flex text-sm text-slate-500 mb-2 gap-2">
+<span>Admin</span>
+<span>/</span>
+<span class="text-primary font-medium">Campaign Moderation</span>
+</nav>
+<h1 class="text-3xl font-bold text-slate-900 dark:text-white">Moderation Queue</h1>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-zinc-800 border border-neutral-border dark:border-zinc-700 rounded-lg text-sm font-medium hover:bg-neutral-subtle transition-colors">
+<span class="material-icons text-[18px]">file_download</span>
+                        Export CSV
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
+<span class="material-icons text-[18px]">refresh</span>
+                        Sync Data
+                    </button>
+</div>
+</header>
+<!-- Stats Overview -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+<div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-neutral-border dark:border-zinc-800 shadow-sm">
+<p class="text-sm text-slate-500 font-medium mb-1">Pending Verification</p>
+<div class="flex items-end justify-between">
+<h3 class="text-2xl font-bold">24</h3>
+<span class="text-amber-600 bg-amber-50 px-2 py-0.5 rounded text-xs font-bold">+5 new</span>
+</div>
+</div>
+<div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-neutral-border dark:border-zinc-800 shadow-sm">
+<p class="text-sm text-slate-500 font-medium mb-1">Reported Today</p>
+<div class="flex items-end justify-between">
+<h3 class="text-2xl font-bold">7</h3>
+<span class="text-rose-600 bg-rose-50 px-2 py-0.5 rounded text-xs font-bold">High priority</span>
+</div>
+</div>
+<div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-neutral-border dark:border-zinc-800 shadow-sm">
+<p class="text-sm text-slate-500 font-medium mb-1">Approved (24h)</p>
+<div class="flex items-end justify-between">
+<h3 class="text-2xl font-bold">142</h3>
+<span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-xs font-bold">94% rate</span>
+</div>
+</div>
+<div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-neutral-border dark:border-zinc-800 shadow-sm">
+<p class="text-sm text-slate-500 font-medium mb-1">Avg. Review Time</p>
+<div class="flex items-end justify-between">
+<h3 class="text-2xl font-bold">12m</h3>
+<span class="text-primary bg-primary/10 px-2 py-0.5 rounded text-xs font-bold">-2m today</span>
+</div>
+</div>
+</div>
+<!-- Table Controls -->
+<div class="bg-white dark:bg-zinc-900 rounded-xl border border-neutral-border dark:border-zinc-800 shadow-sm overflow-hidden">
+<div class="p-4 border-b border-neutral-border dark:border-zinc-800 flex flex-wrap gap-4 items-center justify-between">
+<div class="flex items-center gap-4 flex-1 max-w-2xl">
+<div class="relative flex-1">
+<span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-background-light dark:bg-zinc-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary" placeholder="Search campaigns or organizers..." type="text"/>
+</div>
+<select class="bg-background-light dark:bg-zinc-800 border-none rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary">
+<option>All Status</option>
+<option>Pending</option>
+<option>Reported</option>
+<option>Draft</option>
+</select>
+<select class="bg-background-light dark:bg-zinc-800 border-none rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary">
+<option>Urgency: High</option>
+<option>Date: Newest</option>
+<option>Target: High to Low</option>
+</select>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Viewing 1-10 of 24</span>
+</div>
+</div>
+<!-- Campaigns Table -->
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-neutral-subtle/50 dark:bg-zinc-800/50">
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Campaign Details</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Organizer</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Target</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Submitted</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-neutral-border dark:divide-zinc-800">
+<!-- Row 1 -->
+<tr class="hover:bg-neutral-subtle/30 dark:hover:bg-zinc-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-slate-200 overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="Community center building with volunteers" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDWk0sboF0Fd9o6ti_Ho6z0nbvT-cM48UO-X2x2cu4Rt9u8qrA2iexTiwY6HH8i5BZYZYQVJo83VGdNOs0LEgoXYw-YMzfx7s71pw04h6l03aPAz07HeM8jme0Hf2KOQ-Hfvj05IydtVdtrkzWImtoFG8axEwkl-ODHwN43d8ENemcvnz1J55dTEUKDjjwYM2AlPcuL9r-fLheg99VKL0Cyr6KbZa4F_wKHWrCBgI5qubecEQeh3Od-hvWITQ5NF_kCsWw21f1UIba"/>
+</div>
+<div>
+<p class="font-semibold text-slate-900 dark:text-white truncate max-w-[200px]">Clean Water for Northern Village</p>
+<p class="text-xs text-slate-500 italic">Community Project</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-medium">Sarah Jenkins</span>
+<span class="material-icons text-[14px] text-blue-500">verified</span>
+</div>
+</td>
+<td class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                                $25,000
+                            </td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                    Pending Review
+                                </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-500">
+                                2h ago
+                            </td>
+<td class="px-6 py-4 text-right">
+<button class="bg-primary text-white px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-primary/90">Review</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-neutral-subtle/30 dark:hover:bg-zinc-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-slate-200 overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="Stethoscope on a medical report" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIKrJ5gYn7EGTL0dNXICkWiCcKheln-pywA5eI2eSuEY_EWRP6wL7hcdQ5KUb7vXfAOgOZT6ooaag834QobHGo72JLDqpCvktBp5OcClpj_7lz6qVeNxJkQzYmXQlaAVwVkq6GclOKt5qiqCwu1yNsqSclsB8yUAC3PrBOIP-Mt-vyl4eW9LhPDLflKnOwzcrOpzsUpAZMZcUemeGxaaLK2hLAfvIZ_rXcSefT6aZCV1BWUN7XbZqbaw9vxB3HvJpzk7nHCNt175FR"/>
+</div>
+<div>
+<p class="font-semibold text-slate-900 dark:text-white truncate max-w-[200px]">Medical Emergency Fund - Leo Smith</p>
+<p class="text-xs text-slate-500 italic">Medical Relief</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-medium">Robert Smith</span>
+<span class="text-xs bg-slate-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-slate-500 font-bold">NEW</span>
+</div>
+</td>
+<td class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                                $12,500
+                            </td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800">
+                                    Reported
+                                </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-500">
+                                5h ago
+                            </td>
+<td class="px-6 py-4 text-right">
+<button class="bg-primary text-white px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-primary/90">Review</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-neutral-subtle/30 dark:hover:bg-zinc-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-slate-200 overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="Children playing in a school garden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhvH9k-oJUUkE7cMYAKCcccWYoW0JkNX885m_tNml3vip-a7CZEjoowRaXq8OvghVDDnPBtDW7ZrPGbLCUueDOpSMPWMYo6_6lFgnonCpZv7HmZLMwpG8GuMIRN8bv3yCqMqB4Gq-_RMpOwERWqYzTmsdD0lO_ZxVG0WFIv4eYVb9mL8r8VWQ88iPx7CtrCaZhXPh3z473781-7zfjQaGII2b6D4e6LF_Du6TgUqWL5chKVKCK74mItv4j26HXpX0-dzLDWQc4fv2P"/>
+</div>
+<div>
+<p class="font-semibold text-slate-900 dark:text-white truncate max-w-[200px]">Public School Tech Lab 2024</p>
+<p class="text-xs text-slate-500 italic">Education</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-medium">Education Foundation</span>
+<span class="material-icons text-[14px] text-blue-500">verified</span>
+</div>
+</td>
+<td class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                                $50,000
+                            </td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                                    Draft
+                                </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-500">
+                                1d ago
+                            </td>
+<td class="px-6 py-4 text-right">
+<button class="bg-primary text-white px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-primary/90">Review</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-neutral-subtle/30 dark:hover:bg-zinc-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-slate-200 overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="Forest landscape preservation" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOq447AZiyDyDFvppqaT7xkNRWIIRtpbW-xPfiDACgFcs3u1huL-hlwbo6AzWVUS8v00k8wqAjnoZ5EyravT7wPuM1KgZ4sJpvTezE6p42ws67sIlgXpQlH_arSFu3LyTgf3Q60HkANGthhayMC8gPqtmNTpdlKobtF32Mf6w5oylFM7Th363x15pyq5U1shFn4wELpI0bCVmBq4kAEgEEMfbNUkFy4tOOZQ1gwUR5liGyTz1dL2-qD9tRRGGvGOORg_ufIUU7dExV"/>
+</div>
+<div>
+<p class="font-semibold text-slate-900 dark:text-white truncate max-w-[200px]">Save the Redwood Preserve</p>
+<p class="text-xs text-slate-500 italic">Environment</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-medium">Marcus Green</span>
+<span class="material-icons text-[14px] text-blue-500">verified</span>
+</div>
+</td>
+<td class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                                $120,000
+                            </td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                    Pending Review
+                                </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-500">
+                                1d ago
+                            </td>
+<td class="px-6 py-4 text-right">
+<button class="bg-primary text-white px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-primary/90">Review</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-neutral-subtle/30 dark:hover:bg-zinc-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-slate-200 overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="Instruments in a local jazz bar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvCv1dHgfgVadJpSDdTEz0s0MdMqiuoh-ZHq_203-TMM08Sw9GFJUh4_VNUytHbWIz5IOyKLextSeNuTyfGIo0KUsIrE8TAvr7pVIMIErRXKDJep1-mLL3vLIzsuo571Gyz6z89_SlQ0b_rksJTGpa080k8x0oKJltU0VJzAbMbGfCHlRbapd93Hk2tPDKcVBjq9F5qfpnb1QzykGf5diOfIYfkAB7eHBWIg6YdpYBcNR4kLvY_20pn_LJnoCPgANFCWuBNQ-5olJW"/>
+</div>
+<div>
+<p class="font-semibold text-slate-900 dark:text-white truncate max-w-[200px]">The Jazz Haven Restoration</p>
+<p class="text-xs text-slate-500 italic">Arts &amp; Culture</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="font-medium">Miles David</span>
+<span class="text-xs bg-slate-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-slate-500 font-bold">NEW</span>
+</div>
+</td>
+<td class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                                $8,000
+                            </td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800">
+                                    Reported
+                                </span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-500">
+                                2d ago
+                            </td>
+<td class="px-6 py-4 text-right">
+<button class="bg-primary text-white px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-primary/90">Review</button>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination -->
+<div class="p-4 bg-white dark:bg-zinc-900 border-t border-neutral-border dark:border-zinc-800 flex items-center justify-between">
+<button class="flex items-center gap-1 text-sm font-medium text-slate-400 cursor-not-allowed">
+<span class="material-icons text-[18px]">chevron_left</span>
+                        Previous
+                    </button>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-white text-sm font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-neutral-subtle text-sm font-medium">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-neutral-subtle text-sm font-medium">3</button>
+<span class="w-8 h-8 flex items-center justify-center text-sm">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-neutral-subtle text-sm font-medium">12</button>
+</div>
+<button class="flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80">
+                        Next
+                        <span class="material-icons text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

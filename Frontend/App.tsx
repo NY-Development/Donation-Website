@@ -18,7 +18,12 @@ const VerificationUpload = React.lazy(() => import('./src/pages/VerificationUplo
 const VerificationSelfie = React.lazy(() => import('./src/pages/VerificationSelfie'));
 const VerificationPending = React.lazy(() => import('./src/pages/VerificationPending'));
 const UserDashboard = React.lazy(() => import('./src/pages/UserDashboard'));
-const AdminDashboard = React.lazy(() => import('./src/pages/AdminDashboard'));
+const AdminLayout = React.lazy(() => import('./src/pages/admin/AdminLayout'));
+const AdminOverview = React.lazy(() => import('./src/pages/admin/AdminOverview'));
+const AdminCampaignModeration = React.lazy(() => import('./src/pages/admin/AdminCampaignModeration'));
+const AdminUserManagement = React.lazy(() => import('./src/pages/admin/AdminUserManagement'));
+const AdminReports = React.lazy(() => import('./src/pages/admin/AdminReports'));
+const AdminSettings = React.lazy(() => import('./src/pages/admin/AdminSettings'));
 const Login = React.lazy(() => import('./src/pages/Login'));
 const Signup = React.lazy(() => import('./src/pages/Signup'));
 const VerifyOtp = React.lazy(() => import('./src/pages/VerifyOtp'));
@@ -151,10 +156,16 @@ const App: React.FC = () => {
                 path="/admin"
                 element={
                   <ProtectedRoute roles={['admin']}>
-                    <AdminDashboard />
+                    <AdminLayout />
                   </ProtectedRoute>
                 }
-              />
+              >
+                <Route index element={<AdminOverview />} />
+                <Route path="campaigns" element={<AdminCampaignModeration />} />
+                <Route path="users" element={<AdminUserManagement />} />
+                <Route path="reports" element={<AdminReports />} />
+                <Route path="settings" element={<AdminSettings />} />
+              </Route>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/verify-otp" element={<VerifyOtp />} />

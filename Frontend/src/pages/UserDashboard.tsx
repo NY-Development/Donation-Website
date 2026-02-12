@@ -1,12 +1,15 @@
 
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { Activity, Award, CheckCircle, GraduationCap, Heart, Image, Leaf, Megaphone, RefreshCw, Repeat, Star, Wallet } from 'lucide-react';
-import { useDonationStore } from '../store';
+import { useDonationStore, useAuthStore } from '../store';
 
 const UserDashboard: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
+  const user = useAuthStore((state) => state.user);
   const totalDonated = useDonationStore((state) => state.totalDonated);
   const campaignsSupported = useDonationStore((state) => state.campaignsSupported);
   const timeline = useDonationStore((state) => state.timeline);
@@ -38,8 +41,12 @@ const UserDashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (user?.role === 'admin') {
+      navigate('/admin', { replace: true });
+      return;
+    }
     fetchDashboard({ limit: 10 }, true);
-  }, [fetchDashboard]);
+  }, [fetchDashboard, navigate, user]);
 
   return (
     <div ref={containerRef} className="max-w-6xl mx-auto px-4 py-10">

@@ -24,10 +24,30 @@ const rejectionSchema = z.object({
   reason: z.string().min(3).optional()
 });
 
+const settingsSchema = z.object({
+  platformName: z.string().min(2).optional(),
+  supportEmail: z.string().email().optional(),
+  maintenanceMode: z.boolean().optional(),
+  platformFeePercent: z.number().min(0).max(100).optional(),
+  settlementCurrency: z.string().min(2).optional(),
+  enforce2fa: z.boolean().optional(),
+  sessionTimeoutMinutes: z.number().min(5).max(720).optional(),
+  auditLogging: z.boolean().optional(),
+  notifications: z
+    .object({
+      largeDonation: z.boolean().optional(),
+      newCampaignVerification: z.boolean().optional()
+    })
+    .optional()
+});
+
 router.get('/overview', requireAuth, requireRole(['admin']), adminLimiter, adminController.overview);
+router.get('/users', requireAuth, requireRole(['admin']), adminLimiter, adminController.getUsers);
 router.patch('/campaigns/:id/verify', requireAuth, requireRole(['admin']), adminLimiter, validate(idSchema, 'params'), validate(verifySchema, 'body'), adminController.verifyCampaign);
 router.get('/organizer-verifications', requireAuth, requireRole(['admin']), adminLimiter, adminController.getOrganizerVerifications);
 router.post('/organizer-verifications/:userId/approve', requireAuth, requireRole(['admin']), adminLimiter, validate(userIdSchema, 'params'), adminController.approveOrganizer);
 router.post('/organizer-verifications/:userId/reject', requireAuth, requireRole(['admin']), adminLimiter, validate(userIdSchema, 'params'), validate(rejectionSchema, 'body'), adminController.rejectOrganizer);
+router.get('/settings', requireAuth, requireRole(['admin']), adminLimiter, adminController.getSettings);
+router.put('/settings', requireAuth, requireRole(['admin']), adminLimiter, validate(settingsSchema, 'body'), adminController.updateSettings);
 
 export default router;

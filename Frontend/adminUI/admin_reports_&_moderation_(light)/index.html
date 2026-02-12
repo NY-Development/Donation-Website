@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Reports &amp; Moderation | TrustGive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen">
+<!-- Navigation Sidebar (Mockup) -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 z-50 hidden lg:flex flex-col">
+<div class="p-6">
+<div class="flex items-center gap-2 text-primary font-bold text-2xl">
+<span class="material-icons">security</span>
+<span>TrustGive</span>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<a class="flex items-center gap-3 p-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-primary/5 hover:text-primary transition-colors" href="#">
+<span class="material-icons">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-lg bg-primary/10 text-primary transition-colors" href="#">
+<span class="material-icons">gavel</span>
+<span class="font-medium">Moderation</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-primary/5 hover:text-primary transition-colors" href="#">
+<span class="material-icons">campaign</span>
+<span class="font-medium">Campaigns</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-primary/5 hover:text-primary transition-colors" href="#">
+<span class="material-icons">people</span>
+<span class="font-medium">Users</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-primary/5 hover:text-primary transition-colors" href="#">
+<span class="material-icons">analytics</span>
+<span class="font-medium">Reports</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3 p-2">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Admin user profile picture avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC92NgUzXi80W8jfbuTXWeL76ou3eRrHNqdlRq4SynQfKY6X2bLJRizZnGFMozXMPlvDhkOwF6IAm8fCjpRyaW4wh0QHx7rJdBv3MqP4U2h2dILOGoc_B68-8C59Jc4tmKITZGyIRaILPLs1KYS5x53o-TEhDRz6AQPxbmPINbYUKj_kIHBuQ9BTKRlnFqzpn-FqZeUrW1p5fISiMPVYlH21KRHOArgeb5gcY3Qkda35uwXApcpmgpHwNOFnwZXR90JzAMsT2fn5bRn"/>
+<div>
+<p class="text-sm font-semibold">Alex River</p>
+<p class="text-xs text-slate-500">Super Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="lg:ml-64 p-4 lg:p-8">
+<!-- Header -->
+<header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h1 class="text-3xl font-bold tracking-tight">Reports &amp; Appeals</h1>
+<p class="text-slate-500 dark:text-slate-400 mt-1">Review and manage community flags and dispute claims.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-50 transition-colors">
+<span class="material-icons text-sm">filter_list</span>
+<span>Filters</span>
+</button>
+<button class="bg-primary text-white px-5 py-2 rounded-lg font-semibold hover:bg-primary/90 transition-colors">
+                    Download Log
+                </button>
+</div>
+</header>
+<!-- Stats Overview -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="text-slate-500 font-medium">Pending Reports</span>
+<span class="bg-primary/10 text-primary p-2 rounded-lg material-icons">pending_actions</span>
+</div>
+<div class="text-2xl font-bold">142</div>
+<div class="text-xs text-green-500 mt-2 font-medium">↑ 12% from yesterday</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm border-l-4 border-l-red-500">
+<div class="flex items-center justify-between mb-2">
+<span class="text-slate-500 font-medium">High Urgency</span>
+<span class="bg-red-100 text-red-600 p-2 rounded-lg material-icons">priority_high</span>
+</div>
+<div class="text-2xl font-bold">28</div>
+<div class="text-xs text-red-500 mt-2 font-medium">Action required immediately</div>
+</div>
+<div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="text-slate-500 font-medium">Resolved Today</span>
+<span class="bg-green-100 text-green-600 p-2 rounded-lg material-icons">check_circle</span>
+</div>
+<div class="text-2xl font-bold">56</div>
+<div class="text-xs text-slate-400 mt-2 font-medium">Average 14m response time</div>
+</div>
+</div>
+<!-- Toolbar -->
+<div class="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
+<div class="relative w-full md:w-96">
+<span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="Search by Report ID, Campaign, or Reporter..." type="text"/>
+</div>
+<div class="flex items-center gap-4 w-full md:w-auto">
+<select class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+<option>Sort by: Newest First</option>
+<option>Sort by: Urgency</option>
+<option>Sort by: Report Type</option>
+</select>
+<button class="bg-slate-200 dark:bg-slate-800 p-2 rounded-lg text-slate-600 dark:text-slate-300">
+<span class="material-icons">view_module</span>
+</button>
+</div>
+</div>
+<!-- Reports List -->
+<div class="space-y-4">
+<!-- Report Card 1: High Urgency -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-red-500"></div>
+<div class="flex flex-col lg:flex-row lg:items-center gap-6">
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-2">
+<span class="bg-red-100 text-red-600 text-[10px] uppercase font-bold px-2 py-1 rounded tracking-wider">High Urgency</span>
+<span class="text-xs text-slate-400 font-mono">ID: #REP-94821</span>
+<span class="text-xs text-slate-400">• 2 hours ago</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Potential Fraud: "Emergency Medical Relief for Village X"</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-2">Reported for using stock imagery of hospitals from 2018 and redirected payment links to an unverified third-party gateway.</p>
+<div class="mt-4 flex flex-wrap gap-4 items-center">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full object-cover" data-alt="Reporter profile image avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_WEJrfW5KxeyTc1bMi9FZV-ClaGU-BWIoG1wtNoZhyv0HdkpLAJ0duihmqShGo7PyAGAMI_s0_aghrGhPDItwgcLTYgtAGH0NbFrxi-KsYEIsEAOJMkrSZU7vE4m0Id0wy1BVJj4oYN5zVQjw6CpJzHWQE0O6FoBPEoejpLJubNTRbd_9GvERFytM3IExlzdqbLMjPCL3qInGg1HlJTgkvu7gNvV0ou41i5DCx3hV97F1myi5Q8kklu41bU0uH1fOFodd-Ft3RVmn"/>
+<span class="text-xs font-medium">Reporter: <span class="text-slate-500">Sarah Jenkins</span></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-icons text-xs text-slate-400">report_problem</span>
+<span class="text-xs font-medium">Category: <span class="text-slate-500">Financial Fraud</span></span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3 lg:border-l lg:pl-6 border-slate-200 dark:border-slate-700">
+<button class="px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">Dismiss</button>
+<button class="px-4 py-2 text-sm font-semibold border border-primary text-primary hover:bg-primary/5 rounded-lg transition-colors">Investigate</button>
+<button class="px-4 py-2 text-sm font-semibold bg-red-600 text-white hover:bg-red-700 rounded-lg transition-colors">Take Action</button>
+</div>
+</div>
+</div>
+<!-- Report Card 2: Medium Urgency -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow group relative">
+<div class="flex flex-col lg:flex-row lg:items-center gap-6">
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-2">
+<span class="bg-amber-100 text-amber-600 text-[10px] uppercase font-bold px-2 py-1 rounded tracking-wider">Medium Urgency</span>
+<span class="text-xs text-slate-400 font-mono">ID: #REP-94819</span>
+<span class="text-xs text-slate-400">• 5 hours ago</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">User Appeal: Account "TechForGood"</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-2">User is appealing a temporary shadow-ban. Claims identity verification documents were submitted but never reviewed by staff.</p>
+<div class="mt-4 flex flex-wrap gap-4 items-center">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full object-cover" data-alt="User profile image avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoNOQNsKoc0hQgJpRXG9LTtd0MIfKvrvJwTzKJMMnarXTnsFho0-mVggXDZyKao_Esqdt4a2twFqOKgmcg0VS4GKAbr5xqdLQgh4z5QlaBsqIGJlFlC9vK03y4ZjWV1EoFkPVo8i1TusT10ccV0xcpaBYOHtB4EQTVvdLxt5_XnGpRjPh3sA7i_DKbri9QbuOdH3CMpl17I3nJyXnQpJENkpCSeMjnGka4GEs8ugUOF9wZ_99HcC3wgmiN-1PqxuiE9Gzk-AzcyN_t"/>
+<span class="text-xs font-medium">Subject: <span class="text-slate-500">David M. (TechForGood)</span></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-icons text-xs text-slate-400">history</span>
+<span class="text-xs font-medium">Category: <span class="text-slate-500">Verification Appeal</span></span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3 lg:border-l lg:pl-6 border-slate-200 dark:border-slate-700">
+<button class="px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">Dismiss</button>
+<button class="px-4 py-2 text-sm font-semibold bg-primary text-white hover:bg-primary/90 rounded-lg transition-colors shadow-sm shadow-primary/20">Investigate</button>
+</div>
+</div>
+</div>
+<!-- Report Card 3: Low Urgency -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow group relative">
+<div class="flex flex-col lg:flex-row lg:items-center gap-6">
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-2">
+<span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] uppercase font-bold px-2 py-1 rounded tracking-wider">Low Urgency</span>
+<span class="text-xs text-slate-400 font-mono">ID: #REP-94812</span>
+<span class="text-xs text-slate-400">• 1 day ago</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Incorrect Category: "Paws for Cause"</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-2">The campaign is listed under 'Environment' but is clearly an 'Animal Welfare' fundraiser. Community suggests moving it.</p>
+<div class="mt-4 flex flex-wrap gap-4 items-center">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+<span class="material-icons text-xs">pets</span>
+</div>
+<span class="text-xs font-medium">Campaign: <span class="text-slate-500">Paws for Cause</span></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-icons text-xs text-slate-400">label</span>
+<span class="text-xs font-medium">Category: <span class="text-slate-500">Tagging Error</span></span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3 lg:border-l lg:pl-6 border-slate-200 dark:border-slate-700">
+<button class="px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">Dismiss</button>
+<button class="px-4 py-2 text-sm font-semibold bg-primary text-white hover:bg-primary/90 rounded-lg transition-colors">Quick Reassign</button>
+</div>
+</div>
+</div>
+<!-- Report Card 4: High Urgency -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-red-500"></div>
+<div class="flex flex-col lg:flex-row lg:items-center gap-6">
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-2">
+<span class="bg-red-100 text-red-600 text-[10px] uppercase font-bold px-2 py-1 rounded tracking-wider">High Urgency</span>
+<span class="text-xs text-slate-400 font-mono">ID: #REP-94805</span>
+<span class="text-xs text-slate-400">• 3 hours ago</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Hate Speech in Comments</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-2">User @anonymous99 is repeatedly posting discriminatory comments on several LGBTQ+ support campaigns. Multiple reports from 5 different users.</p>
+<div class="mt-4 flex flex-wrap gap-4 items-center">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center">
+<span class="material-icons text-xs">person</span>
+</div>
+<span class="text-xs font-medium">Reported User: <span class="text-slate-500">@anonymous99</span></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-icons text-xs text-slate-400">group</span>
+<span class="text-xs font-medium">Reporters: <span class="text-slate-500">5 Users</span></span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3 lg:border-l lg:pl-6 border-slate-200 dark:border-slate-700">
+<button class="px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">Dismiss</button>
+<button class="px-4 py-2 text-sm font-semibold border border-primary text-primary hover:bg-primary/5 rounded-lg transition-colors">Investigate</button>
+<button class="px-4 py-2 text-sm font-semibold bg-red-600 text-white hover:bg-red-700 rounded-lg transition-colors">Ban User</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="mt-8 flex items-center justify-between border-t border-slate-200 dark:border-slate-800 pt-6">
+<p class="text-sm text-slate-500">Showing <span class="font-bold">4</span> of <span class="font-bold">142</span> reports</p>
+<div class="flex items-center gap-2">
+<button class="p-2 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50" disabled="">
+<span class="material-icons text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-primary text-white text-sm font-bold">1</button>
+<button class="w-8 h-8 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium">2</button>
+<button class="w-8 h-8 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium">3</button>
+<span class="text-slate-400 px-1">...</span>
+<button class="w-8 h-8 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-medium">12</button>
+<button class="p-2 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800">
+<span class="material-icons text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Audit Trail / Active Moderators (Floating Component Idea) -->
+<div class="mt-12 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6">
+<h4 class="text-sm font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-wider">Live Activity Feed</h4>
+<div class="space-y-4">
+<div class="flex items-start gap-3">
+<div class="w-2 h-2 rounded-full bg-green-500 mt-1.5"></div>
+<div>
+<p class="text-sm"><strong>Mod Julia</strong> resolved report <span class="text-primary font-mono">#REP-94799</span> (Marked as Safe)</p>
+<p class="text-xs text-slate-400">4 minutes ago</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-2 h-2 rounded-full bg-primary mt-1.5"></div>
+<div>
+<p class="text-sm"><strong>System</strong> flagged new campaign <span class="font-bold italic">"Save the Local Forest"</span> for suspicious metadata</p>
+<p class="text-xs text-slate-400">12 minutes ago</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-2 h-2 rounded-full bg-red-500 mt-1.5"></div>
+<div>
+<p class="text-sm"><strong>Mod Marcus</strong> banned user <span class="font-bold">@scam_artist_12</span> for repeated violations</p>
+<p class="text-xs text-slate-400">30 minutes ago</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Bulk Action Bar (Hidden until selection) -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-4 rounded-full shadow-2xl flex items-center gap-6 z-50 transform translate-y-24 transition-transform duration-300 border border-slate-700">
+<span class="text-sm font-medium"><span class="bg-primary px-2 py-0.5 rounded mr-2 text-xs">3</span> Items Selected</span>
+<div class="h-4 w-px bg-slate-700"></div>
+<div class="flex items-center gap-4">
+<button class="text-sm font-semibold hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-icons text-sm">archive</span> Dismiss All
+            </button>
+<button class="text-sm font-semibold text-red-400 hover:text-red-300 transition-colors flex items-center gap-1">
+<span class="material-icons text-sm">block</span> Bulk Action
+            </button>
+</div>
+<button class="text-slate-400 hover:text-white">
+<span class="material-icons">close</span>
+</button>
+</div>
+</body></html>
