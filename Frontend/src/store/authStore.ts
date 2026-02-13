@@ -25,6 +25,7 @@ type AuthState = {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isInitialized: boolean;
   error: string | null;
   login: (payload: LoginPayload) => Promise<boolean>;
   register: (payload: RegisterPayload) => Promise<boolean>;
@@ -55,6 +56,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   refreshToken: null,
   isAuthenticated: false,
   isLoading: false,
+  isInitialized: false,
   error: null,
   clearError: () => set({ error: null }),
   login: async (payload) => {
@@ -148,14 +150,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
   initialize: async () => {
+    set({ isLoading: true });
     const token = tokenStorage.getAccessToken();
     const refreshToken = tokenStorage.getRefreshToken();
     if (!token && !refreshToken) {
+      set({ isLoading: false, isInitialized: true });
       return;
     }
 
     set({ token: token ?? null, refreshToken: refreshToken ?? null, isAuthenticated: Boolean(token) });
     await get().loadUser();
+    set({ isLoading: false, isInitialized: true });
   },
 }));
 

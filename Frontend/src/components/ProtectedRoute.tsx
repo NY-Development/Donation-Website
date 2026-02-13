@@ -11,10 +11,11 @@ type ProtectedRouteProps = {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isLoading = useAuthStore((state) => state.isLoading);
+  const isInitialized = useAuthStore((state) => state.isInitialized);
   const user = useAuthStore((state) => state.user);
   const location = useLocation();
 
-  if (isLoading) {
+  if (isLoading || !isInitialized) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center px-6">
         <div className="flex flex-col items-center gap-4">

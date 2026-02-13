@@ -1,9 +1,9 @@
 
-import React, { useLayoutEffect, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useLayoutEffect, useRef, useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
-import { BadgeCheck, Heart, Lock, Mail, MapPin, TrendingUp } from 'lucide-react';
+import { AlertTriangle, BadgeCheck, Heart, Lock, Mail, MapPin, TrendingUp } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import campaignService from '../Services/campaigns';
 import { getApiData } from '../store/apiHelpers';
@@ -12,6 +12,8 @@ import type { Campaign, CampaignDonor } from '../../types';
 const CampaignDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
+  const [showWarning, setShowWarning] = useState(false);
 
   useLayoutEffect(() => {
     ensureGsap();
@@ -92,7 +94,15 @@ const CampaignDetail: React.FC = () => {
                   <p className="text-lg font-bold text-gray-900 dark:text-white">Organizer</p>
                   <BadgeCheck className="size-4 text-primary" aria-hidden="true" />
                 </div>
-                <p className="text-gray-500 text-sm">Organizer • {campaign?.status === 'approved' ? 'Verified' : 'Pending'}</p>
+                <p className="text-gray-500 text-sm">
+                  Organizer • {campaign?.status === 'approved'
+                    ? 'Approved'
+                    : campaign?.status === 'rejected'
+                      ? 'Rejected'
+                      : campaign?.status === 'draft'
+                        ? 'Draft'
+                        : 'Pending'}
+                </p>
               </div>
             </div>
             <button className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition text-sm font-bold">
@@ -105,7 +115,7 @@ const CampaignDetail: React.FC = () => {
             <blockquote className="border-l-4 border-primary pl-4 italic my-6 text-xl text-gray-900 dark:text-white font-medium">
               "Every donation brings this mission closer to reality."
             </blockquote>
-            <p>Every dollar counts. Whether you can give $5 or $500, your contribution directly impacts a brighter future.</p>
+            <p>Every birr counts. Whether you can give ETB 5 or ETB 500, your contribution directly impacts a brighter future.</p>
           </article>
         </div>
 
@@ -115,8 +125,8 @@ const CampaignDetail: React.FC = () => {
               <div className="p-6 flex flex-col gap-6">
                 <div className="flex flex-col gap-2">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-black text-gray-900 dark:text-white">${raised.toLocaleString()}</span>
-                    <span className="text-sm text-gray-500 font-medium">raised of ${goal.toLocaleString()} goal</span>
+                    <span className="text-3xl font-black text-gray-900 dark:text-white">ETB {raised.toLocaleString()}</span>
+                    <span className="text-sm text-gray-500 font-medium">raised of ETB {goal.toLocaleString()} goal</span>
                   </div>
                   <div className="relative w-full h-3 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                     <div className="absolute top-0 left-0 h-full bg-primary rounded-full" style={{ width: `${percent}%` }}></div>
@@ -132,17 +142,27 @@ const CampaignDetail: React.FC = () => {
                 <div className="grid grid-cols-3 gap-3">
                   {[20, 50, 100].map(amt => (
                     <button key={amt} className="py-3 rounded-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary/50 hover:bg-primary/5 text-gray-700 dark:text-gray-200 font-bold transition">
-                      ${amt}
+                      ETB {amt}
                     </button>
                   ))}
                 </div>
 
-                <Link to={`/donate/${id}`} className="w-full py-4 bg-primary hover:bg-primary/90 text-white rounded-lg font-bold text-lg shadow-lg shadow-primary/20 transition-all text-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (campaign?.status && campaign.status !== 'approved') {
+                      setShowWarning(true);
+                    } else {
+                      navigate(`/donate/${id}`);
+                    }
+                  }}
+                  className="w-full py-4 bg-primary hover:bg-primary/90 text-white rounded-lg font-bold text-lg shadow-lg shadow-primary/20 transition-all text-center"
+                >
                   Donate Now
-                </Link>
+                </button>
                 <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
                   <Lock className="size-3.5" aria-hidden="true" />
-                  Secure donation via Stripe
+                  Secure donation via CBE verification
                 </div>
               </div>
 
@@ -160,7 +180,7 @@ const CampaignDetail: React.FC = () => {
                         <span className="text-sm font-semibold text-gray-900 dark:text-white">{donor.user ? 'Donor' : 'Anonymous'}</span>
                         <span className="text-xs text-gray-500">Recent donation</span>
                       </div>
-                      <span className="text-sm font-bold text-gray-900 dark:text-white">${donor.amount}</span>
+                      <span className="text-sm font-bold text-gray-900 dark:text-white">ETB {donor.amount}</span>
                     </div>
                   ))}
                 </div>
@@ -169,6 +189,37 @@ const CampaignDetail: React.FC = () => {
           </div>
         </div>
       </div>
+      {showWarning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white dark:bg-surface-dark border border-rose-200 dark:border-rose-900/40 p-6">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="size-5 text-rose-500 mt-1" aria-hidden="true" />
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Campaign not approved</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  This campaign is not approved. The platform is not responsible for donations made to unapproved campaigns.
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowWarning(false)}
+                className="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-primary"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate(`/donate/${id}`)}
+                className="px-5 py-2 rounded-lg bg-rose-600 text-white text-sm font-bold"
+              >
+                Continue anyway
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

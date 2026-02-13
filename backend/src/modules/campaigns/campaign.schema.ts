@@ -5,6 +5,7 @@ export const createCampaignSchema = z.object({
   category: z.string().min(2),
   story: z.string().min(10),
   goalAmount: z.number().positive(),
+  cbeAccountNumber: z.string().min(6),
   location: z.string().min(2).optional(),
   urgent: z.boolean().optional(),
   fundingStyle: z.enum(['keep', 'all_or_nothing']).optional()
@@ -15,6 +16,7 @@ export const updateCampaignSchema = z.object({
   category: z.string().min(2).optional(),
   story: z.string().min(10).optional(),
   goalAmount: z.number().positive().optional(),
+  cbeAccountNumber: z.string().min(6).optional(),
   location: z.string().min(2).optional(),
   urgent: z.boolean().optional(),
   fundingStyle: z.enum(['keep', 'all_or_nothing']).optional()

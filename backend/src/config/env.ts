@@ -20,6 +20,8 @@ const envSchema = z.object({
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
   CHAPA_SECRET_KEY: z.string().optional(),
+  CBE_VERIFICATION_URL: z.string().optional(),
+  GOOGLE_VISION_API_KEY: z.string().optional(),
   RATE_LIMIT_PUBLIC_WINDOW_MS: z.string().default('60000'),
   RATE_LIMIT_PUBLIC_MAX: z.string().default('120'),
   RATE_LIMIT_AUTH_WINDOW_MS: z.string().default('60000'),
@@ -31,7 +33,8 @@ const envSchema = z.object({
   SMTP_PORT: z.string().min(1),
   SMTP_USER: z.string().min(1),
   SMTP_PASS: z.string().min(1),
-  SENDER_EMAIL: z.string().min(1)
+  SENDER_EMAIL: z.string().min(1),
+  ADMIN_EMAIL: z.string().optional()
 });
 
 const parsed = envSchema.safeParse(process.env);

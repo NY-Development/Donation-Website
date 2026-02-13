@@ -13,6 +13,7 @@ type DonationState = {
   error: string | null;
   fetchDashboard: (params?: { limit?: number; cursor?: string }, reset?: boolean) => Promise<void>;
   createCheckout: (payload: { campaignId: string; amount: number }) => Promise<string | null>;
+  verifyCbeDonation: (payload: FormData) => Promise<boolean>;
   clearError: () => void;
 };
 
@@ -50,6 +51,17 @@ export const useDonationStore = create<DonationState>((set, get) => ({
     } catch (error) {
       set({ isLoading: false, error: getErrorMessage(error) });
       return null;
+    }
+  },
+  verifyCbeDonation: async (payload) => {
+    set({ isLoading: true, error: null });
+    try {
+      await donationService.verifyCbe(payload);
+      set({ isLoading: false });
+      return true;
+    } catch (error) {
+      set({ isLoading: false, error: getErrorMessage(error) });
+      return false;
     }
   }
 }));

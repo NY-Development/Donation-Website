@@ -119,7 +119,7 @@ const AdminCampaignModeration: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{campaign.category}</td>
                   <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
-                    ${campaign.goalAmount.toLocaleString()}
+                    ETB {campaign.goalAmount.toLocaleString()}
                   </td>
                   <td className="px-6 py-4">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">

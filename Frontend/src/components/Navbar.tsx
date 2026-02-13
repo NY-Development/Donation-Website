@@ -59,7 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
             </button>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#ede7f3] dark:bg-gray-800 text-sm font-bold text-gray-900 dark:text-white">
               <Lock className="size-4" aria-hidden="true" />
-              <span className="hidden sm:inline">Secure Checkout</span>
+              <span className="hidden sm:inline">Secure Verification</span>
             </div>
           </div>
         </div>

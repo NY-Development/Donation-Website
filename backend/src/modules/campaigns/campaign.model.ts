@@ -12,8 +12,11 @@ export interface CampaignDocument extends Document {
   fundingStyle: FundingStyle;
   goalAmount: number;
   raisedAmount: number;
+  cbeAccountNumber: string;
   status: CampaignStatus;
   media: string[];
+  isSuccessStory?: boolean;
+  goalReachedAt?: Date;
   organizer: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -29,6 +32,7 @@ const campaignSchema = new Schema<CampaignDocument>(
     fundingStyle: { type: String, enum: ['keep', 'all_or_nothing'], default: 'keep' },
     goalAmount: { type: Number, required: true },
     raisedAmount: { type: Number, default: 0 },
+    cbeAccountNumber: { type: String, required: true, trim: true },
     status: {
       type: String,
       enum: ['draft', 'pending_verification', 'approved', 'rejected'],
@@ -36,6 +40,8 @@ const campaignSchema = new Schema<CampaignDocument>(
       index: true
     },
     media: { type: [String], default: [] },
+    isSuccessStory: { type: Boolean, default: false, index: true },
+    goalReachedAt: { type: Date },
     organizer: { type: Schema.Types.ObjectId, ref: 'User', required: true }
   },
   { timestamps: true }

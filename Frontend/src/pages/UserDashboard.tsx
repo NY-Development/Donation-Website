@@ -112,7 +112,7 @@ const UserDashboard: React.FC = () => {
             <Wallet className="size-5" aria-hidden="true" />
           </div>
           <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Donated</p>
-          <p className="text-3xl font-black text-gray-900 dark:text-white">${totalDonated.toLocaleString()}</p>
+          <p className="text-3xl font-black text-gray-900 dark:text-white">ETB {totalDonated.toLocaleString()}</p>
         </div>
         <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-2" data-animate="card">
           <div className="size-12 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mb-2">
@@ -151,7 +151,7 @@ const UserDashboard: React.FC = () => {
                         <CheckCircle className="size-4 text-primary" aria-hidden="true" />
                         <span className="font-bold">Campaign {item.campaign}</span>
                       </div>
-                      <span className="font-bold">${item.amount.toFixed(2)}</span>
+                      <span className="font-bold">ETB {item.amount.toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
@@ -179,7 +179,7 @@ const UserDashboard: React.FC = () => {
                     <div
                       className="w-full rounded-lg bg-primary/20"
                       style={{ height: `${height}%` }}
-                      title={`$${point.total.toFixed(2)}`}
+                      title={`ETB ${point.total.toFixed(2)}`}
                     />
                     <span className="text-[10px] text-gray-400 uppercase">
                       {new Date(point.date).toLocaleDateString(undefined, { weekday: 'short' })}

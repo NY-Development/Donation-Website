@@ -21,3 +21,21 @@ export const sendOtpEmail = async (email: string, otp: string) => {
     text: `Your verification code is ${otp}. It expires in 10 minutes.`
   });
 };
+
+export const sendCampaignCreatedEmail = async (payload: {
+  title: string;
+  category: string;
+  goalAmount: number;
+  organizerEmail?: string;
+}) => {
+  if (!env.ADMIN_EMAIL) {
+    return;
+  }
+
+  await mailer.sendMail({
+    from: env.SENDER_EMAIL,
+    to: env.ADMIN_EMAIL,
+    subject: 'New campaign created',
+    text: `A new campaign was created.\n\nTitle: ${payload.title}\nCategory: ${payload.category}\nGoal: ETB ${payload.goalAmount}\nOrganizer: ${payload.organizerEmail ?? 'Unknown'}\n`
+  });
+};

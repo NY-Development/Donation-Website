@@ -1,6 +1,6 @@
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { AlertTriangle, BadgeCheck, Heart, Search } from 'lucide-react';
@@ -9,9 +9,11 @@ import { useCampaignStore } from '../store';
 const Explore: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [urgentOnly, setUrgentOnly] = useState(false);
-  const [status, setStatus] = useState<'approved' | 'pending_verification' | 'rejected' | 'draft' | 'all'>('approved');
+  const [status, setStatus] = useState<'approved' | 'pending_verification' | 'rejected' | 'draft' | 'all'>('all');
   const [query, setQuery] = useState('');
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
+  const [warningCampaignId, setWarningCampaignId] = useState<string | null>(null);
   const campaigns = useCampaignStore((state) => state.campaigns);
   const nextCursor = useCampaignStore((state) => state.nextCursor);
   const isLoading = useCampaignStore((state) => state.isLoading);
@@ -45,13 +47,27 @@ const Explore: React.FC = () => {
     return () => ctx.revert();
   }, []);
   
+  const statusStyles: Record<string, string> = {
+    approved: 'bg-emerald-100 text-emerald-700',
+    pending_verification: 'bg-amber-100 text-amber-700',
+    rejected: 'bg-rose-100 text-rose-700',
+    draft: 'bg-slate-100 text-slate-600'
+  };
+
+  const statusLabels: Record<string, string> = {
+    approved: 'Approved',
+    pending_verification: 'Pending',
+    rejected: 'Rejected',
+    draft: 'Draft'
+  };
+
   const categories = ['All', 'Education', 'Medical', 'Environment', 'Disaster Relief', 'Community'];
 
   useEffect(() => {
     const params = {
       category: activeCategory === 'All' ? undefined : activeCategory,
       urgent: urgentOnly ? true : undefined,
-      status: status === 'all' ? undefined : status,
+      status: status === 'all' ? 'all' : status,
       limit: 12,
       sort: 'desc' as const
     };
@@ -66,8 +82,8 @@ const Explore: React.FC = () => {
   return (
     <div ref={containerRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8" data-animate="section">
-        <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-2">Explore Verified Campaigns</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl">Discover and support causes vetted for transparency and impact.</p>
+        <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-2">Explore Campaigns</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl">Browse all active, pending, and rejected campaigns with clear status labels.</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
@@ -165,6 +181,11 @@ const Explore: React.FC = () => {
                         <BadgeCheck className="size-3.5" aria-hidden="true" /> Verified Org
                       </div>
                     )}
+                    {campaign.status !== 'approved' && (
+                      <div className={`absolute top-3 left-3 px-2 py-1 rounded-md text-xs font-bold shadow-sm ${statusStyles[campaign.status]}`}>
+                        {statusLabels[campaign.status]}
+                      </div>
+                    )}
                     {campaign.urgent && (
                       <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1 shadow-sm animate-pulse">
                         <AlertTriangle className="size-3.5" aria-hidden="true" /> Urgent
@@ -184,16 +205,26 @@ const Explore: React.FC = () => {
                     <div className="mt-auto space-y-4">
                       <div>
                         <div className="flex justify-between text-sm font-medium mb-1.5">
-                          <span className="text-slate-900 dark:text-slate-200">${raised.toLocaleString()} raised</span>
+                          <span className="text-slate-900 dark:text-slate-200">ETB {raised.toLocaleString()} raised</span>
                           <span className="text-slate-500">{percent}%</span>
                         </div>
                         <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
                           <div className="bg-primary h-2 rounded-full transition-all duration-1000" style={{ width: `${percent}%` }}></div>
                         </div>
                       </div>
-                      <Link to={`/donate/${campaign._id}`} className="w-full py-2.5 px-4 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg shadow-sm flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (campaign.status !== 'approved') {
+                            setWarningCampaignId(campaign._id);
+                          } else {
+                            navigate(`/donate/${campaign._id}`);
+                          }
+                        }}
+                        className="w-full py-2.5 px-4 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg shadow-sm flex items-center justify-center gap-2"
+                      >
                         Donate Now <Heart className="size-4" aria-hidden="true" />
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 </article>
@@ -207,7 +238,7 @@ const Explore: React.FC = () => {
                 onClick={() => fetchAll({
                   category: activeCategory === 'All' ? undefined : activeCategory,
                   urgent: urgentOnly ? true : undefined,
-                  status: status === 'all' ? undefined : status,
+                  status: status === 'all' ? 'all' : status,
                   limit: 12,
                   sort: 'desc',
                   cursor: nextCursor
@@ -221,6 +252,42 @@ const Explore: React.FC = () => {
           </div>
         </main>
       </div>
+
+      {warningCampaignId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white dark:bg-surface-dark border border-rose-200 dark:border-rose-900/40 p-6">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="size-5 text-rose-500 mt-1" aria-hidden="true" />
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Campaign not approved</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                  This campaign is not approved. The platform is not responsible for donations made to unapproved campaigns.
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setWarningCampaignId(null)}
+                className="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-primary"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const target = warningCampaignId;
+                  setWarningCampaignId(null);
+                  navigate(`/donate/${target}`);
+                }}
+                className="px-5 py-2 rounded-lg bg-rose-600 text-white text-sm font-bold"
+              >
+                Continue anyway
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

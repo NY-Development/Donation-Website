@@ -22,5 +22,12 @@ export const campaignRepository = {
       .sort({ raisedAmount: -1 })
       .limit(limit)
       .select('title raisedAmount goalAmount category createdAt')
+      .lean(),
+  findSuccessStories: (limit = 6) =>
+    CampaignModel.find({
+      $expr: { $gte: ['$raisedAmount', '$goalAmount'] }
+    })
+      .sort({ goalReachedAt: -1, createdAt: -1 })
+      .limit(limit)
       .lean()
 };

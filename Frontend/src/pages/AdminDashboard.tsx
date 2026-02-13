@@ -161,7 +161,7 @@ const AdminDashboard: React.FC = () => {
       yAxis: {
         type: 'value',
         axisLabel: {
-          formatter: (value: number) => `$${Math.round(value / 1000)}k`,
+          formatter: (value: number) => `ETB ${Math.round(value / 1000)}k`,
           color: '#6b7280',
         },
         splitLine: { lineStyle: { color: '#f3f4f6' } },
@@ -308,7 +308,7 @@ const AdminDashboard: React.FC = () => {
             <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm" data-animate="card">
               <p className="text-sm font-medium text-gray-500 mb-1">Total Funds</p>
               <h3 className="text-2xl font-black text-gray-900 dark:text-white">
-                ${totalFunds.toLocaleString()}
+                ETB {totalFunds.toLocaleString()}
               </h3>
               <div className="text-green-500 text-xs font-bold mt-2 flex items-center gap-1">
                 <TrendingUp className="size-3.5" aria-hidden="true" /> +14.2%
@@ -405,7 +405,7 @@ const AdminDashboard: React.FC = () => {
                   width="120"
                   template={(props: CampaignRow) => (
                     <span className="font-semibold text-gray-900 dark:text-white">
-                      ${props.raised.toLocaleString()}
+                      ETB {props.raised.toLocaleString()}
                     </span>
                   )}
                 />
@@ -416,7 +416,7 @@ const AdminDashboard: React.FC = () => {
                   width="120"
                   template={(props: CampaignRow) => (
                     <span className="text-gray-500">
-                      ${props.goal.toLocaleString()}
+                      ETB {props.goal.toLocaleString()}
                     </span>
                   )}
                 />

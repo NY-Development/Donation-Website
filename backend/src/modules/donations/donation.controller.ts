@@ -15,6 +15,22 @@ export const donationController = {
       next(error);
     }
   },
+  verifyCbe: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const amount = Number(req.body.amount);
+      const data = await donationService.verifyCbeDonation({
+        campaignId: req.body.campaignId,
+        amount,
+        transactionId: req.body.transactionId,
+        screenshotBuffer: req.file?.buffer,
+        userId: req.user?.id,
+        donorName: req.body.donorName
+      });
+      res.status(201).json({ success: true, message: 'Donation verified', data });
+    } catch (error) {
+      next(error);
+    }
+  },
   webhook: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await donationService.handleWebhook(req.headers['stripe-signature'], req.body as Buffer);

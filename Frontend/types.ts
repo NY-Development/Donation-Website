@@ -34,8 +34,11 @@ export interface Campaign {
   fundingStyle?: 'keep' | 'all_or_nothing';
   goalAmount: number;
   raisedAmount: number;
+  cbeAccountNumber: string;
   status: 'draft' | 'pending_verification' | 'approved' | 'rejected';
   media: string[];
+  isSuccessStory?: boolean;
+  goalReachedAt?: string;
   organizer: string;
   createdAt: string;
   location?: string;
@@ -49,6 +52,7 @@ export interface Donation {
   amount: number;
   paymentProvider: string;
   status: 'pending' | 'succeeded' | 'failed';
+  transactionId?: string;
   createdAt: string;
 }
 

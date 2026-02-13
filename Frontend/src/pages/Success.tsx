@@ -1,6 +1,6 @@
 
 import React, { useLayoutEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { CheckCircle, Heart } from 'lucide-react';
@@ -8,6 +8,10 @@ import { FaRegSmileBeam, FaStar } from 'react-icons/fa';
 
 const Success: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const location = useLocation();
+  const state = location.state as { amount?: number; campaignTitle?: string } | undefined;
+  const amount = state?.amount ?? 0;
+  const campaignTitle = state?.campaignTitle ?? 'Campaign';
 
   useLayoutEffect(() => {
     ensureGsap();
@@ -89,7 +93,7 @@ const Success: React.FC = () => {
         <div className="w-full bg-white dark:bg-surface-dark rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-8">
           <div className="p-8 border-b border-gray-100 dark:border-gray-800">
             <p className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-2">Total Donation</p>
-            <p className="text-5xl font-black text-primary">$50.00</p>
+            <p className="text-5xl font-black text-primary">ETB {amount.toFixed(2)}</p>
             <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-600 text-xs font-bold uppercase">
               <CheckCircle className="size-4" aria-hidden="true" />
               Processed Successfully
@@ -100,7 +104,7 @@ const Success: React.FC = () => {
               <div className="w-12 h-12 rounded-lg bg-cover bg-center bg-gray-200" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1541544537156-7627a7a4aa1c?q=80&w=200&auto=format&fit=crop")' }}></div>
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase">Campaign</p>
-                <h3 className="text-lg font-bold">Clean Water for All Initiative</h3>
+                <h3 className="text-lg font-bold">{campaignTitle}</h3>
               </div>
             </div>
           </div>

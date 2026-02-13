@@ -31,6 +31,7 @@ const draftSchema = z.object({
   category: z.string().min(2, 'Select a campaign category.'),
   story: z.string().min(10, 'Tell a more detailed story.'),
   goalAmount: z.number().positive('Goal amount must be greater than 0.'),
+  cbeAccountNumber: z.string().min(6, 'CBE account number is required.'),
   fundingStyle: z.enum(['keep', 'all_or_nothing']),
   urgent: z.boolean().optional()
 });
@@ -41,6 +42,7 @@ const CreateCampaign: React.FC = () => {
   const [category, setCategory] = useState('');
   const [story, setStory] = useState('');
   const [goalAmount, setGoalAmount] = useState('10000');
+  const [cbeAccountNumber, setCbeAccountNumber] = useState('');
   const [fundingStyle, setFundingStyle] = useState<'keep' | 'all_or_nothing'>('keep');
   const [urgent, setUrgent] = useState(false);
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
@@ -81,6 +83,10 @@ const CreateCampaign: React.FC = () => {
         setFormError('Please enter a valid fundraising goal.');
         return;
       }
+      if (!cbeAccountNumber.trim()) {
+        setFormError('Please add the campaign CBE account number.');
+        return;
+      }
     }
 
     setFormError(null);
@@ -96,6 +102,7 @@ const CreateCampaign: React.FC = () => {
       category,
       story,
       goalAmount,
+      cbeAccountNumber,
       fundingStyle,
       urgent
     };
@@ -111,6 +118,7 @@ const CreateCampaign: React.FC = () => {
     setCategory(String(payload.category ?? ''));
     setStory(String(payload.story ?? ''));
     setGoalAmount(String(payload.goalAmount ?? '10000'));
+    setCbeAccountNumber(String(payload.cbeAccountNumber ?? ''));
     setFundingStyle((payload.fundingStyle as 'keep' | 'all_or_nothing') ?? 'keep');
     setUrgent(Boolean(payload.urgent));
     const savedStep = Number(payload.step ?? 1);
@@ -154,6 +162,7 @@ const CreateCampaign: React.FC = () => {
       category,
       story: story.trim(),
       goalAmount: parsedGoal,
+      cbeAccountNumber: cbeAccountNumber.trim(),
       fundingStyle,
       urgent
     });
@@ -174,6 +183,7 @@ const CreateCampaign: React.FC = () => {
         category: parsed.data.category,
         story: parsed.data.story,
         goalAmount: parsed.data.goalAmount,
+        cbeAccountNumber: parsed.data.cbeAccountNumber,
         fundingStyle: parsed.data.fundingStyle,
         urgent: parsed.data.urgent
       });
@@ -290,7 +300,7 @@ const CreateCampaign: React.FC = () => {
       return;
     }
     saveDraft();
-  }, [step, title, category, story, goalAmount, fundingStyle, urgent, draftKey, draftInitialized]);
+  }, [step, title, category, story, goalAmount, cbeAccountNumber, fundingStyle, urgent, draftKey, draftInitialized]);
 
   useEffect(() => {
     return () => {
@@ -479,9 +489,9 @@ const CreateCampaign: React.FC = () => {
                 <div>
                   <label className="block text-xl font-bold mb-4">How much would you like to raise?</label>
                   <div className="relative">
-                    <span className="absolute left-6 top-1/2 -translate-y-1/2 text-4xl font-bold text-gray-300">$</span>
+                    <span className="absolute left-6 top-1/2 -translate-y-1/2 text-4xl font-bold text-gray-300">ETB</span>
                     <input
-                      className="w-full pl-14 pr-20 py-8 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 rounded-xl text-5xl font-black focus:ring-2 focus:ring-primary"
+                      className="w-full pl-20 pr-20 py-8 bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 rounded-xl text-5xl font-black focus:ring-2 focus:ring-primary"
                       value={goalAmount}
                       onChange={(event) => {
                         setGoalAmount(event.target.value);
@@ -489,7 +499,21 @@ const CreateCampaign: React.FC = () => {
                       }}
                       data-animate="input"
                     />
-                    <span className="absolute right-6 top-1/2 -translate-y-1/2 font-bold text-gray-400">USD</span>
+                    <span className="absolute right-6 top-1/2 -translate-y-1/2 font-bold text-gray-400">ETB</span>
+                  </div>
+                  <div className="mt-6">
+                    <label className="block text-lg font-bold mb-2">CBE Account Number</label>
+                    <input
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                      placeholder="1000xxxxxxxxx"
+                      value={cbeAccountNumber}
+                      onChange={(event) => {
+                        setCbeAccountNumber(event.target.value);
+                        if (formError) setFormError(null);
+                      }}
+                      data-animate="input"
+                    />
+                    <p className="text-xs text-gray-500 mt-2">Donors will use this account when paying via CBE.</p>
                   </div>
                 </div>
                 <div>

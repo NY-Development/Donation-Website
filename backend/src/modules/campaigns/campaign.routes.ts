@@ -8,6 +8,7 @@ import { requireOrganizerVerification } from '../../middlewares/organizerVerific
 const router = Router();
 
 router.get('/featured', campaignController.getFeatured);
+router.get('/success-stories', campaignController.getSuccessStories);
 router.get('/', validate(campaignQuerySchema, 'query'), campaignController.list);
 router.get('/:id', validate(campaignIdSchema, 'params'), campaignController.getById);
 router.get('/:id/donors', validate(campaignIdSchema, 'params'), campaignController.getDonors);

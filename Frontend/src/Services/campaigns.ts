@@ -19,6 +19,7 @@ export const campaignService = {
       }
     }),
   getFeatured: () => api.get('/campaigns/featured'),
+  getSuccessStories: (params?: { limit?: number }) => api.get('/campaigns/success-stories', { params }),
   getById: (id: string) => api.get(`/campaigns/${id}`),
   getDonors: (id: string) => api.get(`/campaigns/${id}/donors`),
   create: (payload: unknown) => api.post('/campaigns', payload),

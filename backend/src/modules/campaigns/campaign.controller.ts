@@ -77,5 +77,14 @@ export const campaignController = {
     } catch (error) {
       next(error);
     }
+  },
+  getSuccessStories: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const limit = req.query.limit ? Number(req.query.limit) : 6;
+      const data = await campaignService.getSuccessStories(limit);
+      res.json({ success: true, message: 'Success stories fetched', data });
+    } catch (error) {
+      next(error);
+    }
   }
 };

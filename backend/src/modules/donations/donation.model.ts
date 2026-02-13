@@ -9,6 +9,10 @@ export interface DonationDocument extends Document {
   paymentProvider: string;
   status: DonationStatus;
   paymentIntentId?: string;
+  transactionId?: string;
+  verificationMethod?: 'transaction_id' | 'qr_code';
+  verificationSource?: 'QR_CODE' | 'TEXT_RECOGNITION' | 'MANUAL';
+  verificationDetails?: Record<string, unknown>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -20,7 +24,11 @@ const donationSchema = new Schema<DonationDocument>(
     amount: { type: Number, required: true },
     paymentProvider: { type: String, required: true },
     status: { type: String, enum: ['pending', 'succeeded', 'failed'], default: 'pending' },
-    paymentIntentId: { type: String, index: true }
+    paymentIntentId: { type: String, index: true },
+    transactionId: { type: String, index: true },
+    verificationMethod: { type: String, enum: ['transaction_id', 'qr_code'] },
+    verificationSource: { type: String, enum: ['QR_CODE', 'TEXT_RECOGNITION', 'MANUAL'] },
+    verificationDetails: { type: Schema.Types.Mixed }
   },
   { timestamps: true }
 );

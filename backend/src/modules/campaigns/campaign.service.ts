@@ -4,6 +4,8 @@ import { cache } from '../../utils/cache';
 import { buildCursorFilter, makeCursor } from '../../utils/pagination';
 import { campaignRepository } from './campaign.repository';
 import { donationRepository } from '../donations/donation.repository';
+import { userRepository } from '../users/user.repository';
+import { sendCampaignCreatedEmail } from '../../utils/mailer';
 
 export const campaignService = {
   getFeatured: async () => {
@@ -25,7 +27,12 @@ export const campaignService = {
     cursor?: string;
     sort: 'asc' | 'desc';
   }) => {
-    const filters: Record<string, unknown> = { status: query.status ?? 'approved' };
+    const filters: Record<string, unknown> = {};
+    if (query.status && query.status !== 'all') {
+      filters.status = query.status;
+    } else if (!query.status) {
+      filters.status = 'approved';
+    }
     if (query.category) {
       filters.category = query.category;
     }
@@ -53,6 +60,16 @@ export const campaignService = {
     await cache.set(cacheKey, response, 60);
     return response;
   },
+  getSuccessStories: async (limit = 6) => {
+    const cacheKey = `campaigns:success:${limit}`;
+    const cached = await cache.get(cacheKey);
+    if (cached) {
+      return cached;
+    }
+    const data = await campaignRepository.findSuccessStories(limit);
+    await cache.set(cacheKey, data, 120);
+    return data;
+  },
   getById: async (campaignId: string) => {
     const campaign = await campaignRepository.findByIdLean(campaignId);
     if (!campaign) {
@@ -68,6 +85,7 @@ export const campaignService = {
     category: string;
     story: string;
     goalAmount: number;
+    cbeAccountNumber: string;
     organizerId: string;
     location?: string;
     urgent?: boolean;
@@ -78,11 +96,19 @@ export const campaignService = {
       category: payload.category,
       story: payload.story,
       goalAmount: payload.goalAmount,
+      cbeAccountNumber: payload.cbeAccountNumber,
       location: payload.location,
       urgent: payload.urgent,
       fundingStyle: payload.fundingStyle ?? 'keep',
       organizer: new Types.ObjectId(payload.organizerId),
       status: 'draft'
+    });
+    const organizer = await userRepository.findByIdLean(payload.organizerId);
+    await sendCampaignCreatedEmail({
+      title: campaign.title,
+      category: campaign.category,
+      goalAmount: campaign.goalAmount,
+      organizerEmail: organizer?.email
     });
     await cache.invalidateByPrefix('campaigns:list:');
     return campaign;

@@ -151,6 +151,7 @@ const AdminSettings: React.FC = () => {
                     value={formState.settlementCurrency}
                     onChange={(event) => update('settlementCurrency', event.target.value)}
                   >
+                    <option>ETB</option>
                     <option>USD</option>
                     <option>EUR</option>
                     <option>GBP</option>
@@ -232,7 +233,7 @@ const AdminSettings: React.FC = () => {
                     </div>
                     <div className="flex-1">
                       <p className="font-medium">Large Donation Alerts</p>
-                      <p className="text-xs text-slate-500">Notify admins when a single donation exceeds $1,000.</p>
+                      <p className="text-xs text-slate-500">Notify admins when a single donation exceeds ETB 1,000.</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input

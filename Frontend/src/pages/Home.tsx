@@ -1,9 +1,9 @@
 
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
-import { ArrowRight, BadgeCheck, Heart, Mail, MailCheck, Megaphone, Search, Wallet } from 'lucide-react';
+import { ArrowRight, BadgeCheck, Heart, Mail, MailCheck, Megaphone, Search, Sparkles, Wallet, X } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import campaignService from '../Services/campaigns';
 import { getApiData } from '../store/apiHelpers';
@@ -12,6 +12,8 @@ import type { Campaign, GlobalStats } from '../../types';
 const Home: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const heroTrackRef = useRef<HTMLDivElement | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState(0);
 
   const heroImages = [
     'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop',
@@ -66,6 +68,37 @@ const Home: React.FC = () => {
     return () => ctx.revert();
   }, []);
 
+  useEffect(() => {
+    const seen = localStorage.getItem('impact:onboarding');
+    if (!seen) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const onboardingSteps = [
+    {
+      title: 'Discover trusted causes',
+      description: 'Browse campaigns vetted for transparency and impact.'
+    },
+    {
+      title: 'Choose your ETB amount',
+      description: 'Pick a donation amount that fits your impact goal.'
+    },
+    {
+      title: 'Pay with CBE transfer',
+      description: 'Use the campaign account number to complete your transfer.'
+    },
+    {
+      title: 'Verify and celebrate',
+      description: 'Upload a QR screenshot or transaction ID to verify instantly.'
+    }
+  ];
+
+  const closeOnboarding = () => {
+    localStorage.setItem('impact:onboarding', 'true');
+    setShowOnboarding(false);
+  };
+
   const { data: stats } = useQuery({
     queryKey: ['stats', 'global'],
     queryFn: async () => {
@@ -82,8 +115,79 @@ const Home: React.FC = () => {
     }
   });
 
+  const { data: successStories } = useQuery({
+    queryKey: ['campaigns', 'success-stories'],
+    queryFn: async () => {
+      const response = await campaignService.getSuccessStories({ limit: 3 });
+      return getApiData<Campaign[]>(response) ?? [];
+    }
+  });
+
   return (
     <div ref={containerRef}>
+      {showOnboarding && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="relative w-full max-w-xl rounded-3xl bg-white dark:bg-surface-dark border border-white/10 shadow-2xl overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-yellow-50 dark:from-emerald-950/40 dark:via-slate-900 dark:to-yellow-900/20" />
+            <div className="relative p-8">
+              <button
+                type="button"
+                onClick={closeOnboarding}
+                className="absolute right-4 top-4 p-2 rounded-full bg-white/80 dark:bg-slate-800/80 hover:bg-white"
+                aria-label="Close onboarding"
+              >
+                <X className="size-4" aria-hidden="true" />
+              </button>
+              <div className="flex items-center gap-3 text-primary font-semibold">
+                <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Sparkles className="size-5" aria-hidden="true" />
+                </div>
+                <span>Welcome to Impact</span>
+              </div>
+              <h2 className="mt-4 text-2xl font-black text-gray-900 dark:text-white">{onboardingSteps[onboardingStep].title}</h2>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">{onboardingSteps[onboardingStep].description}</p>
+
+              <div className="mt-8 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {onboardingSteps.map((_, index) => (
+                    <span
+                      key={index}
+                      className={`h-2 w-10 rounded-full transition ${
+                        index === onboardingStep ? 'bg-primary' : 'bg-gray-200 dark:bg-gray-700'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <div className="flex items-center gap-3">
+                  {onboardingStep > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setOnboardingStep((prev) => Math.max(0, prev - 1))}
+                      className="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-primary"
+                    >
+                      Back
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onboardingStep === onboardingSteps.length - 1) {
+                        closeOnboarding();
+                      } else {
+                        setOnboardingStep((prev) => prev + 1);
+                      }
+                    }}
+                    className="px-5 py-2 rounded-lg bg-primary text-white font-bold text-sm flex items-center gap-2"
+                  >
+                    {onboardingStep === onboardingSteps.length - 1 ? 'Get started' : 'Next'}
+                    <ArrowRight className="size-4" aria-hidden="true" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Hero Section */}
       <section className="relative w-full min-h-[600px] flex items-center justify-center overflow-hidden" data-animate="section">
         <div className="absolute inset-0 z-0 overflow-hidden">
@@ -131,7 +235,7 @@ const Home: React.FC = () => {
                 <Wallet className="size-7" aria-hidden="true" />
               </div>
               <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">
-                ${stats?.totalDonated?.toLocaleString() ?? '0'}
+                ETB {stats?.totalDonated?.toLocaleString() ?? '0'}
               </p>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total Raised</p>
             </div>
@@ -186,7 +290,7 @@ const Home: React.FC = () => {
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 flex-1 line-clamp-2">{campaign.story}</p>
                   <div className="mb-4">
                     <div className="flex justify-between text-xs font-semibold mb-1.5">
-                      <span className="text-primary">${raised.toLocaleString()} raised</span>
+                      <span className="text-primary">ETB {raised.toLocaleString()} raised</span>
                       <span className="text-gray-500">{percent}%</span>
                     </div>
                     <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2">
@@ -202,6 +306,53 @@ const Home: React.FC = () => {
           })}
         </div>
       </section>
+
+      {/* Success Stories */}
+      {(successStories ?? []).length > 0 && (
+        <section className="relative py-20 px-4 sm:px-6 lg:px-8" data-animate="section">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute -top-10 left-10 h-40 w-40 rounded-full bg-emerald-400/20 blur-3xl" />
+            <div className="absolute bottom-0 right-10 h-52 w-52 rounded-full bg-yellow-400/20 blur-3xl" />
+          </div>
+          <div className="relative max-w-[1200px] mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+              <div>
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">Success Stories</h2>
+                <p className="text-gray-600 dark:text-gray-400">Campaigns that reached their goal and are celebrating impact.</p>
+              </div>
+              <Link className="inline-flex items-center text-primary font-bold hover:underline gap-1" to="/explore">
+                Discover more <ArrowRight className="size-4" aria-hidden="true" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {(successStories ?? []).map((campaign) => {
+                const image = campaign.media?.[0] ?? 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2070&auto=format&fit=crop';
+                return (
+                  <div
+                    key={campaign._id}
+                    className="group relative overflow-hidden rounded-2xl border border-emerald-100 dark:border-emerald-900/40 bg-white dark:bg-surface-dark shadow-xl shadow-emerald-200/30"
+                    data-animate="impact-step"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/80 via-transparent to-yellow-50/60 opacity-0 group-hover:opacity-100 transition" />
+                    <div className="relative h-48 w-full overflow-hidden">
+                      <img src={image} alt={campaign.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                      <span className="absolute top-3 left-3 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full">Goal Reached</span>
+                    </div>
+                    <div className="relative p-5">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{campaign.title}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{campaign.story}</p>
+                      <div className="mt-4 flex items-center justify-between text-sm font-semibold text-emerald-600">
+                        <span>ETB {campaign.raisedAmount.toLocaleString()} raised</span>
+                        <span>100%</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* How it Works */}
       <section className="py-20 bg-white dark:bg-[#1f1528]" data-animate="section">
