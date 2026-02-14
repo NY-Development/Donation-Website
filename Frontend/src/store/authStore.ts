@@ -32,6 +32,7 @@ type AuthState = {
   logout: () => Promise<void>;
   loadUser: () => Promise<boolean>;
   initialize: () => Promise<void>;
+  updateProfile: (payload: { name?: string; email?: string }) => Promise<boolean>;
   clearError: () => void;
 };
 
@@ -171,6 +172,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     await get().loadUser();
     set({ isLoading: false, isInitialized: true });
   },
+  updateProfile: async (payload) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await userService.updateMe(payload);
+      const user = getApiData(response) as AuthUser | null;
+      set({ user: user ?? null, isLoading: false });
+      return Boolean(user);
+    } catch (error) {
+      set({ isLoading: false, error: getErrorMessage(error) });
+      return false;
+    }
+  }
 }));
 
 export default useAuthStore;

@@ -1,23 +1,37 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import authService from '../Services/auth';
 import { getErrorMessage } from '../store/apiHelpers';
 
-const ForgotPassword: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+const ResetPassword: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const stateEmail = (location.state as { email?: string } | null)?.email ?? '';
+  const [email, setEmail] = useState(stateEmail);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
+
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
     setIsLoading(true);
     try {
-      await authService.forgotPassword({ email });
-      setSubmitted(true);
-      navigate('/reset', { state: { email } });
+      await authService.resetPassword({ email, password });
+      setSuccess(true);
+      navigate('/login');
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -28,14 +42,14 @@ const ForgotPassword: React.FC = () => {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark p-8 shadow-sm">
-        <h1 className="text-2xl font-black text-gray-900 dark:text-white">Reset your password</h1>
+        <h1 className="text-2xl font-black text-gray-900 dark:text-white">Set a new password</h1>
         <p className="mt-2 text-sm text-gray-500">
-          We'll send reset instructions to the email you used to sign up.
+          Enter your email and a new password to complete the reset.
         </p>
 
-        {submitted ? (
+        {success ? (
           <div className="mt-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-            If an account exists for {email || 'that email'}, we've sent a reset link.
+            Your password has been updated. You can now log in.
           </div>
         ) : (
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
@@ -50,6 +64,26 @@ const ForgotPassword: React.FC = () => {
                 onChange={(event) => setEmail(event.target.value)}
               />
             </div>
+            <div>
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">New password</label>
+              <input
+                className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3"
+                type="password"
+                required
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Confirm password</label>
+              <input
+                className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3"
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+              />
+            </div>
             {error && (
               <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
                 {error}
@@ -61,7 +95,7 @@ const ForgotPassword: React.FC = () => {
               disabled={isLoading}
               aria-busy={isLoading}
             >
-              {isLoading ? 'Processing...' : 'Send reset link'}
+              {isLoading ? 'Updating...' : 'Reset password'}
             </button>
           </form>
         )}
@@ -77,4 +111,4 @@ const ForgotPassword: React.FC = () => {
   );
 };
 
-export default ForgotPassword;
+export default ResetPassword;

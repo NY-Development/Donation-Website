@@ -5,8 +5,6 @@ import { validate } from '../../utils/validate';
 import { z } from 'zod';
 
 const router = Router();
-
-router.get('/me', requireAuth, userController.getMe);
 const dashboardQuerySchema = z.object({
 	limit: z.coerce.number().min(1).max(50).optional(),
 	cursor: z.string().optional()
@@ -23,6 +21,14 @@ const organizerCampaignsQuerySchema = z.object({
 const pendingDonationsQuerySchema = z.object({
 	limit: z.coerce.number().min(1).max(50).optional()
 });
+
+const updateProfileSchema = z.object({
+	name: z.string().min(2).optional(),
+	email: z.string().email().optional()
+});
+
+router.get('/me', requireAuth, userController.getMe);
+router.patch('/me', requireAuth, validate(updateProfileSchema, 'body'), userController.updateMe);
 
 router.get('/me/dashboard', requireAuth, validate(dashboardQuerySchema, 'query'), userController.getDashboard);
 router.get('/me/trends', requireAuth, validate(trendsQuerySchema, 'query'), userController.getTrends);

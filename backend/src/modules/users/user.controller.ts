@@ -11,6 +11,14 @@ export const userController = {
       next(error);
     }
   },
+  updateMe: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const user = await userService.updateProfile(req.user?.id ?? '', req.body);
+      res.json({ success: true, message: 'Profile updated', data: user });
+    } catch (error) {
+      next(error);
+    }
+  },
   getDashboard: async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const limit = Number(req.query.limit ?? 20);

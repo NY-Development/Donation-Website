@@ -102,6 +102,11 @@ export interface UserDashboard {
     id: string;
     amount: number;
     campaign: string;
+    campaignTitle?: string;
+    campaignData?: {
+      _id?: string;
+      title?: string;
+    };
     createdAt: string;
   }>;
 }

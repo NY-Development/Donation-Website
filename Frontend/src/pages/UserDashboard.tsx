@@ -499,7 +499,9 @@ const UserDashboard: React.FC = () => {
                     <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-xl flex items-center justify-between border border-gray-100 dark:border-gray-800">
                       <div className="flex items-center gap-3">
                         <CheckCircle className="size-4 text-primary" aria-hidden="true" />
-                        <span className="font-bold">Campaign {item.campaign}</span>
+                        <span className="font-bold">
+                          {item.campaignTitle ?? item.campaignData?.title ?? `Campaign ${item.campaign}`}
+                        </span>
                       </div>
                       <span className="font-bold">ETB {item.amount.toFixed(2)}</span>
                     </div>

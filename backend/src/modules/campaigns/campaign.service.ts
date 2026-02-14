@@ -45,7 +45,7 @@ export const campaignService = {
     }
 
     const cacheKey = `campaigns:list:${JSON.stringify(query)}`;
-    const cached = await cache.get(cacheKey);
+    const cached = await cache.get(cacheKey) as { data?: any[]; nextCursor?: string | null } | null;
     if (cached) {
       const now = new Date();
       const expiredIds = (cached.data ?? [])
@@ -61,7 +61,7 @@ export const campaignService = {
             campaignRepository.updateById(campaignId, { status: 'closed', closedAt: now })
           )
         );
-        cached.data.forEach((campaign: { _id?: string; status?: string; closedAt?: Date }) => {
+        (cached.data ?? []).forEach((campaign: { _id?: string; status?: string; closedAt?: Date }) => {
           if (campaign._id && expiredIds.includes(campaign._id)) {
             campaign.status = 'closed';
             campaign.closedAt = now;

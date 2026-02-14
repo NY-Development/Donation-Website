@@ -26,5 +26,17 @@ export const getErrorMessage = (error: unknown) => {
     (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
     (error instanceof Error ? error.message : null);
 
-  return message || 'Something went wrong. Please try again.';
+  if (!message) {
+    return 'Something went wrong. Please try again.';
+  }
+
+  const normalized = message.toLowerCase();
+  if (normalized.includes('cannot call') && normalized.includes('mongoose') && normalized.includes('connection')) {
+    return 'We are having trouble connecting right now. Please try again in a moment.';
+  }
+  if (normalized.includes('database unavailable')) {
+    return 'Service is temporarily unavailable. Please try again shortly.';
+  }
+
+  return message;
 };

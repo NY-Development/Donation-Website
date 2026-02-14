@@ -63,6 +63,22 @@ export const authController = {
       next(error);
     }
   },
+  forgotPassword: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await authService.forgotPassword(req.body.email);
+      res.json({ success: true, message: 'Password reset started' });
+    } catch (error) {
+      next(error);
+    }
+  },
+  resetPassword: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await authService.resetPassword(req.body.email, req.body.password);
+      res.json({ success: true, message: 'Password reset successful' });
+    } catch (error) {
+      next(error);
+    }
+  },
   refresh: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const result = await authService.refresh(req.body.refreshToken);

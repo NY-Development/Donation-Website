@@ -21,6 +21,7 @@ export const donationRepository = {
     return DonationModel.find({ user: userId, status: 'succeeded', ...cursorFilter })
       .sort({ createdAt: -1, _id: -1 })
       .limit(limit)
+        .populate('campaign', 'title')
       .lean();
   },
   sumTotalDonations: async () => {

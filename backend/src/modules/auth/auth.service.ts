@@ -72,6 +72,35 @@ export const authService = {
       refreshToken: signRefreshToken({ userId: user._id.toString(), role: user.role, tokenId })
     };
   },
+  forgotPassword: async (email: string) => {
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+      return { ok: true };
+    }
+
+    const temporary = uuidv4();
+    const hashed = await bcrypt.hash(temporary, 12);
+    await userRepository.updateById(user._id.toString(), {
+      password: hashed,
+      refreshTokens: []
+    } as never);
+
+    return { ok: true };
+  },
+  resetPassword: async (email: string, password: string) => {
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+      throw { status: 404, message: 'User not found' };
+    }
+
+    const hashed = await bcrypt.hash(password, 12);
+    await userRepository.updateById(user._id.toString(), {
+      password: hashed,
+      refreshTokens: []
+    } as never);
+
+    return { ok: true };
+  },
   verifyOtp: async (payload: { email: string; otp: string }) => {
     const user = await UserModel.findOne({ email: payload.email }).select(
       '+emailVerificationOtpHash +emailVerificationOtpExpires'

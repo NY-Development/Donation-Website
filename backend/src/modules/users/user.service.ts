@@ -11,6 +11,30 @@ export const userService = {
     }
     return user;
   },
+  updateProfile: async (userId: string, payload: { name?: string; email?: string }) => {
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      throw { status: 404, message: 'User not found' };
+    }
+
+    if (payload.email && payload.email !== user.email) {
+      const existing = await userRepository.findByEmail(payload.email);
+      if (existing && existing._id.toString() !== userId) {
+        throw { status: 409, message: 'Email already in use' };
+      }
+    }
+
+    const updated = await userRepository.updateById(userId, {
+      name: payload.name ?? user.name,
+      email: payload.email ?? user.email
+    });
+
+    if (!updated) {
+      throw { status: 404, message: 'User not found' };
+    }
+
+    return userRepository.findByIdLean(updated._id.toString());
+  },
   getDashboard: async (userId: string, limit = 20, cursor?: string) => {
     const [donations, user, campaignsSupported] = await Promise.all([
       donationRepository.findByUserCursor(userId, limit, cursor),
@@ -35,7 +59,18 @@ export const userService = {
       timeline: donations.map((donation) => ({
         id: donation._id.toString(),
         amount: donation.amount,
-        campaign: donation.campaign,
+        campaign: typeof donation.campaign === 'string' ? donation.campaign : donation.campaign?._id?.toString(),
+        campaignTitle:
+          typeof donation.campaign === 'object' && donation.campaign
+            ? (donation.campaign as { title?: string }).title
+            : undefined,
+        campaignData:
+          typeof donation.campaign === 'object' && donation.campaign
+            ? {
+                _id: donation.campaign._id?.toString(),
+                title: (donation.campaign as { title?: string }).title
+              }
+            : undefined,
         createdAt: donation.createdAt
       }))
     };

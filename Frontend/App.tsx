@@ -37,6 +37,8 @@ const Eula = React.lazy(() => import('./src/pages/Eula'));
 const Terms = React.lazy(() => import('./src/pages/Terms'));
 const Privacy = React.lazy(() => import('./src/pages/Privacy'));
 const ForgotPassword = React.lazy(() => import('./src/pages/ForgotPassword'));
+const ResetPassword = React.lazy(() => import('./src/pages/ResetPassword'));
+const Protection = React.lazy(() => import('./src/pages/Protection'));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -171,6 +173,7 @@ const App: React.FC = () => {
               <Route path="/signup" element={<Signup />} />
               <Route path="/verify-otp" element={<VerifyOtp />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset" element={<ResetPassword />} />
               <Route path="/success" element={<Success />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/for-nonprofits" element={<ForNonprofits />} />
@@ -180,6 +183,7 @@ const App: React.FC = () => {
               <Route path="/eula" element={<Eula />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/protection" element={<Protection />} />
             </Routes>
           </Suspense>
         </main>
