@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@jvhaile/cbe-verifier": "^1.0.7",
     "@syncfusion/ej2-react-buttons": "^27.1.48",
     "@syncfusion/ej2-react-grids": "^27.1.48",
     "@syncfusion/ej2-react-navigations": "^27.1.48",

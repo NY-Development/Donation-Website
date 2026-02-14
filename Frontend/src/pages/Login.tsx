@@ -32,7 +32,8 @@ const Login: React.FC = () => {
 
     const success = await login(parsed.data);
     if (success) {
-      navigate(user?.role === 'admin' ? '/admin' : '/dashboard');
+      const role = useAuthStore.getState().user?.role;
+      navigate(role === 'admin' ? '/admin' : '/dashboard');
     }
   };
 

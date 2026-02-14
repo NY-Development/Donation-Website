@@ -24,6 +24,10 @@ const rejectionSchema = z.object({
   reason: z.string().min(3).optional()
 });
 
+const requestRejectSchema = z.object({
+  reason: z.string().min(3).optional()
+});
+
 const settingsSchema = z.object({
   platformName: z.string().min(2).optional(),
   supportEmail: z.string().email().optional(),
@@ -53,7 +57,14 @@ router.get('/overview', requireAuth, requireRole(['admin']), adminLimiter, admin
 router.get('/trends', requireAuth, requireRole(['admin']), adminLimiter, validate(trendsQuerySchema, 'query'), adminController.getTrends);
 router.get('/top-campaigns', requireAuth, requireRole(['admin']), adminLimiter, validate(topCampaignsQuerySchema, 'query'), adminController.getTopCampaigns);
 router.get('/users', requireAuth, requireRole(['admin']), adminLimiter, adminController.getUsers);
+router.delete('/users', requireAuth, requireRole(['admin']), adminLimiter, adminController.deleteAllUsers);
+router.delete('/users/:id', requireAuth, requireRole(['admin']), adminLimiter, validate(idSchema, 'params'), adminController.deleteUser);
 router.patch('/campaigns/:id/verify', requireAuth, requireRole(['admin']), adminLimiter, validate(idSchema, 'params'), validate(verifySchema, 'body'), adminController.verifyCampaign);
+router.delete('/campaigns', requireAuth, requireRole(['admin']), adminLimiter, adminController.deleteAllCampaigns);
+router.delete('/campaigns/:id', requireAuth, requireRole(['admin']), adminLimiter, validate(idSchema, 'params'), adminController.deleteCampaign);
+router.get('/campaign-requests', requireAuth, requireRole(['admin']), adminLimiter, adminController.getCampaignActionRequests);
+router.post('/campaign-requests/:id/approve', requireAuth, requireRole(['admin']), adminLimiter, validate(idSchema, 'params'), adminController.approveCampaignActionRequest);
+router.post('/campaign-requests/:id/reject', requireAuth, requireRole(['admin']), adminLimiter, validate(idSchema, 'params'), validate(requestRejectSchema, 'body'), adminController.rejectCampaignActionRequest);
 router.get('/organizer-verifications', requireAuth, requireRole(['admin']), adminLimiter, adminController.getOrganizerVerifications);
 router.post('/organizer-verifications/:userId/approve', requireAuth, requireRole(['admin']), adminLimiter, validate(userIdSchema, 'params'), adminController.approveOrganizer);
 router.post('/organizer-verifications/:userId/reject', requireAuth, requireRole(['admin']), adminLimiter, validate(userIdSchema, 'params'), validate(rejectionSchema, 'body'), adminController.rejectOrganizer);

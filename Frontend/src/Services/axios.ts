@@ -87,8 +87,13 @@ api.interceptors.response.use(
       }
       return api(original);
     } catch (refreshError) {
-      tokenStorage.clear();
-      resolveQueue(null);
+      const status = (refreshError as AxiosError | undefined)?.response?.status;
+      if (status === 401 || status === 403) {
+        tokenStorage.clear();
+        resolveQueue(null);
+      } else {
+        resolveQueue(tokenStorage.getAccessToken());
+      }
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;

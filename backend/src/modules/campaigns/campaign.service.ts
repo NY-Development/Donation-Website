@@ -3,6 +3,7 @@ import { Types } from 'mongoose';
 import { cache } from '../../utils/cache';
 import { buildCursorFilter, makeCursor } from '../../utils/pagination';
 import { campaignRepository } from './campaign.repository';
+import { campaignActionRequestRepository } from './campaignActionRequest.repository';
 import { donationRepository } from '../donations/donation.repository';
 import { userRepository } from '../users/user.repository';
 import { sendCampaignCreatedEmail } from '../../utils/mailer';
@@ -101,6 +102,7 @@ export const campaignService = {
       urgent: payload.urgent,
       fundingStyle: payload.fundingStyle ?? 'keep',
       organizer: new Types.ObjectId(payload.organizerId),
+      createdBy: new Types.ObjectId(payload.organizerId),
       status: 'draft'
     });
     const organizer = await userRepository.findByIdLean(payload.organizerId);
@@ -157,5 +159,31 @@ export const campaignService = {
     };
     await cache.set('stats:global', response, 60);
     return response;
+  },
+  createActionRequest: async (payload: { campaignId: string; userId: string; action: 'pause' | 'delete'; message: string }) => {
+    const campaign = await campaignRepository.findById(payload.campaignId);
+    if (!campaign) {
+      throw { status: 404, message: 'Campaign not found' };
+    }
+
+    const ownerId = campaign.organizer.toString();
+    const createdById = (campaign as { createdBy?: { toString: () => string } }).createdBy?.toString?.();
+    if (ownerId !== payload.userId && createdById !== payload.userId) {
+      throw { status: 403, message: 'You are not allowed to modify this campaign' };
+    }
+
+    const existing = await campaignActionRequestRepository.findPendingByCampaignAndAction(payload.campaignId, payload.action);
+    if (existing) {
+      throw { status: 409, message: 'A pending request already exists for this campaign' };
+    }
+
+    const request = await campaignActionRequestRepository.create({
+      campaign: payload.campaignId,
+      requestedBy: payload.userId,
+      action: payload.action,
+      message: payload.message
+    });
+
+    return { requestId: request._id.toString(), status: request.status };
   }
 };

@@ -24,8 +24,10 @@ const AdminUserManagement: React.FC = () => {
   const [search, setSearch] = useState('');
   const [role, setRole] = useState<'all' | 'donor' | 'organizer' | 'admin'>('all');
   const [verification, setVerification] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  const [actionId, setActionId] = useState<string | null>(null);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
 
-  const { data, isError } = useQuery({
+  const { data, isError, refetch } = useQuery({
     queryKey: ['admin', 'users', search, role, verification],
     queryFn: async () => {
       const response = await adminService.getUsers({
@@ -46,6 +48,32 @@ const AdminUserManagement: React.FC = () => {
       pending: users.filter((user) => user.verificationStatus === 'pending').length
     };
   }, [users]);
+
+  const handleDeleteUser = async (userId: string) => {
+    const confirmed = window.confirm('Delete this user and their related data? This cannot be undone.');
+    if (!confirmed) return;
+
+    setActionId(userId);
+    try {
+      await adminService.deleteUser(userId);
+      await refetch();
+    } finally {
+      setActionId(null);
+    }
+  };
+
+  const handleDeleteAllUsers = async () => {
+    const confirmed = window.confirm('Delete all non-admin users and their related data? This cannot be undone.');
+    if (!confirmed) return;
+
+    setBulkDeleting(true);
+    try {
+      await adminService.deleteAllUsers();
+      await refetch();
+    } finally {
+      setBulkDeleting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -129,9 +157,14 @@ const AdminUserManagement: React.FC = () => {
                 <option value="organizer">Organizers</option>
                 <option value="admin">Admins</option>
               </select>
-              <button className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-primary text-white rounded-lg hover:opacity-90 transition-opacity">
-                <span className="material-icons-round text-sm">person_add</span>
-                Invite User
+              <button
+                type="button"
+                onClick={handleDeleteAllUsers}
+                disabled={bulkDeleting}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-60"
+              >
+                <span className="material-icons-round text-sm">delete_forever</span>
+                {bulkDeleting ? 'Deleting...' : 'Delete All Users'}
               </button>
             </div>
           </div>
@@ -144,6 +177,7 @@ const AdminUserManagement: React.FC = () => {
                   <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800">Role</th>
                   <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800">Verification</th>
                   <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 text-center">Joined</th>
+                  <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -168,11 +202,21 @@ const AdminUserManagement: React.FC = () => {
                     <td className="px-6 py-4 text-center text-xs text-slate-500">
                       {new Date(user.createdAt).toLocaleDateString()}
                     </td>
+                    <td className="px-6 py-4 text-right">
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteUser(user.id)}
+                        disabled={actionId === user.id || user.role === 'admin'}
+                        className="text-xs font-semibold text-red-600 hover:text-red-700 disabled:opacity-50"
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))}
                 {users.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="px-6 py-8 text-center text-sm text-slate-500">
+                    <td colSpan={5} className="px-6 py-8 text-center text-sm text-slate-500">
                       No users found.
                     </td>
                   </tr>

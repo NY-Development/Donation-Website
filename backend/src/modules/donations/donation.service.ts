@@ -1,12 +1,8 @@
 import { stripe, paymentProvider } from '../../config/payment';
 import { Types } from 'mongoose';
-import { env } from '../../config/env';
 import { donationRepository } from './donation.repository';
 import { campaignRepository } from '../campaigns/campaign.repository';
-import { userRepository } from '../users/user.repository';
-import { donationQueue } from '../../utils/queue';
-import { cache } from '../../utils/cache';
-import { detectTransactionId, verify } from '@jvhaile/cbe-verifier';
+import { cloudinary } from '../../config/cloudinary';
 
 export const donationService = {
   createCheckout: async (payload: { campaignId: string; amount: number; userId?: string }) => {
@@ -17,6 +13,9 @@ export const donationService = {
     const campaign = await campaignRepository.findById(payload.campaignId);
     if (!campaign) {
       throw { status: 404, message: 'Campaign not found' };
+    }
+    if (campaign.status === 'paused') {
+      throw { status: 400, message: 'Campaign is paused and cannot accept donations' };
     }
     if (campaign.status !== 'approved') {
       throw { status: 400, message: 'Campaign is not accepting donations' };
@@ -59,46 +58,15 @@ export const donationService = {
     if (!campaign) {
       throw { status: 404, message: 'Campaign not found' };
     }
-
-    if (!env.CBE_VERIFICATION_URL) {
-      throw { status: 400, message: 'CBE verification URL is not configured' };
+    const trimmedTransactionId = payload.transactionId?.trim();
+    if (!trimmedTransactionId && !payload.screenshotBuffer) {
+      throw { status: 400, message: 'Transaction ID or QR screenshot is required' };
     }
 
-    let transactionId = payload.transactionId?.trim();
-    let detectionSource: 'QR_CODE' | 'TEXT_RECOGNITION' | 'MANUAL' | undefined = transactionId ? 'MANUAL' : undefined;
-
-    if (!transactionId && payload.screenshotBuffer) {
-      const detection = await detectTransactionId(payload.screenshotBuffer, {
-        googleVisionAPIKey: env.GOOGLE_VISION_API_KEY
-      });
-      if (!detection) {
-        throw { status: 400, message: 'Unable to detect transaction ID from the screenshot' };
-      }
-      transactionId = detection.value;
-      detectionSource = detection.detectedFrom;
-    }
-
-    if (!transactionId) {
-      throw { status: 400, message: 'Transaction ID is required' };
-    }
-
-    const verificationResult = await verify({
-      transactionId,
-      accountNumberOfSenderOrReceiver: campaign.cbeAccountNumber,
-      cbeVerificationUrl: env.CBE_VERIFICATION_URL
-    });
-
-    if (verificationResult.isLeft()) {
-      throw { status: 400, message: `Verification failed: ${verificationResult.value.type}` };
-    }
-
-    const verified = verificationResult.value;
-    if (typeof verified.amount === 'number') {
-      const expected = Math.round(payload.amount * 100);
-      const actual = Math.round(verified.amount * 100);
-      if (expected !== actual) {
-        throw { status: 400, message: 'Verified amount does not match the selected donation amount' };
-      }
+    let screenshotUpload: { secure_url?: string; public_id?: string } | null = null;
+    if (payload.screenshotBuffer) {
+      const dataUri = `data:image/png;base64,${payload.screenshotBuffer.toString('base64')}`;
+      screenshotUpload = await cloudinary.uploader.upload(dataUri, { folder: 'donations' });
     }
 
     const donation = await donationRepository.create({
@@ -106,35 +74,19 @@ export const donationService = {
       campaign: new Types.ObjectId(payload.campaignId),
       amount: payload.amount,
       paymentProvider: 'cbe',
-      status: 'succeeded',
-      transactionId,
-      verificationMethod: payload.transactionId ? 'transaction_id' : 'qr_code',
-      verificationSource: detectionSource,
+      status: 'pending',
+      transactionId: trimmedTransactionId,
+      verificationMethod: trimmedTransactionId ? 'transaction_id' : 'qr_code',
+      verificationSource: trimmedTransactionId ? 'MANUAL' : undefined,
       verificationDetails: {
-        ...verified,
-        donorName: payload.donorName
+        donorName: payload.donorName,
+        screenshotUrl: screenshotUpload?.secure_url,
+        screenshotPublicId: screenshotUpload?.public_id,
+        submittedAt: new Date()
       }
     });
 
-    const updatedCampaign = await campaignRepository.incrementRaisedAmount(donation.campaign.toString(), donation.amount);
-    if (donation.user) {
-      await userRepository.updateById(donation.user.toString(), { $inc: { totalDonated: donation.amount } } as never);
-    }
-    if (updatedCampaign && updatedCampaign.raisedAmount >= updatedCampaign.goalAmount && !updatedCampaign.isSuccessStory) {
-      await campaignRepository.updateById(updatedCampaign._id.toString(), {
-        isSuccessStory: true,
-        goalReachedAt: new Date()
-      });
-    }
-    await cache.del('stats:global');
-    await cache.del('campaigns:featured');
-    await cache.invalidateByPrefix('campaigns:list:');
-
-    if (donationQueue) {
-      await donationQueue.add('donation_succeeded', { transactionId });
-    }
-
-    return { donationId: donation._id.toString(), verified };
+    return { donationId: donation._id.toString(), pending: true };
   },
   handleWebhook: async (signature: string | string[] | undefined, payload: Buffer) => {
     if (paymentProvider !== 'stripe' || !stripe) {

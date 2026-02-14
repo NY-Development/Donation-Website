@@ -86,5 +86,18 @@ export const campaignController = {
     } catch (error) {
       next(error);
     }
+  },
+  requestAction: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const data = await campaignService.createActionRequest({
+        campaignId: req.params.id,
+        userId: req.user?.id ?? '',
+        action: req.body.action,
+        message: req.body.message
+      });
+      res.status(201).json({ success: true, message: 'Request submitted', data });
+    } catch (error) {
+      next(error);
+    }
   }
 };

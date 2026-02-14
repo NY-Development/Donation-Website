@@ -11,8 +11,16 @@ export const adminService = {
     page?: number;
     limit?: number;
   }) => api.get('/admin/users', { params }),
+  deleteUser: (id: string) => api.delete(`/admin/users/${id}`),
+  deleteAllUsers: () => api.delete('/admin/users'),
   verifyCampaign: (id: string, payload: { status: 'approved' | 'rejected' }) =>
     api.patch(`/admin/campaigns/${id}/verify`, payload),
+  deleteCampaign: (id: string) => api.delete(`/admin/campaigns/${id}`),
+  deleteAllCampaigns: () => api.delete('/admin/campaigns'),
+  getCampaignRequests: (params?: { limit?: number }) => api.get('/admin/campaign-requests', { params }),
+  approveCampaignRequest: (id: string) => api.post(`/admin/campaign-requests/${id}/approve`),
+  rejectCampaignRequest: (id: string, payload?: { reason?: string }) =>
+    api.post(`/admin/campaign-requests/${id}/reject`, payload ?? {}),
   getOrganizerVerifications: () => api.get('/admin/organizer-verifications'),
   approveOrganizer: (userId: string) => api.post(`/admin/organizer-verifications/${userId}/approve`),
   rejectOrganizer: (userId: string, payload?: { reason?: string }) =>

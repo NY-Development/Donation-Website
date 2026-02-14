@@ -22,6 +22,11 @@ export const updateCampaignSchema = z.object({
   fundingStyle: z.enum(['keep', 'all_or_nothing']).optional()
 });
 
+export const campaignActionRequestSchema = z.object({
+  action: z.enum(['pause', 'delete']),
+  message: z.string().min(5).max(500)
+});
+
 export const mediaSchema = z.object({
   media: z.array(z.string().min(10)).min(1)
 });

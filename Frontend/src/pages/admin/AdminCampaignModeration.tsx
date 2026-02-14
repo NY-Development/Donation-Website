@@ -5,10 +5,21 @@ import adminService from '../../Services/admin';
 import { getApiData } from '../../store/apiHelpers';
 import type { Campaign } from '../../../types';
 
+type CampaignActionRequest = {
+  id: string;
+  action: 'pause' | 'delete';
+  message: string;
+  createdAt: string;
+  campaign?: { id: string; title: string; status?: string };
+  requestedBy?: { id: string; name: string; email?: string };
+};
+
 const AdminCampaignModeration: React.FC = () => {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<'pending' | 'reported' | 'draft'>('pending');
   const [actionId, setActionId] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
 
   const { data, refetch, isFetching } = useQuery({
     queryKey: ['admin', 'campaigns', status],
@@ -22,6 +33,18 @@ const AdminCampaignModeration: React.FC = () => {
     }
   });
 
+  const {
+    data: requestData,
+    refetch: refetchRequests,
+    isFetching: requestsLoading
+  } = useQuery({
+    queryKey: ['admin', 'campaign-requests'],
+    queryFn: async () => {
+      const response = await adminService.getCampaignRequests({ limit: 20 });
+      return getApiData<CampaignActionRequest[]>(response);
+    }
+  });
+
   const campaigns = useMemo(() => {
     const term = search.trim().toLowerCase();
     return (data?.data ?? []).filter((campaign) => {
@@ -29,6 +52,8 @@ const AdminCampaignModeration: React.FC = () => {
       return `${campaign.title} ${campaign.category}`.toLowerCase().includes(term);
     });
   }, [data, search]);
+
+  const requests = requestData ?? [];
 
   const handleVerify = async (id: string, nextStatus: 'approved' | 'rejected') => {
     setActionId(id);
@@ -38,6 +63,43 @@ const AdminCampaignModeration: React.FC = () => {
     } finally {
       setActionId(null);
     }
+  };
+
+  const handleDelete = async (id: string) => {
+    const confirmed = window.confirm('Delete this campaign and all its donations? This cannot be undone.');
+    if (!confirmed) return;
+
+    setDeleteId(id);
+    try {
+      await adminService.deleteCampaign(id);
+      await refetch();
+    } finally {
+      setDeleteId(null);
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    const confirmed = window.confirm('Delete all campaigns and all donations? This cannot be undone.');
+    if (!confirmed) return;
+
+    setBulkDeleting(true);
+    try {
+      await adminService.deleteAllCampaigns();
+      await refetch();
+    } finally {
+      setBulkDeleting(false);
+    }
+  };
+
+  const handleApproveRequest = async (requestId: string) => {
+    await adminService.approveCampaignRequest(requestId);
+    await refetchRequests();
+  };
+
+  const handleRejectRequest = async (requestId: string) => {
+    const reason = window.prompt('Reason for rejection (optional):') ?? undefined;
+    await adminService.rejectCampaignRequest(requestId, reason ? { reason } : undefined);
+    await refetchRequests();
   };
 
   return (
@@ -56,6 +118,15 @@ const AdminCampaignModeration: React.FC = () => {
             <button className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
               <span className="material-icons text-[18px]">file_download</span>
               Export CSV
+            </button>
+            <button
+              type="button"
+              onClick={handleDeleteAll}
+              disabled={bulkDeleting}
+              className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-60"
+            >
+              <span className="material-icons text-[18px]">delete_forever</span>
+              {bulkDeleting ? 'Deleting...' : 'Delete All'}
             </button>
             <button
               type="button"
@@ -132,7 +203,7 @@ const AdminCampaignModeration: React.FC = () => {
                         type="button"
                         onClick={() => handleVerify(campaign._id, 'approved')}
                         className="bg-primary text-white px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-primary/90"
-                        disabled={actionId === campaign._id}
+                        disabled={actionId === campaign._id || deleteId === campaign._id}
                       >
                         Approve
                       </button>
@@ -140,9 +211,17 @@ const AdminCampaignModeration: React.FC = () => {
                         type="button"
                         onClick={() => handleVerify(campaign._id, 'rejected')}
                         className="px-4 py-1.5 rounded-lg text-sm font-semibold border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
-                        disabled={actionId === campaign._id}
+                        disabled={actionId === campaign._id || deleteId === campaign._id}
                       >
                         Reject
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(campaign._id)}
+                        className="px-4 py-1.5 rounded-lg text-sm font-semibold border border-red-200 text-red-600 hover:text-red-700"
+                        disabled={deleteId === campaign._id || actionId === campaign._id}
+                      >
+                        Delete
                       </button>
                     </div>
                   </td>
@@ -157,6 +236,64 @@ const AdminCampaignModeration: React.FC = () => {
               )}
             </tbody>
           </table>
+        </div>
+
+        <div className="mt-8 bg-white dark:bg-zinc-900 rounded-xl border border-slate-200 dark:border-zinc-800 shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-slate-200 dark:border-zinc-800 flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Campaign Action Requests</h2>
+              <p className="text-xs text-slate-500">Pause or delete requests from campaign owners</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => refetchRequests()}
+              className="flex items-center gap-2 px-3 py-2 text-xs font-semibold border border-slate-200 dark:border-zinc-700 rounded-lg"
+            >
+              <span className="material-icons text-[16px]">refresh</span>
+              {requestsLoading ? 'Syncing...' : 'Refresh'}
+            </button>
+          </div>
+
+          <div className="divide-y divide-slate-200 dark:divide-zinc-800">
+            {requests.map((request) => (
+              <div key={request.id} className="p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    <span className="px-2 py-1 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-600">
+                      {request.action}
+                    </span>
+                    <span>Campaign:</span>
+                    <span className="text-slate-700 dark:text-slate-300">
+                      {request.campaign?.title ?? 'Campaign'}
+                    </span>
+                  </div>
+                  <p className="text-sm text-slate-700 dark:text-slate-200">{request.message}</p>
+                  <p className="text-xs text-slate-500">
+                    Requested by {request.requestedBy?.name ?? 'User'} · {new Date(request.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleApproveRequest(request.id)}
+                    className="px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-white"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleRejectRequest(request.id)}
+                    className="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-zinc-700"
+                  >
+                    Reject
+                  </button>
+                </div>
+              </div>
+            ))}
+            {requests.length === 0 && (
+              <div className="p-6 text-sm text-slate-500">No pending campaign requests.</div>
+            )}
+          </div>
         </div>
       </main>
     </div>

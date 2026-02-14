@@ -4,6 +4,7 @@ import { userRepository } from '../users/user.repository';
 import { UserModel } from '../users/user.model';
 import { cloudinary } from '../../config/cloudinary';
 import { AdminSettingsModel } from './adminSettings.model';
+import { campaignActionRequestRepository } from '../campaigns/campaignActionRequest.repository';
 
 export const adminService = {
   getOverview: async () => {
@@ -207,5 +208,124 @@ export const adminService = {
       throw { status: 404, message: 'User not found' };
     }
     return user;
+  },
+  deleteUser: async (userId: string) => {
+    const user = await UserModel.findById(userId).select('role');
+    if (!user) {
+      throw { status: 404, message: 'User not found' };
+    }
+    if (user.role === 'admin') {
+      throw { status: 403, message: 'Admin accounts cannot be deleted' };
+    }
+
+    const campaignIds = await campaignRepository.findIdsByOwnerIds([userId]);
+    await donationRepository.deleteByCampaignIds(campaignIds);
+    await donationRepository.deleteByUserId(userId);
+    await campaignRepository.deleteByOwnerIds([userId]);
+    await userRepository.deleteById(userId);
+
+    return { deletedUserId: userId, deletedCampaigns: campaignIds.length };
+  },
+  deleteAllUsers: async () => {
+    const userIds = await UserModel.find({ role: { $ne: 'admin' } }).select('_id').lean();
+    const ids = userIds.map((item) => item._id.toString());
+
+    const campaignIds = await campaignRepository.findIdsByOwnerIds(ids);
+    await donationRepository.deleteByCampaignIds(campaignIds);
+    await donationRepository.deleteByUserIds(ids);
+    await campaignRepository.deleteByOwnerIds(ids);
+    const userResult = await userRepository.deleteAllExceptAdmins();
+
+    return {
+      deletedUsers: userResult.deletedCount ?? 0,
+      deletedCampaigns: campaignIds.length
+    };
+  },
+  deleteCampaign: async (campaignId: string) => {
+    const campaign = await campaignRepository.findById(campaignId);
+    if (!campaign) {
+      throw { status: 404, message: 'Campaign not found' };
+    }
+
+    await donationRepository.deleteByCampaignIds([campaignId]);
+    await campaignRepository.deleteById(campaignId);
+
+    return { deletedCampaignId: campaignId };
+  },
+  deleteAllCampaigns: async () => {
+    const donationResult = await donationRepository.deleteAll();
+    const campaignResult = await campaignRepository.deleteAll();
+
+    return {
+      deletedDonations: donationResult.deletedCount ?? 0,
+      deletedCampaigns: campaignResult.deletedCount ?? 0
+    };
+  },
+  getCampaignActionRequests: async (limit = 20) => {
+    const requests = await campaignActionRequestRepository.findPending(limit);
+    return requests.map((request) => ({
+      id: request._id.toString(),
+      action: request.action,
+      message: request.message,
+      createdAt: request.createdAt,
+      campaign: request.campaign && typeof request.campaign === 'object'
+        ? {
+            id: (request.campaign as { _id?: { toString: () => string }; title?: string; status?: string })._id?.toString() ?? '',
+            title: (request.campaign as { title?: string }).title ?? 'Campaign',
+            status: (request.campaign as { status?: string }).status
+          }
+        : undefined,
+      requestedBy: request.requestedBy && typeof request.requestedBy === 'object'
+        ? {
+            id: (request.requestedBy as { _id?: { toString: () => string } })._id?.toString() ?? '',
+            name: (request.requestedBy as { name?: string }).name ?? 'User',
+            email: (request.requestedBy as { email?: string }).email
+          }
+        : undefined
+    }));
+  },
+  approveCampaignActionRequest: async (requestId: string, adminId: string) => {
+    const request = await campaignActionRequestRepository.findById(requestId);
+    if (!request) {
+      throw { status: 404, message: 'Request not found' };
+    }
+    if (request.status !== 'pending') {
+      throw { status: 400, message: 'Request already processed' };
+    }
+
+    const campaignId = request.campaign.toString();
+    if (request.action === 'pause') {
+      await campaignRepository.updateById(campaignId, { status: 'paused' } as never);
+    }
+    if (request.action === 'delete') {
+      await donationRepository.deleteByCampaignIds([campaignId]);
+      await campaignRepository.deleteById(campaignId);
+    }
+
+    const updated = await campaignActionRequestRepository.updateStatus(requestId, {
+      status: 'approved',
+      reviewedBy: adminId,
+      reviewedAt: new Date()
+    });
+
+    return updated;
+  },
+  rejectCampaignActionRequest: async (requestId: string, adminId: string, reason?: string) => {
+    const request = await campaignActionRequestRepository.findById(requestId);
+    if (!request) {
+      throw { status: 404, message: 'Request not found' };
+    }
+    if (request.status !== 'pending') {
+      throw { status: 400, message: 'Request already processed' };
+    }
+
+    const updated = await campaignActionRequestRepository.updateStatus(requestId, {
+      status: 'rejected',
+      reviewedBy: adminId,
+      reviewedAt: new Date(),
+      rejectionReason: reason
+    });
+
+    return updated;
   }
 };

@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { DonationDocument, DonationModel } from './donation.model';
 import { buildCursorFilter } from '../../utils/pagination';
 
@@ -52,5 +53,76 @@ export const donationRepository = {
       total: item.total as number,
       count: item.count as number
     }));
-  }
+  },
+  aggregateCampaignStats: async (campaignIds: string[]) => {
+    if (!campaignIds.length) {
+      return [] as Array<{
+        campaignId: string;
+        total: number;
+        donationsCount: number;
+        donorsCount: number;
+        lastDonationAt?: Date;
+      }>;
+    }
+
+    const ids = campaignIds.map((id) => new Types.ObjectId(id));
+    const results = await DonationModel.aggregate([
+      { $match: { status: 'succeeded', campaign: { $in: ids } } },
+      {
+        $group: {
+          _id: '$campaign',
+          total: { $sum: '$amount' },
+          donationsCount: { $sum: 1 },
+          donors: { $addToSet: '$user' },
+          lastDonationAt: { $max: '$createdAt' }
+        }
+      },
+      {
+        $project: {
+          total: 1,
+          donationsCount: 1,
+          lastDonationAt: 1,
+          donorsCount: { $size: { $setDifference: ['$donors', [null]] } }
+        }
+      }
+    ]);
+
+    return results.map((item) => ({
+      campaignId: item._id.toString(),
+      total: item.total as number,
+      donationsCount: item.donationsCount as number,
+      donorsCount: item.donorsCount as number,
+      lastDonationAt: item.lastDonationAt as Date | undefined
+    }));
+  },
+  findPendingByCampaignIds: (campaignIds: string[], limit = 20) => {
+    if (!campaignIds.length) {
+      return Promise.resolve([]);
+    }
+
+    return DonationModel.find({
+      campaign: { $in: campaignIds.map((id) => new Types.ObjectId(id)) },
+      status: 'pending',
+      paymentProvider: 'cbe'
+    })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .select('campaign amount transactionId verificationMethod verificationDetails createdAt user')
+      .populate('user', 'name email')
+      .lean();
+  },
+  deleteByCampaignIds: (campaignIds: string[]) => {
+    if (!campaignIds.length) {
+      return Promise.resolve({ deletedCount: 0 });
+    }
+    return DonationModel.deleteMany({ campaign: { $in: campaignIds.map((id) => new Types.ObjectId(id)) } });
+  },
+  deleteByUserId: (userId: string) => DonationModel.deleteMany({ user: new Types.ObjectId(userId) }),
+  deleteByUserIds: (userIds: string[]) => {
+    if (!userIds.length) {
+      return Promise.resolve({ deletedCount: 0 });
+    }
+    return DonationModel.deleteMany({ user: { $in: userIds.map((id) => new Types.ObjectId(id)) } });
+  },
+  deleteAll: () => DonationModel.deleteMany({})
 };

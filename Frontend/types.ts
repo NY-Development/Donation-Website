@@ -8,6 +8,7 @@ export type ApiResponse<T> = {
 };
 
 export interface UserProfile {
+  id?: string;
   _id: string;
   name: string;
   email: string;
@@ -35,11 +36,12 @@ export interface Campaign {
   goalAmount: number;
   raisedAmount: number;
   cbeAccountNumber: string;
-  status: 'draft' | 'pending_verification' | 'approved' | 'rejected';
+  status: 'draft' | 'pending_verification' | 'approved' | 'rejected' | 'paused';
   media: string[];
   isSuccessStory?: boolean;
   goalReachedAt?: string;
   organizer: string;
+  createdBy?: string;
   createdAt: string;
   location?: string;
   urgent?: boolean;
@@ -98,6 +100,47 @@ export interface UserDashboard {
     campaign: string;
     createdAt: string;
   }>;
+}
+
+export interface UserCampaignAnalytics {
+  _id: string;
+  title: string;
+  category: string;
+  status: Campaign['status'];
+  goalAmount: number;
+  raisedAmount: number;
+  createdAt: string;
+  media: string[];
+  donorsCount: number;
+  lastDonationAt?: string;
+}
+
+export interface UserCampaignDashboard {
+  summary: {
+    totalCampaigns: number;
+    activeCampaigns: number;
+    successStories: number;
+    totalRaised: number;
+    avgProgress: number;
+  };
+  campaigns: UserCampaignAnalytics[];
+}
+
+export interface PendingDonationItem {
+  id: string;
+  campaignId: string;
+  campaignTitle: string;
+  amount: number;
+  transactionId?: string;
+  verificationMethod?: 'transaction_id' | 'qr_code';
+  screenshotUrl?: string;
+  donorName?: string;
+  createdAt: string;
+}
+
+export interface OrganizerPendingDonations {
+  totalPending: number;
+  donations: PendingDonationItem[];
 }
 
 export interface AdminOverview {

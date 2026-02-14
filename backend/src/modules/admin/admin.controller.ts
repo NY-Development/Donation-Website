@@ -90,5 +90,62 @@ export const adminController = {
     } catch (error) {
       next(error);
     }
+  },
+  deleteUser: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const data = await adminService.deleteUser(req.params.id);
+      res.json({ success: true, message: 'User deleted', data });
+    } catch (error) {
+      next(error);
+    }
+  },
+  deleteAllUsers: async (_req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const data = await adminService.deleteAllUsers();
+      res.json({ success: true, message: 'Users deleted', data });
+    } catch (error) {
+      next(error);
+    }
+  },
+  deleteCampaign: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const data = await adminService.deleteCampaign(req.params.id);
+      res.json({ success: true, message: 'Campaign deleted', data });
+    } catch (error) {
+      next(error);
+    }
+  },
+  deleteAllCampaigns: async (_req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const data = await adminService.deleteAllCampaigns();
+      res.json({ success: true, message: 'Campaigns deleted', data });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getCampaignActionRequests: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const limit = req.query.limit ? Number(req.query.limit) : 20;
+      const data = await adminService.getCampaignActionRequests(limit);
+      res.json({ success: true, message: 'Campaign action requests fetched', data });
+    } catch (error) {
+      next(error);
+    }
+  },
+  approveCampaignActionRequest: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const data = await adminService.approveCampaignActionRequest(req.params.id, req.user?.id ?? '');
+      res.json({ success: true, message: 'Request approved', data });
+    } catch (error) {
+      next(error);
+    }
+  },
+  rejectCampaignActionRequest: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const data = await adminService.rejectCampaignActionRequest(req.params.id, req.user?.id ?? '', req.body.reason);
+      res.json({ success: true, message: 'Request rejected', data });
+    } catch (error) {
+      next(error);
+    }
   }
 };

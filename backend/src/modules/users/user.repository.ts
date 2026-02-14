@@ -12,5 +12,7 @@ export const userRepository = {
   removeRefreshToken: (id: string, tokenId: string) =>
     UserModel.findByIdAndUpdate(id, { $pull: { refreshTokens: tokenId } }),
   findOne: (filter: FilterQuery<UserDocument>) => UserModel.findOne(filter),
-  count: () => UserModel.countDocuments()
+  count: () => UserModel.countDocuments(),
+  deleteById: (id: string) => UserModel.findByIdAndDelete(id),
+  deleteAllExceptAdmins: () => UserModel.deleteMany({ role: { $ne: 'admin' } })
 };

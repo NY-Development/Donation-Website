@@ -1,6 +1,7 @@
 import { donationRepository } from '../donations/donation.repository';
 import { userRepository } from './user.repository';
 import { makeCursor } from '../../utils/pagination';
+import { campaignRepository } from '../campaigns/campaign.repository';
 
 export const userService = {
   getProfile: async (userId: string) => {
@@ -62,5 +63,89 @@ export const userService = {
     }
 
     return output;
+  },
+  getMyCampaigns: async (userId: string, limit = 12) => {
+    const campaigns = await campaignRepository.findByOrganizer(userId, limit);
+    const campaignIds = campaigns.map((campaign) => campaign._id.toString());
+    const stats = await donationRepository.aggregateCampaignStats(campaignIds);
+    const statsMap = new Map(stats.map((item) => [item.campaignId, item]));
+
+    const summary = campaigns.reduce(
+      (acc, campaign) => {
+        const progress = campaign.goalAmount > 0 ? (campaign.raisedAmount / campaign.goalAmount) * 100 : 0;
+        const isActive = campaign.status === 'approved';
+        const isSuccess = campaign.raisedAmount >= campaign.goalAmount;
+
+        acc.totalCampaigns += 1;
+        acc.totalRaised += campaign.raisedAmount;
+        acc.activeCampaigns += isActive ? 1 : 0;
+        acc.successStories += isSuccess ? 1 : 0;
+        acc.progressTotal += progress;
+
+        return acc;
+      },
+      { totalCampaigns: 0, totalRaised: 0, activeCampaigns: 0, successStories: 0, progressTotal: 0 }
+    );
+
+    const avgProgress = summary.totalCampaigns ? summary.progressTotal / summary.totalCampaigns : 0;
+
+    return {
+      summary: {
+        totalCampaigns: summary.totalCampaigns,
+        activeCampaigns: summary.activeCampaigns,
+        successStories: summary.successStories,
+        totalRaised: summary.totalRaised,
+        avgProgress
+      },
+      campaigns: campaigns.map((campaign) => {
+        const stat = statsMap.get(campaign._id.toString());
+        return {
+          _id: campaign._id.toString(),
+          title: campaign.title,
+          category: campaign.category,
+          status: campaign.status,
+          goalAmount: campaign.goalAmount,
+          raisedAmount: campaign.raisedAmount,
+          createdAt: campaign.createdAt,
+          media: campaign.media ?? [],
+          donorsCount: stat?.donorsCount ?? 0,
+          lastDonationAt: stat?.lastDonationAt
+        };
+      })
+    };
+  },
+  getPendingDonations: async (userId: string, limit = 20) => {
+    const campaigns = await campaignRepository.findByOrganizer(userId, 50);
+    const campaignIds = campaigns.map((campaign) => campaign._id.toString());
+    if (!campaignIds.length) {
+      return { totalPending: 0, donations: [] };
+    }
+
+    const campaignMap = new Map(campaigns.map((campaign) => [campaign._id.toString(), campaign]));
+    const donations = await donationRepository.findPendingByCampaignIds(campaignIds, limit);
+
+    const formatted = donations.map((donation) => {
+      const campaignId = donation.campaign.toString();
+      const campaign = campaignMap.get(campaignId);
+      const details = (donation.verificationDetails ?? {}) as {
+        donorName?: string;
+        screenshotUrl?: string;
+      };
+      const user = donation.user as { name?: string } | undefined;
+
+      return {
+        id: donation._id.toString(),
+        campaignId,
+        campaignTitle: campaign?.title ?? 'Campaign',
+        amount: donation.amount,
+        transactionId: donation.transactionId,
+        verificationMethod: donation.verificationMethod,
+        screenshotUrl: details.screenshotUrl,
+        donorName: details.donorName ?? user?.name,
+        createdAt: donation.createdAt
+      };
+    });
+
+    return { totalPending: formatted.length, donations: formatted };
   }
 };

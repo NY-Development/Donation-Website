@@ -34,6 +34,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       const response = await campaignService.getAll(params);
       const data = getApiData<CampaignListResponse>(response);
       const campaigns = data?.data ?? [];
+      console.log(campaigns)
       const nextCursor = data?.nextCursor ?? null;
       set({
         campaigns: reset ? campaigns : [...get().campaigns, ...campaigns],

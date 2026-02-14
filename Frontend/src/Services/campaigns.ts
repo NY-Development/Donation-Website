@@ -26,6 +26,8 @@ export const campaignService = {
   update: (id: string, payload: unknown) => api.patch(`/campaigns/${id}`, payload),
   uploadMedia: (id: string, payload: unknown) => api.post(`/campaigns/${id}/media`, payload),
   submit: (id: string) => api.post(`/campaigns/${id}/submit`),
+  requestAction: (id: string, payload: { action: 'pause' | 'delete'; message: string }) =>
+    api.post(`/campaigns/${id}/requests`, payload),
   getGlobalStats: () => api.get('/stats/global')
 };
 

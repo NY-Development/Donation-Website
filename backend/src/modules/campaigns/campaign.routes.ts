@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { campaignController } from './campaign.controller';
 import { validate } from '../../utils/validate';
-import { campaignIdSchema, campaignQuerySchema, createCampaignSchema, mediaSchema, updateCampaignSchema } from './campaign.schema';
+import { campaignActionRequestSchema, campaignIdSchema, campaignQuerySchema, createCampaignSchema, mediaSchema, updateCampaignSchema } from './campaign.schema';
 import { requireAuth } from '../../middlewares/auth.middleware';
 import { requireOrganizerVerification } from '../../middlewares/organizerVerification.middleware';
 
@@ -17,5 +17,6 @@ router.post('/', requireAuth, requireOrganizerVerification, validate(createCampa
 router.patch('/:id', requireAuth, validate(campaignIdSchema, 'params'), validate(updateCampaignSchema, 'body'), campaignController.update);
 router.post('/:id/media', requireAuth, validate(campaignIdSchema, 'params'), validate(mediaSchema, 'body'), campaignController.uploadMedia);
 router.post('/:id/submit', requireAuth, validate(campaignIdSchema, 'params'), campaignController.submit);
+router.post('/:id/requests', requireAuth, validate(campaignIdSchema, 'params'), validate(campaignActionRequestSchema, 'body'), campaignController.requestAction);
 
 export default router;

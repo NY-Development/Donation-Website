@@ -29,5 +29,23 @@ export const userController = {
     } catch (error) {
       next(error);
     }
+  },
+  getMyCampaigns: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const limit = req.query.limit ? Number(req.query.limit) : 12;
+      const campaigns = await userService.getMyCampaigns(req.user?.id ?? '', limit);
+      res.json({ success: true, message: 'Organizer campaigns fetched', data: campaigns });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getPendingDonations: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const limit = req.query.limit ? Number(req.query.limit) : 20;
+      const data = await userService.getPendingDonations(req.user?.id ?? '', limit);
+      res.json({ success: true, message: 'Pending donations fetched', data });
+    } catch (error) {
+      next(error);
+    }
   }
 };

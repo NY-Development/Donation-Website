@@ -3,11 +3,12 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 're
 import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
-import { Activity, Award, CheckCircle, Heart, Megaphone, RefreshCw, Repeat, Star, Wallet } from 'lucide-react';
-import { useDonationStore, useAuthStore } from '../store';
+import { Activity, Award, BarChart3, CheckCircle, Heart, Megaphone, RefreshCw, Repeat, Star, Target, Wallet } from 'lucide-react';
+import { useCampaignStore, useDonationStore, useAuthStore } from '../store';
 import userService from '../Services/users';
-import { getApiData } from '../store/apiHelpers';
-import type { DonationTrendPoint } from '../../types';
+import campaignService from '../Services/campaigns';
+import { getApiData, getErrorMessage } from '../store/apiHelpers';
+import type { DonationTrendPoint, OrganizerPendingDonations } from '../../types';
 
 const UserDashboard: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -17,7 +18,18 @@ const UserDashboard: React.FC = () => {
   const campaignsSupported = useDonationStore((state) => state.campaignsSupported);
   const timeline = useDonationStore((state) => state.timeline);
   const fetchDashboard = useDonationStore((state) => state.fetchDashboard);
+  const campaigns = useCampaignStore((state) => state.campaigns);
+  const fetchCampaigns = useCampaignStore((state) => state.fetchAll);
+  const campaignLoading = useCampaignStore((state) => state.isLoading);
+  const campaignError = useCampaignStore((state) => state.error);
   const [trends, setTrends] = useState<DonationTrendPoint[]>([]);
+  const [pendingDonations, setPendingDonations] = useState<OrganizerPendingDonations | null>(null);
+  const [pendingLoading, setPendingLoading] = useState(false);
+  const [pendingError, setPendingError] = useState<string | null>(null);
+  const [requestModal, setRequestModal] = useState<{ id: string; title: string; action: 'pause' | 'delete' } | null>(null);
+  const [requestMessage, setRequestMessage] = useState('');
+  const [requestLoading, setRequestLoading] = useState(false);
+  const [requestError, setRequestError] = useState<string | null>(null);
 
   useLayoutEffect(() => {
     ensureGsap();
@@ -75,6 +87,49 @@ const UserDashboard: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    fetchCampaigns({ limit: 50, status: 'all', sort: 'desc' }, true);
+  }, [fetchCampaigns, user]);
+
+  useEffect(() => {
+    if (!user || user.role !== 'organizer') {
+      setPendingDonations(null);
+      return;
+    }
+
+    let isActive = true;
+
+    const loadPending = async () => {
+      setPendingLoading(true);
+      setPendingError(null);
+      try {
+        const response = await userService.getPendingDonations({ limit: 10 });
+        const data = getApiData<OrganizerPendingDonations>(response);
+        if (isActive) {
+          setPendingDonations(data ?? { totalPending: 0, donations: [] });
+        }
+      } catch (error) {
+        if (isActive) {
+          setPendingError(getErrorMessage(error));
+          setPendingDonations(null);
+        }
+      } finally {
+        if (isActive) {
+          setPendingLoading(false);
+        }
+      }
+    };
+
+    loadPending();
+    return () => {
+      isActive = false;
+    };
+  }, [user]);
+
   const maxTrend = useMemo(() => Math.max(1, ...trends.map((point) => point.total)), [trends]);
   const earnedBadges = useMemo(() => {
     const badges = [] as Array<{ label: string; icon: React.ReactNode }>
@@ -93,14 +148,95 @@ const UserDashboard: React.FC = () => {
     return badges;
   }, [campaignsSupported, timeline.length, totalDonated]);
 
+  const userId = user?.id ?? user?._id ?? '';
+  const myCampaigns = useMemo(
+    () => campaigns.filter((campaign) => campaign.organizer === userId || campaign.createdBy === userId),
+    [campaigns, userId]
+  );
+
+  const campaignSummary = useMemo(() => {
+    const summary = myCampaigns.reduce(
+      (acc, campaign) => {
+        const progress = campaign.goalAmount > 0 ? (campaign.raisedAmount / campaign.goalAmount) * 100 : 0;
+        acc.totalCampaigns += 1;
+        acc.totalRaised += campaign.raisedAmount;
+        acc.activeCampaigns += campaign.status === 'approved' ? 1 : 0;
+        acc.successStories += campaign.raisedAmount >= campaign.goalAmount ? 1 : 0;
+        acc.progressTotal += progress;
+        return acc;
+      },
+      { totalCampaigns: 0, activeCampaigns: 0, successStories: 0, totalRaised: 0, progressTotal: 0 }
+    );
+
+    return {
+      totalCampaigns: summary.totalCampaigns,
+      activeCampaigns: summary.activeCampaigns,
+      successStories: summary.successStories,
+      totalRaised: summary.totalRaised,
+      avgProgress: summary.totalCampaigns ? summary.progressTotal / summary.totalCampaigns : 0
+    };
+  }, [myCampaigns]);
+
+  const formatCurrency = (value: number) => `ETB ${value.toLocaleString()}`;
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return 'bg-green-100 text-green-700';
+      case 'pending_verification':
+        return 'bg-amber-100 text-amber-700';
+      case 'rejected':
+        return 'bg-red-100 text-red-700';
+      case 'paused':
+        return 'bg-slate-200 text-slate-700';
+      default:
+        return 'bg-slate-100 text-slate-700';
+    }
+  };
+
+  const openRequestModal = (campaignId: string, title: string, action: 'pause' | 'delete') => {
+    setRequestError(null);
+    setRequestMessage('');
+    setRequestModal({ id: campaignId, title, action });
+  };
+
+  const closeRequestModal = () => {
+    if (requestLoading) return;
+    setRequestModal(null);
+  };
+
+  const submitRequest = async () => {
+    if (!requestModal) return;
+    if (requestMessage.trim().length < 5) {
+      setRequestError('Please add a short message (at least 5 characters).');
+      return;
+    }
+
+    setRequestLoading(true);
+    setRequestError(null);
+    try {
+      await campaignService.requestAction(requestModal.id, {
+        action: requestModal.action,
+        message: requestMessage.trim()
+      });
+      setRequestModal(null);
+    } catch (error) {
+      setRequestError(getErrorMessage(error));
+    } finally {
+      setRequestLoading(false);
+    }
+  };
+
   return (
     <div ref={containerRef} className="max-w-6xl mx-auto px-4 py-10">
       <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4" data-animate="section">
         <div>
-          <h1 className="text-3xl font-black text-gray-900 dark:text-white">Welcome back, Alex!</h1>
+          <h1 className="text-3xl font-black text-gray-900 dark:text-white">Welcome back, {user?.name ?? 'friend'}!</h1>
           <p className="text-gray-500">You're making a real difference. Here's your impact overview.</p>
         </div>
-        <button className="flex items-center gap-2 bg-primary px-6 py-2.5 rounded-lg text-white font-bold hover:shadow-lg transition-all">
+        <button 
+          onClick={() => navigate('/explore')}
+          className="flex items-center gap-2 bg-primary px-6 py-2.5 rounded-lg text-white font-bold hover:shadow-lg transition-all">
           <Heart className="size-4" aria-hidden="true" />
           Donate Again
         </button>
@@ -128,6 +264,204 @@ const UserDashboard: React.FC = () => {
           <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Projects Supported</p>
           <p className="text-3xl font-black text-gray-900 dark:text-white">{campaignsSupported}</p>
         </div>
+      </div>
+
+      <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8 mb-10" data-animate="section">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+          <div>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <BarChart3 className="size-5 text-primary" aria-hidden="true" />
+              Your Campaigns
+            </h3>
+            <p className="text-sm text-gray-500">Track how your stories are performing and where support is growing.</p>
+          </div>
+          <button
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:border-primary hover:text-primary transition-all"
+            onClick={() => navigate('/create')}
+          >
+            <Target className="size-4" aria-hidden="true" />
+            Create Campaign
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8" data-animate="card">
+          <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Total Campaigns</p>
+            <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">{campaignSummary.totalCampaigns}</p>
+          </div>
+          <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Active Campaigns</p>
+            <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">{campaignSummary.activeCampaigns}</p>
+          </div>
+          <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Total Raised</p>
+            <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">{formatCurrency(campaignSummary.totalRaised)}</p>
+          </div>
+          <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Average Progress</p>
+            <p className="mt-2 text-2xl font-black text-gray-900 dark:text-white">{Math.round(campaignSummary.avgProgress)}%</p>
+          </div>
+        </div>
+
+        {campaignLoading && (
+          <div className="rounded-xl border border-dashed border-gray-200 dark:border-gray-800 p-6 text-sm text-gray-500">
+            Loading your campaigns...
+          </div>
+        )}
+
+        {campaignError && (
+          <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-600">
+            {campaignError}
+          </div>
+        )}
+
+        {!campaignLoading && !campaignError && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-animate="card">
+            {myCampaigns.map((campaign) => {
+              const progress = campaign.goalAmount > 0
+                ? Math.min(100, Math.round((campaign.raisedAmount / campaign.goalAmount) * 100))
+                : 0;
+              return (
+                <div key={campaign._id} className="rounded-2xl border border-gray-100 dark:border-gray-800 p-5 bg-white dark:bg-gray-900 shadow-sm">
+                  <div className="flex gap-4">
+                    <div className="w-24 h-24 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                      {campaign.media[0] ? (
+                        <img src={campaign.media[0]} alt={campaign.title} className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="text-xs text-gray-400">No image</div>
+                      )}
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className="text-xs uppercase tracking-wider text-gray-400">{campaign.category}</p>
+                          <h4 className="text-lg font-bold text-gray-900 dark:text-white">{campaign.title}</h4>
+                        </div>
+                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${getStatusBadge(campaign.status)}`}>
+                          {campaign.status.replace(/_/g, ' ')}
+                        </span>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm text-gray-500">
+                          <span>{formatCurrency(campaign.raisedAmount)} raised</span>
+                          <span>{formatCurrency(campaign.goalAmount)} goal</span>
+                        </div>
+                        <div className="h-2 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                          <div className="h-full bg-primary" style={{ width: `${progress}%` }} />
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
+                        <div className="flex items-center gap-1">
+                          <Activity className="size-3" aria-hidden="true" />
+                          {progress}% funded
+                        </div>
+                      </div>
+                      <div className="pt-2 flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openRequestModal(campaign._id, campaign.title, 'pause')}
+                          className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-primary/40"
+                        >
+                          Request Pause
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openRequestModal(campaign._id, campaign.title, 'delete')}
+                          className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-red-200 text-red-600 hover:text-red-700"
+                        >
+                          Request Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+
+            {myCampaigns.length === 0 && (
+              <div className="col-span-full rounded-xl border border-dashed border-gray-200 dark:border-gray-800 p-8 text-center text-sm text-gray-500">
+                You have not created any campaigns yet.
+              </div>
+            )}
+          </div>
+        )}
+
+        {user?.role === 'organizer' && (
+          <div className="mt-10" data-animate="section">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-bold text-gray-900 dark:text-white">Pending CBE Verifications</h4>
+              <span className="text-xs font-semibold text-gray-500">
+                {pendingDonations?.totalPending ?? 0} submissions
+              </span>
+            </div>
+
+            {pendingLoading && (
+              <div className="rounded-xl border border-dashed border-gray-200 dark:border-gray-800 p-6 text-sm text-gray-500">
+                Loading pending donations...
+              </div>
+            )}
+
+            {pendingError && (
+              <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-600">
+                {pendingError}
+              </div>
+            )}
+
+            {!pendingLoading && !pendingError && (
+              <div className="space-y-4">
+                {pendingDonations?.donations.map((donation) => (
+                  <div key={donation.id} className="rounded-2xl border border-gray-100 dark:border-gray-800 p-5 bg-gray-50 dark:bg-gray-900">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                      <div>
+                        <p className="text-xs uppercase tracking-wider text-gray-400">Campaign</p>
+                        <h5 className="text-base font-bold text-gray-900 dark:text-white">{donation.campaignTitle}</h5>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Submitted {new Date(donation.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                        ETB {donation.amount.toLocaleString()}
+                      </div>
+                    </div>
+                    <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-gray-300">
+                      <div className="rounded-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark p-3">
+                        <p className="text-xs uppercase tracking-wider text-gray-400">Donor</p>
+                        <p className="font-semibold text-gray-900 dark:text-white">{donation.donorName ?? 'Anonymous'}</p>
+                      </div>
+                      <div className="rounded-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark p-3">
+                        <p className="text-xs uppercase tracking-wider text-gray-400">Transaction ID</p>
+                        <p className="font-semibold text-gray-900 dark:text-white">
+                          {donation.transactionId ?? 'QR screenshot'}
+                        </p>
+                      </div>
+                      <div className="rounded-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark p-3">
+                        <p className="text-xs uppercase tracking-wider text-gray-400">Proof</p>
+                        {donation.screenshotUrl ? (
+                          <a
+                            href={donation.screenshotUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-2 text-primary font-semibold"
+                          >
+                            View screenshot
+                          </a>
+                        ) : (
+                          <span className="font-semibold text-gray-500">Manual ID</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {pendingDonations?.donations.length === 0 && (
+                  <div className="rounded-xl border border-dashed border-gray-200 dark:border-gray-800 p-6 text-sm text-gray-500">
+                    No pending CBE submissions yet.
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8" data-animate="section">
@@ -218,6 +552,61 @@ const UserDashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {requestModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="w-full max-w-lg rounded-2xl bg-white dark:bg-surface-dark p-6 shadow-xl border border-gray-100 dark:border-gray-800">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Request {requestModal.action === 'pause' ? 'Pause' : 'Delete'}</h3>
+                <p className="text-sm text-gray-500">Campaign: {requestModal.title}</p>
+              </div>
+              <button
+                type="button"
+                onClick={closeRequestModal}
+                className="text-sm text-gray-400 hover:text-gray-600"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              <label className="text-sm font-semibold">Message to admin</label>
+              <textarea
+                rows={4}
+                value={requestMessage}
+                onChange={(event) => setRequestMessage(event.target.value)}
+                className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3 text-sm"
+                placeholder="Explain why you want this action..."
+              />
+              {requestError && (
+                <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+                  {requestError}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-5 flex flex-col sm:flex-row gap-3">
+              <button
+                type="button"
+                onClick={submitRequest}
+                disabled={requestLoading}
+                className="flex-1 rounded-lg bg-primary text-white py-2.5 text-sm font-semibold hover:bg-primary-hover disabled:opacity-60"
+              >
+                {requestLoading ? 'Submitting...' : 'Send Request'}
+              </button>
+              <button
+                type="button"
+                onClick={closeRequestModal}
+                disabled={requestLoading}
+                className="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 py-2.5 text-sm font-semibold text-gray-600 dark:text-gray-300"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,17 +1,28 @@
 
-import React, { useLayoutEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { CheckCircle, Heart } from 'lucide-react';
 import { FaRegSmileBeam, FaStar } from 'react-icons/fa';
+import { useAuthStore } from '../store';
 
 const Success: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
-  const state = location.state as { amount?: number; campaignTitle?: string } | undefined;
+  const navigate = useNavigate();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const state = location.state as { amount?: number; campaignTitle?: string; redirectTo?: string } | undefined;
   const amount = state?.amount ?? 0;
   const campaignTitle = state?.campaignTitle ?? 'Campaign';
+  const redirectTo = state?.redirectTo ?? (isAuthenticated ? '/dashboard' : '/campaigns');
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      navigate(redirectTo, { replace: true });
+    }, 3500);
+    return () => window.clearTimeout(timer);
+  }, [navigate, redirectTo]);
 
   useLayoutEffect(() => {
     ensureGsap();
@@ -87,16 +98,16 @@ const Success: React.FC = () => {
           Your impact starts now!
         </h1>
         <p className="text-gray-600 dark:text-gray-400 text-lg mb-10 max-w-sm">
-          Thank you for your generosity. We've sent a receipt to your email.
+          Thank you for your generosity. We've received your transfer details for review.
         </p>
 
         <div className="w-full bg-white dark:bg-surface-dark rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-8">
           <div className="p-8 border-b border-gray-100 dark:border-gray-800">
             <p className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-2">Total Donation</p>
             <p className="text-5xl font-black text-primary">ETB {amount.toFixed(2)}</p>
-            <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-600 text-xs font-bold uppercase">
+            <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-600 text-xs font-bold uppercase">
               <CheckCircle className="size-4" aria-hidden="true" />
-              Processed Successfully
+              Submitted For Review
             </div>
           </div>
           <div className="p-8 bg-gray-50 dark:bg-gray-900/50">
@@ -111,11 +122,11 @@ const Success: React.FC = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 w-full">
-          <Link to="/dashboard" className="flex-1 h-12 rounded-xl bg-primary text-white font-bold flex items-center justify-center hover:bg-primary-hover transition-all">
-            Back to Dashboard
+          <Link to={redirectTo} className="flex-1 h-12 rounded-xl bg-primary text-white font-bold flex items-center justify-center hover:bg-primary-hover transition-all">
+            {isAuthenticated ? 'Go to My Impact' : 'Back to Campaigns'}
           </Link>
-          <Link to="/explore" className="flex-1 h-12 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-bold flex items-center justify-center hover:border-primary transition-all">
-            More Campaigns
+          <Link to={isAuthenticated ? '/campaigns' : '/login'} className="flex-1 h-12 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-bold flex items-center justify-center hover:border-primary transition-all">
+            {isAuthenticated ? 'Explore Campaigns' : 'Sign In'}
           </Link>
         </div>
       </div>

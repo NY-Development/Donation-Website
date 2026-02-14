@@ -1,9 +1,9 @@
 
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
-import { ArrowRight, AlertTriangle, FileImage, Leaf, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, AlertTriangle, FileImage, Leaf, ShieldCheck } from 'lucide-react';
 import { useDonationStore, useAuthStore } from '../store';
 import { useQuery } from '@tanstack/react-query';
 import campaignService from '../Services/campaigns';
@@ -18,11 +18,12 @@ const Donate: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<'transaction' | 'qr'>('transaction');
   const [transactionId, setTransactionId] = useState('');
   const [screenshot, setScreenshot] = useState<File | null>(null);
+  const [qrPreview, setQrPreview] = useState<string | null>(null);
   const [acknowledgeRisk, setAcknowledgeRisk] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const verifyCbeDonation = useDonationStore((state) => state.verifyCbeDonation);
+  const submitCbeDonation = useDonationStore((state) => state.submitCbeDonation);
   const isLoading = useDonationStore((state) => state.isLoading);
   const error = useDonationStore((state) => state.error);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -69,12 +70,14 @@ const Donate: React.FC = () => {
       formData.append('screenshot', screenshot);
     }
 
-    const success = await verifyCbeDonation(formData);
+    // const success = await verifyCbeDonation(formData);
+    const success = await submitCbeDonation(formData);
     if (success) {
       navigate('/success', {
         state: {
           amount: numericAmount,
-          campaignTitle: campaign?.title ?? 'Campaign'
+          campaignTitle: campaign?.title ?? 'Campaign',
+          redirectTo: isAuthenticated ? '/dashboard' : '/campaigns'
         }
       });
     }
@@ -116,8 +119,28 @@ const Donate: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!screenshot) {
+      setQrPreview(null);
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(screenshot);
+    setQrPreview(previewUrl);
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [screenshot]);
+
   return (
     <div ref={containerRef} className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10 py-8 lg:py-12">
+      <button
+        type="button"
+        onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/explore'))}
+        className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-primary transition-colors mb-6"
+        data-animate="button"
+      >
+        <ArrowLeft className="size-4" aria-hidden="true" />
+        Back
+      </button>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-12">
         <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-8">
           <div className="flex flex-col gap-2" data-animate="section">
@@ -293,20 +316,49 @@ const Donate: React.FC = () => {
                     onChange={(event) => setTransactionId(event.target.value)}
                     data-animate="input"
                   />
+                  {transactionId.trim() ? (
+                    <div className="mt-2 rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-xs text-gray-600 dark:text-gray-300">
+                      Confirmed ID: <span className="font-semibold text-gray-900 dark:text-white">{transactionId.trim()}</span>
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-xs text-gray-400">Enter the transaction ID to preview it here.</p>
+                  )}
                 </div>
               ) : (
-                <label className="flex flex-col gap-2 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 p-4 text-sm text-gray-500 cursor-pointer">
-                  <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                    <FileImage className="size-4" aria-hidden="true" />
-                    <span>{screenshot ? screenshot.name : 'Upload QR code screenshot'}</span>
-                  </div>
-                  <input
-                    className="hidden"
-                    type="file"
-                    accept="image/*"
-                    onChange={(event) => setScreenshot(event.target.files?.[0] ?? null)}
-                  />
-                </label>
+                <div className="space-y-3">
+                  <label className="flex flex-col gap-2 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 p-4 text-sm text-gray-500 cursor-pointer">
+                    <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                      <FileImage className="size-4" aria-hidden="true" />
+                      <span>{screenshot ? screenshot.name : 'Upload QR code screenshot'}</span>
+                    </div>
+                    <input
+                      className="hidden"
+                      type="file"
+                      accept="image/*"
+                      onChange={(event) => setScreenshot(event.target.files?.[0] ?? null)}
+                    />
+                  </label>
+                  {screenshot ? (
+                    <div className="rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">
+                      <p className="text-xs text-gray-500 mb-2">Preview</p>
+                      <div className="flex items-center gap-3">
+                        {qrPreview && (
+                          <img
+                            src={qrPreview}
+                            alt="QR preview"
+                            className="h-16 w-16 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
+                          />
+                        )}
+                        <div className="text-xs text-gray-600 dark:text-gray-300">
+                          <p className="font-semibold text-gray-900 dark:text-white">{screenshot.name}</p>
+                          <p>{Math.round(screenshot.size / 1024)} KB</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-xs text-gray-400">Upload a QR screenshot to preview it here.</p>
+                  )}
+                </div>
               )}
               {campaign?.status && campaign.status !== 'approved' && (
                 <label className="flex items-start gap-2 text-xs text-rose-700">

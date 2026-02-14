@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-export type CampaignStatus = 'draft' | 'pending_verification' | 'approved' | 'rejected';
+export type CampaignStatus = 'draft' | 'pending_verification' | 'approved' | 'rejected' | 'paused';
 export type FundingStyle = 'keep' | 'all_or_nothing';
 
 export interface CampaignDocument extends Document {
@@ -18,6 +18,7 @@ export interface CampaignDocument extends Document {
   isSuccessStory?: boolean;
   goalReachedAt?: Date;
   organizer: mongoose.Types.ObjectId;
+  createdBy: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,14 +36,15 @@ const campaignSchema = new Schema<CampaignDocument>(
     cbeAccountNumber: { type: String, required: true, trim: true },
     status: {
       type: String,
-      enum: ['draft', 'pending_verification', 'approved', 'rejected'],
+      enum: ['draft', 'pending_verification', 'approved', 'rejected', 'paused'],
       default: 'draft',
       index: true
     },
     media: { type: [String], default: [] },
     isSuccessStory: { type: Boolean, default: false, index: true },
     goalReachedAt: { type: Date },
-    organizer: { type: Schema.Types.ObjectId, ref: 'User', required: true }
+    organizer: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true }
   },
   { timestamps: true }
 );

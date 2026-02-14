@@ -70,6 +70,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       persistTokens(token, refreshToken);
       set({ user, token, refreshToken, isAuthenticated: Boolean(token), isLoading: false });
+      if (!user) {
+        await get().loadUser();
+      }
       return Boolean(token);
     } catch (error) {
       clearStoredToken();
@@ -138,14 +141,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ user: user ?? null, isLoading: false });
       return Boolean(user);
     } catch (error) {
-      clearStoredToken();
-      set({
-        user: null,
-        token: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: getErrorMessage(error),
-      });
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 401 || status === 403) {
+        clearStoredToken();
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+          isLoading: false,
+          error: getErrorMessage(error),
+        });
+        return false;
+      }
+
+      set({ isLoading: false, error: getErrorMessage(error) });
       return false;
     }
   },
