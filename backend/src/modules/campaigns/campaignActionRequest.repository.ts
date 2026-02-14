@@ -18,5 +18,12 @@ export const campaignActionRequestRepository = {
   findPendingByCampaignAndAction: (campaignId: string, action: 'pause' | 'delete') =>
     CampaignActionRequestModel.findOne({ campaign: campaignId, action, status: 'pending' }),
   updateStatus: (id: string, data: Partial<{ status: 'approved' | 'rejected'; reviewedBy: string; reviewedAt: Date; rejectionReason?: string }>) =>
-    CampaignActionRequestModel.findByIdAndUpdate(id, data, { new: true })
+    CampaignActionRequestModel.findByIdAndUpdate(id, data, { new: true }),
+  deleteByCampaignIds: (campaignIds: string[]) => {
+    if (!campaignIds.length) {
+      return Promise.resolve({ deletedCount: 0 });
+    }
+    return CampaignActionRequestModel.deleteMany({ campaign: { $in: campaignIds } });
+  },
+  deleteAll: () => CampaignActionRequestModel.deleteMany({})
 };

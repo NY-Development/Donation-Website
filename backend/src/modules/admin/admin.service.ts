@@ -1,5 +1,6 @@
 import { campaignRepository } from '../campaigns/campaign.repository';
 import { donationRepository } from '../donations/donation.repository';
+import { campaignActionRequestRepository } from '../campaigns/campaignActionRequest.repository';
 import { userRepository } from '../users/user.repository';
 import { UserModel } from '../users/user.model';
 import { cloudinary } from '../../config/cloudinary';
@@ -220,6 +221,7 @@ export const adminService = {
 
     const campaignIds = await campaignRepository.findIdsByOwnerIds([userId]);
     await donationRepository.deleteByCampaignIds(campaignIds);
+    await campaignActionRequestRepository.deleteByCampaignIds(campaignIds);
     await donationRepository.deleteByUserId(userId);
     await campaignRepository.deleteByOwnerIds([userId]);
     await userRepository.deleteById(userId);
@@ -232,6 +234,7 @@ export const adminService = {
 
     const campaignIds = await campaignRepository.findIdsByOwnerIds(ids);
     await donationRepository.deleteByCampaignIds(campaignIds);
+    await campaignActionRequestRepository.deleteByCampaignIds(campaignIds);
     await donationRepository.deleteByUserIds(ids);
     await campaignRepository.deleteByOwnerIds(ids);
     const userResult = await userRepository.deleteAllExceptAdmins();
@@ -248,12 +251,14 @@ export const adminService = {
     }
 
     await donationRepository.deleteByCampaignIds([campaignId]);
+    await campaignActionRequestRepository.deleteByCampaignIds([campaignId]);
     await campaignRepository.deleteById(campaignId);
 
     return { deletedCampaignId: campaignId };
   },
   deleteAllCampaigns: async () => {
     const donationResult = await donationRepository.deleteAll();
+    await campaignActionRequestRepository.deleteAll();
     const campaignResult = await campaignRepository.deleteAll();
 
     return {
@@ -299,6 +304,7 @@ export const adminService = {
     }
     if (request.action === 'delete') {
       await donationRepository.deleteByCampaignIds([campaignId]);
+      await campaignActionRequestRepository.deleteByCampaignIds([campaignId]);
       await campaignRepository.deleteById(campaignId);
     }
 

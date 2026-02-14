@@ -42,7 +42,7 @@ const CreateCampaign: React.FC = () => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [story, setStory] = useState('');
-  const [goalAmount, setGoalAmount] = useState('10000');
+  const [goalAmount, setGoalAmount] = useState('100');
   const [cbeAccountNumber, setCbeAccountNumber] = useState('');
   const [deadline, setDeadline] = useState('');
   const [fundingStyle, setFundingStyle] = useState<'keep' | 'all_or_nothing'>('keep');
@@ -59,6 +59,7 @@ const CreateCampaign: React.FC = () => {
   const createCampaign = useCampaignStore((state) => state.createCampaign);
   const user = useAuthStore((state) => state.user);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const draftKey = useMemo(() => `campaignDraft:${user?._id ?? 'guest'}`, [user?._id]);
   const mediaPreview = useMemo(
@@ -116,7 +117,7 @@ const CreateCampaign: React.FC = () => {
     setTitle(String(payload.title ?? ''));
     setCategory(String(payload.category ?? ''));
     setStory(String(payload.story ?? ''));
-    setGoalAmount(String(payload.goalAmount ?? '10000'));
+    setGoalAmount(String(payload.goalAmount ?? '100'));
     setCbeAccountNumber(String(payload.cbeAccountNumber ?? ''));
     setDeadline(String(payload.deadline ?? ''));
     setFundingStyle((payload.fundingStyle as 'keep' | 'all_or_nothing') ?? 'keep');
@@ -156,6 +157,8 @@ const CreateCampaign: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    if(loading) return;
+    setLoading(true);
     const parsedGoal = Number(goalAmount.replace(/,/g, ''));
     const trimmedAccount = cbeAccountNumber.trim();
     const parsed = draftSchema.safeParse({
@@ -212,6 +215,8 @@ const CreateCampaign: React.FC = () => {
       navigate('/dashboard');
     } catch (error) {
       setFormError('Unable to submit your campaign. Please try again.');
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -348,21 +353,7 @@ const CreateCampaign: React.FC = () => {
               </button>
             </div>
           </div>
-                  <p className="text-xs text-gray-500 mt-2">Optional: add a payout account number if needed.</p>
-                </div>
-                <div>
-                  <label className="block text-lg font-bold mb-2">Campaign Deadline (optional)</label>
-                  <input
-                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                    type="date"
-                    value={deadline}
-                    onChange={(event) => {
-                      setDeadline(event.target.value);
-                      if (formError) setFormError(null);
-                    }}
-                    data-animate="input"
-                  />
-                  <p className="text-xs text-gray-500 mt-2">If set, the campaign closes automatically on this date.</p>
+        </div>
       )}
 
       {showExitPrompt && (
@@ -532,6 +523,20 @@ const CreateCampaign: React.FC = () => {
                     />
                     <p className="text-xs text-gray-500 mt-2">Optional: add a payout account number if you need one.</p>
                   </div>
+                  <div className="mt-6">
+                    <label className="block text-lg font-bold mb-2">Campaign Deadline (optional)</label>
+                    <input
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                      type="date"
+                      value={deadline}
+                      onChange={(event) => {
+                        setDeadline(event.target.value);
+                        if (formError) setFormError(null);
+                      }}
+                      data-animate="input"
+                    />
+                    <p className="text-xs text-gray-500 mt-2">If set, the campaign closes automatically on this date.</p>
+                  </div>
                 </div>
                 <div>
                   <h3 className="text-lg font-bold mb-4">Funding Style</h3>
@@ -660,6 +665,7 @@ const CreateCampaign: React.FC = () => {
               onClick={step < 4 ? nextStep : handleSubmit}
               className="w-full sm:w-auto px-10 py-3 bg-primary hover:bg-primary-hover text-white font-bold rounded-lg shadow-lg flex items-center justify-center gap-2"
               data-animate="button"
+              diabled={loading}
             >
               {step === 4 ? 'Launch Campaign' : 'Continue'}
               <ArrowRight className="size-4" aria-hidden="true" />
