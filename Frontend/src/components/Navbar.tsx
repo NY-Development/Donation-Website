@@ -143,15 +143,75 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
               </Link>
             )}
             {isAuthenticated ? (
-              <button
-                type="button"
-                onClick={openProfileModal}
-                className="hidden md:flex items-center justify-center size-9 rounded-full bg-primary text-white text-sm font-bold shadow-lg shadow-primary/30 hover:bg-primary-hover transition-colors"
-                aria-label="Open profile"
-                data-animate="nav-link"
-              >
-                {profileInitial}
-              </button>
+              <div className="relative hidden md:flex items-center" data-animate="nav-link">
+                <button
+                  type="button"
+                  onClick={openProfileModal}
+                  className="flex items-center justify-center size-9 rounded-full bg-primary text-white text-sm font-bold shadow-lg shadow-primary/30 hover:bg-primary-hover transition-colors"
+                  aria-label="Open profile"
+                >
+                  {profileInitial}
+                </button>
+                {isProfileOpen && (
+                  <div className="absolute right-0 top-full z-50 mt-3 w-80 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 shadow-2xl">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">Your profile</h3>
+                      <button
+                        type="button"
+                        onClick={closeProfileModal}
+                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+                      >
+                        <span className="sr-only">Close</span>
+                        X
+                      </button>
+                    </div>
+                    <form className="space-y-4" onSubmit={submitProfile}>
+                      <div>
+                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Name</label>
+                        <input
+                          className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3"
+                          type="text"
+                          value={profileName}
+                          onChange={(event) => setProfileName(event.target.value)}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Email</label>
+                        <input
+                          className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3"
+                          type="email"
+                          value={profileEmail}
+                          onChange={(event) => setProfileEmail(event.target.value)}
+                          required
+                        />
+                      </div>
+                      {profileError && (
+                        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
+                          {profileError}
+                        </div>
+                      )}
+                      <div className="flex items-center justify-end gap-3">
+                        <button
+                          type="button"
+                          onClick={closeProfileModal}
+                          className="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-primary"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="px-5 py-2 rounded-lg bg-primary text-white text-sm font-bold"
+                          disabled={profileLoading}
+                          aria-busy={profileLoading}
+                        >
+                          {profileLoading ? 'Saving...' : 'Save changes'}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+              </div>
             ) : (
               <Link to="/explore" className="hidden md:flex items-center justify-center h-9 px-4 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary-hover transition-colors shadow-lg shadow-primary/30" data-animate="nav-link">
                 Donate
@@ -230,73 +290,6 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
         )}
       </div>
 
-      {isProfileOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6">
-          <button
-            type="button"
-            aria-label="Close profile modal"
-            className="absolute inset-0 bg-black/50"
-            onClick={closeProfileModal}
-          />
-          <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 shadow-2xl">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Your profile</h3>
-              <button
-                type="button"
-                onClick={closeProfileModal}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-              >
-                <span className="sr-only">Close</span>
-                X
-              </button>
-            </div>
-            <form className="space-y-4" onSubmit={submitProfile}>
-              <div>
-                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Name</label>
-                <input
-                  className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3"
-                  type="text"
-                  value={profileName}
-                  onChange={(event) => setProfileName(event.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Email</label>
-                <input
-                  className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3"
-                  type="email"
-                  value={profileEmail}
-                  onChange={(event) => setProfileEmail(event.target.value)}
-                  required
-                />
-              </div>
-              {profileError && (
-                <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
-                  {profileError}
-                </div>
-              )}
-              <div className="flex items-center justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={closeProfileModal}
-                  className="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-primary"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-lg bg-primary text-white text-sm font-bold"
-                  disabled={profileLoading}
-                  aria-busy={profileLoading}
-                >
-                  {profileLoading ? 'Saving...' : 'Save changes'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </nav>
   );
 };
