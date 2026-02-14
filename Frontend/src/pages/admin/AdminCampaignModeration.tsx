@@ -16,16 +16,15 @@ type CampaignActionRequest = {
 
 const AdminCampaignModeration: React.FC = () => {
   const [search, setSearch] = useState('');
-  const [status, setStatus] = useState<'pending' | 'reported' | 'draft'>('pending');
   const [actionId, setActionId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [bulkDeleting, setBulkDeleting] = useState(false);
 
   const { data, refetch, isFetching } = useQuery({
-    queryKey: ['admin', 'campaigns', status],
+    queryKey: ['admin', 'campaigns', 'all'],
     queryFn: async () => {
       const response = await campaignService.getAll({
-        status: status === 'pending' ? 'pending_verification' : status === 'draft' ? 'draft' : 'rejected',
+        status: 'all',
         limit: 25,
         sort: 'desc'
       });
@@ -152,15 +151,6 @@ const AdminCampaignModeration: React.FC = () => {
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </div>
-              <select
-                className="bg-background-light dark:bg-zinc-800 border-none rounded-lg text-sm py-2 px-4 focus:ring-2 focus:ring-primary"
-                value={status}
-                onChange={(event) => setStatus(event.target.value as typeof status)}
-              >
-                <option value="pending">Pending</option>
-                <option value="reported">Reported</option>
-                <option value="draft">Draft</option>
-              </select>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">
@@ -193,28 +183,42 @@ const AdminCampaignModeration: React.FC = () => {
                     ETB {campaign.goalAmount.toLocaleString()}
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                      Pending Review
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        campaign.status === 'approved'
+                          ? 'bg-green-100 text-green-800'
+                          : campaign.status === 'rejected'
+                            ? 'bg-red-100 text-red-800'
+                            : campaign.status === 'paused'
+                              ? 'bg-slate-200 text-slate-700'
+                              : 'bg-amber-100 text-amber-800'
+                      }`}
+                    >
+                      {campaign.status.replace(/_/g, ' ')}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleVerify(campaign._id, 'approved')}
-                        className="bg-primary text-white px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-primary/90"
-                        disabled={actionId === campaign._id || deleteId === campaign._id}
-                      >
-                        Approve
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleVerify(campaign._id, 'rejected')}
-                        className="px-4 py-1.5 rounded-lg text-sm font-semibold border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
-                        disabled={actionId === campaign._id || deleteId === campaign._id}
-                      >
-                        Reject
-                      </button>
+                      {campaign.status === 'pending_verification' && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => handleVerify(campaign._id, 'approved')}
+                            className="bg-primary text-white px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-primary/90"
+                            disabled={actionId === campaign._id || deleteId === campaign._id}
+                          >
+                            Approve
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleVerify(campaign._id, 'rejected')}
+                            className="px-4 py-1.5 rounded-lg text-sm font-semibold border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
+                            disabled={actionId === campaign._id || deleteId === campaign._id}
+                          >
+                            Reject
+                          </button>
+                        </>
+                      )}
                       <button
                         type="button"
                         onClick={() => handleDelete(campaign._id)}
