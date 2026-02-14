@@ -14,10 +14,10 @@ const Explore: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
   const [warningCampaignId, setWarningCampaignId] = useState<string | null>(null);
+  const campaigns = useCampaignStore((state) => state.campaigns);
   const warningCampaign = warningCampaignId
     ? campaigns.find((campaign) => campaign._id === warningCampaignId)
     : null;
-  const campaigns = useCampaignStore((state) => state.campaigns);
   const nextCursor = useCampaignStore((state) => state.nextCursor);
   const isLoading = useCampaignStore((state) => state.isLoading);
   const fetchAll = useCampaignStore((state) => state.fetchAll);
