@@ -24,9 +24,26 @@ export const donationController = {
         transactionId: req.body.transactionId,
         screenshotBuffer: req.file?.buffer,
         userId: req.user?.id,
-        donorName: req.body.donorName
+        donorName: req.body.donorName,
+        donorEmail: req.body.donorEmail
       });
       res.status(201).json({ success: true, message: 'Donation verified', data });
+    } catch (error) {
+      next(error);
+    }
+  },
+  submit: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const amount = Number(req.body.amount);
+      const data = await donationService.submitDonation({
+        campaignId: req.body.campaignId,
+        amount,
+        userId: req.user?.id,
+        donorName: req.body.donorName,
+        donorEmail: req.body.donorEmail,
+        receiptBuffer: req.file?.buffer
+      });
+      res.status(201).json({ success: true, message: 'Donation submitted', data });
     } catch (error) {
       next(error);
     }

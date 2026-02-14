@@ -12,11 +12,19 @@ const checkoutSchema = z.object({
   amount: z.number().positive()
 });
 
+const submitSchema = z.object({
+  campaignId: z.string().min(1),
+  amount: z.coerce.number().positive(),
+  donorName: z.string().min(2).optional(),
+  donorEmail: z.string().email().optional()
+});
+
 const cbeVerifySchema = z.object({
   campaignId: z.string().min(1),
   amount: z.coerce.number().positive(),
   transactionId: z.string().min(3).optional(),
-  donorName: z.string().min(2).optional()
+  donorName: z.string().min(2).optional(),
+  donorEmail: z.string().email().optional()
 });
 
 const upload = multer({
@@ -25,6 +33,7 @@ const upload = multer({
 });
 
 router.post('/checkout', optionalAuth, validate(checkoutSchema, 'body'), donationController.checkout);
+router.post('/submit', optionalAuth, upload.single('receipt'), validate(submitSchema, 'body'), donationController.submit);
 router.post('/cbe/verify', optionalAuth, upload.single('screenshot'), validate(cbeVerifySchema, 'body'), donationController.verifyCbe);
 router.post('/webhook', donationController.webhook);
 

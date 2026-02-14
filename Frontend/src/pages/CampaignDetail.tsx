@@ -1,4 +1,3 @@
-
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
@@ -97,6 +96,8 @@ const CampaignDetail: React.FC = () => {
                 <p className="text-gray-500 text-sm">
                   Organizer • {campaign?.status === 'approved'
                     ? 'Approved'
+                    : campaign?.status === 'closed'
+                      ? 'Closed'
                     : campaign?.status === 'rejected'
                       ? 'Rejected'
                       : campaign?.status === 'draft'
@@ -150,6 +151,10 @@ const CampaignDetail: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
+                    if (campaign?.status === 'closed') {
+                      setShowWarning(true);
+                      return;
+                    }
                     if (campaign?.status && campaign.status !== 'approved') {
                       setShowWarning(true);
                     } else {
@@ -162,7 +167,7 @@ const CampaignDetail: React.FC = () => {
                 </button>
                 <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
                   <Lock className="size-3.5" aria-hidden="true" />
-                  Secure donation via CBE verification
+                  Secure donation experience
                 </div>
               </div>
 
@@ -177,7 +182,9 @@ const CampaignDetail: React.FC = () => {
                         {donor.user ? 'DN' : 'AN'}
                       </div>
                       <div className="flex flex-col flex-1">
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white">{donor.user ? 'Donor' : 'Anonymous'}</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                          {donor.donorName || (donor.user ? 'Donor' : 'Anonymous')}
+                        </span>
                         <span className="text-xs text-gray-500">Recent donation</span>
                       </div>
                       <span className="text-sm font-bold text-gray-900 dark:text-white">ETB {donor.amount}</span>
@@ -195,9 +202,13 @@ const CampaignDetail: React.FC = () => {
             <div className="flex items-start gap-3">
               <AlertTriangle className="size-5 text-rose-500 mt-1" aria-hidden="true" />
               <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Campaign not approved</h3>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  {campaign?.status === 'closed' ? 'Campaign closed' : 'Campaign not approved'}
+                </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                  This campaign is not approved. The platform is not responsible for donations made to unapproved campaigns.
+                  {campaign?.status === 'closed'
+                    ? 'This campaign is closed and cannot accept new donations.'
+                    : 'This campaign is not approved. The platform is not responsible for donations made to unapproved campaigns.'}
                 </p>
               </div>
             </div>
@@ -209,13 +220,15 @@ const CampaignDetail: React.FC = () => {
               >
                 Cancel
               </button>
-              <button
-                type="button"
-                onClick={() => navigate(`/donate/${id}`)}
-                className="px-5 py-2 rounded-lg bg-rose-600 text-white text-sm font-bold"
-              >
-                Continue anyway
-              </button>
+              {campaign?.status !== 'closed' && (
+                <button
+                  type="button"
+                  onClick={() => navigate(`/donate/${id}`)}
+                  className="px-5 py-2 rounded-lg bg-rose-600 text-white text-sm font-bold"
+                >
+                  Continue anyway
+                </button>
+              )}
             </div>
           </div>
         </div>

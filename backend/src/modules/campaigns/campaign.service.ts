@@ -47,6 +47,28 @@ export const campaignService = {
     const cacheKey = `campaigns:list:${JSON.stringify(query)}`;
     const cached = await cache.get(cacheKey);
     if (cached) {
+      const now = new Date();
+      const expiredIds = (cached.data ?? [])
+        .filter((campaign: { status?: string; deadline?: Date; _id?: string }) =>
+          campaign.status === 'approved' && campaign.deadline && new Date(campaign.deadline) <= now
+        )
+        .map((campaign: { _id?: string }) => campaign._id)
+        .filter(Boolean) as string[];
+
+      if (expiredIds.length) {
+        await Promise.all(
+          expiredIds.map((campaignId) =>
+            campaignRepository.updateById(campaignId, { status: 'closed', closedAt: now })
+          )
+        );
+        cached.data.forEach((campaign: { _id?: string; status?: string; closedAt?: Date }) => {
+          if (campaign._id && expiredIds.includes(campaign._id)) {
+            campaign.status = 'closed';
+            campaign.closedAt = now;
+          }
+        });
+      }
+
       return cached;
     }
 
@@ -55,6 +77,24 @@ export const campaignService = {
     const page = query.page ?? 1;
     const skip = usePage ? (page - 1) * query.limit : 0;
     const data = await campaignRepository.find({ ...filters, ...cursorFilter }, query.limit, query.sort, skip);
+    const now = new Date();
+    const expiredIds = data
+      .filter((campaign) => campaign.status === 'approved' && campaign.deadline && new Date(campaign.deadline) <= now)
+      .map((campaign) => campaign._id.toString());
+
+    if (expiredIds.length) {
+      await Promise.all(
+        expiredIds.map((campaignId) =>
+          campaignRepository.updateById(campaignId, { status: 'closed', closedAt: now })
+        )
+      );
+      data.forEach((campaign) => {
+        if (expiredIds.includes(campaign._id.toString())) {
+          campaign.status = 'closed';
+          campaign.closedAt = now;
+        }
+      });
+    }
 
     const nextCursor = data.length ? makeCursor(data[data.length - 1].createdAt, data[data.length - 1]._id.toString()) : null;
     const response = { data, nextCursor };
@@ -76,6 +116,13 @@ export const campaignService = {
     if (!campaign) {
       throw { status: 404, message: 'Campaign not found' };
     }
+    const now = new Date();
+    if (campaign.status === 'approved' && campaign.deadline && new Date(campaign.deadline) <= now) {
+      const updated = await campaignRepository.updateById(campaignId, { status: 'closed', closedAt: now });
+      if (updated) {
+        return updated.toObject();
+      }
+    }
     return campaign;
   },
   getDonors: async (campaignId: string) => {
@@ -86,11 +133,12 @@ export const campaignService = {
     category: string;
     story: string;
     goalAmount: number;
-    cbeAccountNumber: string;
+    cbeAccountNumber?: string;
     organizerId: string;
     location?: string;
     urgent?: boolean;
     fundingStyle?: 'keep' | 'all_or_nothing';
+    deadline?: Date;
   }) => {
     const campaign = await campaignRepository.create({
       title: payload.title,
@@ -101,6 +149,7 @@ export const campaignService = {
       location: payload.location,
       urgent: payload.urgent,
       fundingStyle: payload.fundingStyle ?? 'keep',
+      deadline: payload.deadline,
       organizer: new Types.ObjectId(payload.organizerId),
       createdBy: new Types.ObjectId(payload.organizerId),
       status: 'draft'

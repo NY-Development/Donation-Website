@@ -85,12 +85,12 @@ const Home: React.FC = () => {
       description: 'Pick a donation amount that fits your impact goal.'
     },
     {
-      title: 'Pay with CBE transfer',
-      description: 'Use the campaign account number to complete your transfer.'
+      title: 'Submit your donation',
+      description: 'Share your details and complete the donation in one step.'
     },
     {
-      title: 'Verify and celebrate',
-      description: 'Upload a QR screenshot or transaction ID to verify instantly.'
+      title: 'Add proof (optional)',
+      description: 'Upload a receipt or proof to help organizers track support.'
     }
   ];
 

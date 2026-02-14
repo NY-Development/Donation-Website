@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-export type CampaignStatus = 'draft' | 'pending_verification' | 'approved' | 'rejected' | 'paused';
+export type CampaignStatus = 'draft' | 'pending_verification' | 'approved' | 'rejected' | 'paused' | 'closed';
 export type FundingStyle = 'keep' | 'all_or_nothing';
 
 export interface CampaignDocument extends Document {
@@ -17,6 +17,8 @@ export interface CampaignDocument extends Document {
   media: string[];
   isSuccessStory?: boolean;
   goalReachedAt?: Date;
+  deadline?: Date;
+  closedAt?: Date;
   organizer: mongoose.Types.ObjectId;
   createdBy: mongoose.Types.ObjectId;
   createdAt: Date;
@@ -33,16 +35,18 @@ const campaignSchema = new Schema<CampaignDocument>(
     fundingStyle: { type: String, enum: ['keep', 'all_or_nothing'], default: 'keep' },
     goalAmount: { type: Number, required: true },
     raisedAmount: { type: Number, default: 0 },
-    cbeAccountNumber: { type: String, required: true, trim: true },
+    cbeAccountNumber: { type: String, trim: true },
     status: {
       type: String,
-      enum: ['draft', 'pending_verification', 'approved', 'rejected', 'paused'],
+      enum: ['draft', 'pending_verification', 'approved', 'rejected', 'paused', 'closed'],
       default: 'draft',
       index: true
     },
     media: { type: [String], default: [] },
     isSuccessStory: { type: Boolean, default: false, index: true },
     goalReachedAt: { type: Date },
+    deadline: { type: Date },
+    closedAt: { type: Date },
     organizer: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true }
   },

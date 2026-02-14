@@ -3,7 +3,7 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 're
 import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
-import { Activity, Award, BarChart3, CheckCircle, Heart, Megaphone, RefreshCw, Repeat, Star, Target, Wallet } from 'lucide-react';
+import { Activity, Award, BarChart3, CheckCircle, Heart, Megaphone, RefreshCw, Repeat, Sparkles, Star, Target, Wallet } from 'lucide-react';
 import { useCampaignStore, useDonationStore, useAuthStore } from '../store';
 import userService from '../Services/users';
 import campaignService from '../Services/campaigns';
@@ -189,6 +189,8 @@ const UserDashboard: React.FC = () => {
         return 'bg-red-100 text-red-700';
       case 'paused':
         return 'bg-slate-200 text-slate-700';
+      case 'closed':
+        return 'bg-slate-300 text-slate-700';
       default:
         return 'bg-slate-100 text-slate-700';
     }
@@ -321,6 +323,7 @@ const UserDashboard: React.FC = () => {
               const progress = campaign.goalAmount > 0
                 ? Math.min(100, Math.round((campaign.raisedAmount / campaign.goalAmount) * 100))
                 : 0;
+              const isGoalReached = campaign.goalAmount > 0 && campaign.raisedAmount >= campaign.goalAmount;
               return (
                 <div key={campaign._id} className="rounded-2xl border border-gray-100 dark:border-gray-800 p-5 bg-white dark:bg-gray-900 shadow-sm">
                   <div className="flex gap-4">
@@ -337,10 +340,23 @@ const UserDashboard: React.FC = () => {
                           <p className="text-xs uppercase tracking-wider text-gray-400">{campaign.category}</p>
                           <h4 className="text-lg font-bold text-gray-900 dark:text-white">{campaign.title}</h4>
                         </div>
-                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${getStatusBadge(campaign.status)}`}>
-                          {campaign.status.replace(/_/g, ' ')}
-                        </span>
+                        <div className="flex flex-wrap items-center gap-2">
+                          {isGoalReached && (
+                            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700">
+                              Goal reached
+                            </span>
+                          )}
+                          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${getStatusBadge(campaign.status)}`}>
+                            {campaign.status.replace(/_/g, ' ')}
+                          </span>
+                        </div>
                       </div>
+                      {isGoalReached && (
+                        <div className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-700 flex items-center gap-2">
+                          <Sparkles className="size-4" aria-hidden="true" />
+                          Celebration: you hit 100% of your goal!
+                        </div>
+                      )}
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-sm text-gray-500">
                           <span>{formatCurrency(campaign.raisedAmount)} raised</span>
@@ -389,7 +405,7 @@ const UserDashboard: React.FC = () => {
         {user?.role === 'organizer' && (
           <div className="mt-10" data-animate="section">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-lg font-bold text-gray-900 dark:text-white">Pending CBE Verifications</h4>
+              <h4 className="text-lg font-bold text-gray-900 dark:text-white">Pending Donation Reviews</h4>
               <span className="text-xs font-semibold text-gray-500">
                 {pendingDonations?.totalPending ?? 0} submissions
               </span>
@@ -429,9 +445,9 @@ const UserDashboard: React.FC = () => {
                         <p className="font-semibold text-gray-900 dark:text-white">{donation.donorName ?? 'Anonymous'}</p>
                       </div>
                       <div className="rounded-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark p-3">
-                        <p className="text-xs uppercase tracking-wider text-gray-400">Transaction ID</p>
+                        <p className="text-xs uppercase tracking-wider text-gray-400">Reference</p>
                         <p className="font-semibold text-gray-900 dark:text-white">
-                          {donation.transactionId ?? 'QR screenshot'}
+                          {donation.transactionId ?? 'Receipt upload'}
                         </p>
                       </div>
                       <div className="rounded-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark p-3">
@@ -446,7 +462,7 @@ const UserDashboard: React.FC = () => {
                             View screenshot
                           </a>
                         ) : (
-                          <span className="font-semibold text-gray-500">Manual ID</span>
+                          <span className="font-semibold text-gray-500">No attachment</span>
                         )}
                       </div>
                     </div>
@@ -455,7 +471,7 @@ const UserDashboard: React.FC = () => {
 
                 {pendingDonations?.donations.length === 0 && (
                   <div className="rounded-xl border border-dashed border-gray-200 dark:border-gray-800 p-6 text-sm text-gray-500">
-                    No pending CBE submissions yet.
+                    No pending donation submissions yet.
                   </div>
                 )}
               </div>

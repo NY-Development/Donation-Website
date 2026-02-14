@@ -9,11 +9,14 @@ import { useCampaignStore } from '../store';
 const Explore: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [urgentOnly, setUrgentOnly] = useState(false);
-  const [status, setStatus] = useState<'approved' | 'pending_verification' | 'rejected' | 'draft' | 'all'>('all');
+  const [status, setStatus] = useState<'approved' | 'pending_verification' | 'rejected' | 'draft' | 'closed' | 'all'>('all');
   const [query, setQuery] = useState('');
   const containerRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
   const [warningCampaignId, setWarningCampaignId] = useState<string | null>(null);
+  const warningCampaign = warningCampaignId
+    ? campaigns.find((campaign) => campaign._id === warningCampaignId)
+    : null;
   const campaigns = useCampaignStore((state) => state.campaigns);
   const nextCursor = useCampaignStore((state) => state.nextCursor);
   const isLoading = useCampaignStore((state) => state.isLoading);
@@ -51,14 +54,16 @@ const Explore: React.FC = () => {
     approved: 'bg-emerald-100 text-emerald-700',
     pending_verification: 'bg-amber-100 text-amber-700',
     rejected: 'bg-rose-100 text-rose-700',
-    draft: 'bg-slate-100 text-slate-600'
+    draft: 'bg-slate-100 text-slate-600',
+    closed: 'bg-slate-200 text-slate-700'
   };
 
   const statusLabels: Record<string, string> = {
     approved: 'Approved',
     pending_verification: 'Pending',
     rejected: 'Rejected',
-    draft: 'Draft'
+    draft: 'Draft',
+    closed: 'Closed'
   };
 
   const categories = ['All', 'Education', 'Medical', 'Environment', 'Disaster Relief', 'Community'];
@@ -151,6 +156,7 @@ const Explore: React.FC = () => {
                 <option value="pending_verification">Pending</option>
                 <option value="rejected">Rejected</option>
                 <option value="draft">Draft</option>
+                <option value="closed">Closed</option>
                 <option value="all">All</option>
               </select>
             </div>
@@ -259,9 +265,13 @@ const Explore: React.FC = () => {
             <div className="flex items-start gap-3">
               <AlertTriangle className="size-5 text-rose-500 mt-1" aria-hidden="true" />
               <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Campaign not approved</h3>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  {warningCampaign?.status === 'closed' ? 'Campaign closed' : 'Campaign not approved'}
+                </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                  This campaign is not approved. The platform is not responsible for donations made to unapproved campaigns.
+                  {warningCampaign?.status === 'closed'
+                    ? 'This campaign is closed and can no longer accept donations.'
+                    : 'This campaign is not approved. The platform is not responsible for donations made to unapproved campaigns.'}
                 </p>
               </div>
             </div>
@@ -273,17 +283,19 @@ const Explore: React.FC = () => {
               >
                 Cancel
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  const target = warningCampaignId;
-                  setWarningCampaignId(null);
-                  navigate(`/donate/${target}`);
-                }}
-                className="px-5 py-2 rounded-lg bg-rose-600 text-white text-sm font-bold"
-              >
-                Continue anyway
-              </button>
+              {warningCampaign?.status !== 'closed' && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const target = warningCampaignId;
+                    setWarningCampaignId(null);
+                    navigate(`/donate/${target}`);
+                  }}
+                  className="px-5 py-2 rounded-lg bg-rose-600 text-white text-sm font-bold"
+                >
+                  Continue anyway
+                </button>
+              )}
             </div>
           </div>
         </div>

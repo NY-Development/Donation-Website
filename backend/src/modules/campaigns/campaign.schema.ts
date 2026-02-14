@@ -5,10 +5,11 @@ export const createCampaignSchema = z.object({
   category: z.string().min(2),
   story: z.string().min(10),
   goalAmount: z.number().positive(),
-  cbeAccountNumber: z.string().min(6),
+  cbeAccountNumber: z.string().min(6).optional(),
   location: z.string().min(2).optional(),
   urgent: z.boolean().optional(),
-  fundingStyle: z.enum(['keep', 'all_or_nothing']).optional()
+  fundingStyle: z.enum(['keep', 'all_or_nothing']).optional(),
+  deadline: z.coerce.date().optional()
 });
 
 export const updateCampaignSchema = z.object({
@@ -19,7 +20,8 @@ export const updateCampaignSchema = z.object({
   cbeAccountNumber: z.string().min(6).optional(),
   location: z.string().min(2).optional(),
   urgent: z.boolean().optional(),
-  fundingStyle: z.enum(['keep', 'all_or_nothing']).optional()
+  fundingStyle: z.enum(['keep', 'all_or_nothing']).optional(),
+  deadline: z.coerce.date().optional()
 });
 
 export const campaignActionRequestSchema = z.object({

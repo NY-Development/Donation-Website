@@ -3,6 +3,10 @@ import { Types } from 'mongoose';
 import { donationRepository } from './donation.repository';
 import { campaignRepository } from '../campaigns/campaign.repository';
 import { cloudinary } from '../../config/cloudinary';
+import { userRepository } from '../users/user.repository';
+import { cache } from '../../utils/cache';
+import { donationQueue } from '../../utils/queue';
+import { env } from '../../config/env';
 
 export const donationService = {
   createCheckout: async (payload: { campaignId: string; amount: number; userId?: string }) => {
@@ -17,8 +21,15 @@ export const donationService = {
     if (campaign.status === 'paused') {
       throw { status: 400, message: 'Campaign is paused and cannot accept donations' };
     }
+    if (campaign.status === 'closed') {
+      throw { status: 400, message: 'Campaign is closed and cannot accept donations' };
+    }
     if (campaign.status !== 'approved') {
       throw { status: 400, message: 'Campaign is not accepting donations' };
+    }
+    if (campaign.deadline && campaign.deadline <= new Date()) {
+      await campaignRepository.updateById(payload.campaignId, { status: 'closed', closedAt: new Date() });
+      throw { status: 400, message: 'Campaign deadline has passed' };
     }
 
     if (paymentProvider !== 'stripe' || !stripe) {
@@ -49,6 +60,7 @@ export const donationService = {
     screenshotBuffer?: Buffer;
     userId?: string;
     donorName?: string;
+    donorEmail?: string;
   }) => {
     if (!Number.isFinite(payload.amount) || payload.amount <= 0) {
       throw { status: 400, message: 'Invalid donation amount' };
@@ -57,6 +69,13 @@ export const donationService = {
     const campaign = await campaignRepository.findById(payload.campaignId);
     if (!campaign) {
       throw { status: 404, message: 'Campaign not found' };
+    }
+    if (campaign.status === 'closed') {
+      throw { status: 400, message: 'Campaign is closed and cannot accept donations' };
+    }
+    if (campaign.deadline && campaign.deadline <= new Date()) {
+      await campaignRepository.updateById(payload.campaignId, { status: 'closed', closedAt: new Date() });
+      throw { status: 400, message: 'Campaign deadline has passed' };
     }
     const trimmedTransactionId = payload.transactionId?.trim();
     if (!trimmedTransactionId && !payload.screenshotBuffer) {
@@ -75,6 +94,8 @@ export const donationService = {
       amount: payload.amount,
       paymentProvider: 'cbe',
       status: 'pending',
+      donorName: payload.donorName,
+      donorEmail: payload.donorEmail,
       transactionId: trimmedTransactionId,
       verificationMethod: trimmedTransactionId ? 'transaction_id' : 'qr_code',
       verificationSource: trimmedTransactionId ? 'MANUAL' : undefined,
@@ -85,6 +106,22 @@ export const donationService = {
         submittedAt: new Date()
       }
     });
+
+    const updatedCampaign = await campaignRepository.incrementRaisedAmount(payload.campaignId, payload.amount);
+    if (payload.userId) {
+      await userRepository.updateById(payload.userId, { $inc: { totalDonated: payload.amount } } as never);
+    }
+    if (updatedCampaign && updatedCampaign.raisedAmount >= updatedCampaign.goalAmount && !updatedCampaign.isSuccessStory) {
+      await campaignRepository.updateById(updatedCampaign._id.toString(), {
+        isSuccessStory: true,
+        goalReachedAt: new Date(),
+        status: 'closed',
+        closedAt: new Date()
+      });
+    }
+    await cache.del('stats:global');
+    await cache.del('campaigns:featured');
+    await cache.invalidateByPrefix('campaigns:list:');
 
     return { donationId: donation._id.toString(), pending: true };
   },
@@ -115,7 +152,9 @@ export const donationService = {
         if (updatedCampaign && updatedCampaign.raisedAmount >= updatedCampaign.goalAmount && !updatedCampaign.isSuccessStory) {
           await campaignRepository.updateById(updatedCampaign._id.toString(), {
             isSuccessStory: true,
-            goalReachedAt: new Date()
+            goalReachedAt: new Date(),
+            status: 'closed',
+            closedAt: new Date()
           });
         }
         await cache.del('stats:global');
@@ -133,5 +172,82 @@ export const donationService = {
     }
 
     return { received: true };
+  },
+  submitDonation: async (payload: {
+    campaignId: string;
+    amount: number;
+    userId?: string;
+    donorName?: string;
+    donorEmail?: string;
+    receiptBuffer?: Buffer;
+  }) => {
+    if (!Number.isFinite(payload.amount) || payload.amount <= 0) {
+      throw { status: 400, message: 'Invalid donation amount' };
+    }
+
+    const campaign = await campaignRepository.findById(payload.campaignId);
+    if (!campaign) {
+      throw { status: 404, message: 'Campaign not found' };
+    }
+    if (campaign.status === 'paused') {
+      throw { status: 400, message: 'Campaign is paused and cannot accept donations' };
+    }
+    if (campaign.status === 'closed') {
+      throw { status: 400, message: 'Campaign is closed and cannot accept donations' };
+    }
+    if (campaign.status !== 'approved') {
+      throw { status: 400, message: 'Campaign is not accepting donations' };
+    }
+    if (campaign.deadline && campaign.deadline <= new Date()) {
+      await campaignRepository.updateById(payload.campaignId, { status: 'closed', closedAt: new Date() });
+      throw { status: 400, message: 'Campaign deadline has passed' };
+    }
+
+    let receiptUpload: { secure_url?: string; public_id?: string } | null = null;
+    if (payload.receiptBuffer) {
+      const dataUri = `data:image/png;base64,${payload.receiptBuffer.toString('base64')}`;
+      receiptUpload = await cloudinary.uploader.upload(dataUri, { folder: 'donations' });
+    }
+
+    let donorName = payload.donorName?.trim();
+    let donorEmail = payload.donorEmail?.trim();
+    if (payload.userId && (!donorName || !donorEmail)) {
+      const user = await userRepository.findByIdLean(payload.userId);
+      if (user) {
+        donorName = donorName || user.name;
+        donorEmail = donorEmail || user.email;
+      }
+    }
+
+    const donation = await donationRepository.create({
+      user: payload.userId ? new Types.ObjectId(payload.userId) : undefined,
+      campaign: new Types.ObjectId(payload.campaignId),
+      amount: payload.amount,
+      paymentProvider: 'manual',
+      status: 'succeeded',
+      donorName,
+      donorEmail,
+      receiptUrl: receiptUpload?.secure_url,
+      receiptPublicId: receiptUpload?.public_id
+    });
+
+    const updatedCampaign = await campaignRepository.incrementRaisedAmount(payload.campaignId, payload.amount);
+    if (payload.userId) {
+      await userRepository.updateById(payload.userId, { $inc: { totalDonated: payload.amount } } as never);
+    }
+    if (updatedCampaign && updatedCampaign.raisedAmount >= updatedCampaign.goalAmount && !updatedCampaign.isSuccessStory) {
+      await campaignRepository.updateById(updatedCampaign._id.toString(), {
+        isSuccessStory: true,
+        goalReachedAt: new Date(),
+        status: 'closed',
+        closedAt: new Date()
+      });
+    }
+
+    await cache.del('stats:global');
+    await cache.del('campaigns:featured');
+    await cache.invalidateByPrefix('campaigns:list:');
+
+    return { donationId: donation._id.toString(), status: donation.status };
   }
 };

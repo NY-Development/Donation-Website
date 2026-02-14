@@ -10,7 +10,7 @@ export const donationRepository = {
     DonationModel.find({ campaign: campaignId, status: 'succeeded' })
       .sort({ createdAt: -1 })
       .limit(10)
-      .select('amount user createdAt')
+      .select('amount user createdAt donorName donorEmail')
       .lean(),
   findByUser: (userId: string) =>
     DonationModel.find({ user: userId, status: 'succeeded' })

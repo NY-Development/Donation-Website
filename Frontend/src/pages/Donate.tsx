@@ -15,15 +15,13 @@ const Donate: React.FC = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'transaction' | 'qr'>('transaction');
-  const [transactionId, setTransactionId] = useState('');
-  const [screenshot, setScreenshot] = useState<File | null>(null);
-  const [qrPreview, setQrPreview] = useState<string | null>(null);
+  const [receipt, setReceipt] = useState<File | null>(null);
+  const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
   const [acknowledgeRisk, setAcknowledgeRisk] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const submitCbeDonation = useDonationStore((state) => state.submitCbeDonation);
+  const submitDonation = useDonationStore((state) => state.submitDonation);
   const isLoading = useDonationStore((state) => state.isLoading);
   const error = useDonationStore((state) => state.error);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -38,6 +36,9 @@ const Donate: React.FC = () => {
     enabled: Boolean(id)
   });
 
+  const isClosed = campaign?.status === 'closed';
+  const isExpired = campaign?.deadline ? new Date(campaign.deadline) <= new Date() : false;
+
   const handleDonate = async () => {
     if (!id) {
       return;
@@ -47,14 +48,10 @@ const Donate: React.FC = () => {
       return;
     }
 
+    if (isClosed || isExpired) {
+      return;
+    }
     if (campaign?.status && campaign.status !== 'approved' && !acknowledgeRisk) {
-      return;
-    }
-
-    if (paymentMethod === 'transaction' && !transactionId.trim()) {
-      return;
-    }
-    if (paymentMethod === 'qr' && !screenshot) {
       return;
     }
 
@@ -64,14 +61,14 @@ const Donate: React.FC = () => {
     if (firstName || lastName) {
       formData.append('donorName', `${firstName} ${lastName}`.trim());
     }
-    if (paymentMethod === 'transaction') {
-      formData.append('transactionId', transactionId.trim());
-    } else if (screenshot) {
-      formData.append('screenshot', screenshot);
+    if (email.trim()) {
+      formData.append('donorEmail', email.trim());
+    }
+    if (receipt) {
+      formData.append('receipt', receipt);
     }
 
-    // const success = await verifyCbeDonation(formData);
-    const success = await submitCbeDonation(formData);
+    const success = await submitDonation(formData);
     if (success) {
       navigate('/success', {
         state: {
@@ -120,15 +117,15 @@ const Donate: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!screenshot) {
-      setQrPreview(null);
+    if (!receipt) {
+      setReceiptPreview(null);
       return;
     }
 
-    const previewUrl = URL.createObjectURL(screenshot);
-    setQrPreview(previewUrl);
+    const previewUrl = URL.createObjectURL(receipt);
+    setReceiptPreview(previewUrl);
     return () => URL.revokeObjectURL(previewUrl);
-  }, [screenshot]);
+  }, [receipt]);
 
   return (
     <div ref={containerRef} className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10 py-8 lg:py-12">
@@ -149,14 +146,19 @@ const Donate: React.FC = () => {
             </h1>
             <div className="flex items-center gap-2 text-primary font-medium">
               <ShieldCheck className="size-4" aria-hidden="true" />
-              <p>Secure, verified bank transfer</p>
+              <p>Secure donation experience</p>
             </div>
             {!isAuthenticated && (
               <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-800">
                 You can donate without an account, but we can only track your impact if you log in.
               </div>
             )}
-            {campaign?.status && campaign.status !== 'approved' && (
+            {(isClosed || isExpired) && (
+              <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700">
+                This campaign is closed and can no longer accept donations.
+              </div>
+            )}
+            {campaign?.status && campaign.status !== 'approved' && !isClosed && (
               <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700 flex items-start gap-2">
                 <AlertTriangle className="size-4 mt-0.5" aria-hidden="true" />
                 <div>
@@ -246,7 +248,7 @@ const Donate: React.FC = () => {
                 />
               </div>
               <div className="flex flex-col gap-1.5 md:col-span-2">
-                <label className="text-sm font-semibold">Email Address</label>
+                <label className="text-sm font-semibold">Email Address (optional)</label>
                 <input
                   className="w-full px-4 py-3 rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
                   placeholder="jane@example.com"
@@ -255,112 +257,55 @@ const Donate: React.FC = () => {
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                 />
-                <p className="text-xs text-gray-500">Name here must match the name on the bank transfer.</p>
+                <p className="text-xs text-gray-500">Optional, but helpful if you want a receipt or updates.</p>
               </div>
             </div>
           </div>
 
-          {/* Step 3: Payment */}
+          {/* Step 3: Donation Proof */}
           <div className="bg-white dark:bg-surface-dark rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden" data-animate="section">
             <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-primary/5">
               <h3 className="text-lg font-bold flex items-center gap-2">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">3</span>
-                Payment Details
+                Donation proof (optional)
               </h3>
             </div>
             <div className="p-6 space-y-4" data-animate="form">
-              <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">
-                <p className="text-sm font-semibold">Pay via CBE transfer</p>
-                <p className="text-sm text-gray-500">Send your donation to:</p>
-                <div className="mt-2 text-lg font-bold text-primary">
-                  {campaign?.cbeAccountNumber ?? 'CBE account not set'}
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('transaction')}
-                  className={`rounded-xl border-2 px-4 py-3 text-left transition ${
-                    paymentMethod === 'transaction'
-                      ? 'border-primary bg-primary/5 text-primary'
-                      : 'border-gray-100 dark:border-gray-700'
-                  }`}
-                  data-animate="button"
-                >
-                  <p className="font-semibold">Enter Transaction ID</p>
-                  <p className="text-xs text-gray-500">Use the ID from your CBE receipt.</p>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('qr')}
-                  className={`rounded-xl border-2 px-4 py-3 text-left transition ${
-                    paymentMethod === 'qr'
-                      ? 'border-primary bg-primary/5 text-primary'
-                      : 'border-gray-100 dark:border-gray-700'
-                  }`}
-                  data-animate="button"
-                >
-                  <p className="font-semibold">Upload QR Screenshot</p>
-                  <p className="text-xs text-gray-500">We will scan the QR code.</p>
-                </button>
-              </div>
-
-              {paymentMethod === 'transaction' ? (
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-semibold">Transaction ID</label>
+              <div className="space-y-3">
+                <label className="flex flex-col gap-2 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 p-4 text-sm text-gray-500 cursor-pointer">
+                  <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                    <FileImage className="size-4" aria-hidden="true" />
+                    <span>{receipt ? receipt.name : 'Upload a receipt or proof (optional)'}</span>
+                  </div>
                   <input
-                    className="w-full px-4 py-3 rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
-                    placeholder="Enter transaction ID"
-                    type="text"
-                    value={transactionId}
-                    onChange={(event) => setTransactionId(event.target.value)}
-                    data-animate="input"
+                    className="hidden"
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) => setReceipt(event.target.files?.[0] ?? null)}
                   />
-                  {transactionId.trim() ? (
-                    <div className="mt-2 rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-xs text-gray-600 dark:text-gray-300">
-                      Confirmed ID: <span className="font-semibold text-gray-900 dark:text-white">{transactionId.trim()}</span>
-                    </div>
-                  ) : (
-                    <p className="mt-2 text-xs text-gray-400">Enter the transaction ID to preview it here.</p>
-                  )}
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <label className="flex flex-col gap-2 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 p-4 text-sm text-gray-500 cursor-pointer">
-                    <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                      <FileImage className="size-4" aria-hidden="true" />
-                      <span>{screenshot ? screenshot.name : 'Upload QR code screenshot'}</span>
-                    </div>
-                    <input
-                      className="hidden"
-                      type="file"
-                      accept="image/*"
-                      onChange={(event) => setScreenshot(event.target.files?.[0] ?? null)}
-                    />
-                  </label>
-                  {screenshot ? (
-                    <div className="rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">
-                      <p className="text-xs text-gray-500 mb-2">Preview</p>
-                      <div className="flex items-center gap-3">
-                        {qrPreview && (
-                          <img
-                            src={qrPreview}
-                            alt="QR preview"
-                            className="h-16 w-16 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
-                          />
-                        )}
-                        <div className="text-xs text-gray-600 dark:text-gray-300">
-                          <p className="font-semibold text-gray-900 dark:text-white">{screenshot.name}</p>
-                          <p>{Math.round(screenshot.size / 1024)} KB</p>
-                        </div>
+                </label>
+                {receipt ? (
+                  <div className="rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">
+                    <p className="text-xs text-gray-500 mb-2">Preview</p>
+                    <div className="flex items-center gap-3">
+                      {receiptPreview && (
+                        <img
+                          src={receiptPreview}
+                          alt="Receipt preview"
+                          className="h-16 w-16 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
+                        />
+                      )}
+                      <div className="text-xs text-gray-600 dark:text-gray-300">
+                        <p className="font-semibold text-gray-900 dark:text-white">{receipt.name}</p>
+                        <p>{Math.round(receipt.size / 1024)} KB</p>
                       </div>
                     </div>
-                  ) : (
-                    <p className="text-xs text-gray-400">Upload a QR screenshot to preview it here.</p>
-                  )}
-                </div>
-              )}
-              {campaign?.status && campaign.status !== 'approved' && (
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-400">Upload an image if you want to include proof.</p>
+                )}
+              </div>
+              {campaign?.status && campaign.status !== 'approved' && !isClosed && (
                 <label className="flex items-start gap-2 text-xs text-rose-700">
                   <input
                     type="checkbox"
@@ -377,7 +322,7 @@ const Donate: React.FC = () => {
                 onClick={handleDonate}
                 className="w-full py-4 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-lg shadow-lg shadow-primary/30 transition-all flex items-center justify-center gap-2 group"
                 data-animate="button"
-                  disabled={isLoading}
+                    disabled={isLoading || isClosed || isExpired}
                   aria-busy={isLoading}
               >
                 <span>{isLoading ? 'Processing...' : `Donate ETB ${amount} Now`}</span>
