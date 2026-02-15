@@ -5,8 +5,10 @@ import { gsap } from 'gsap';
 import { animatePageIn, animateSectionsOnScroll, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { AlertTriangle, BadgeCheck, Heart, Search } from 'lucide-react';
 import { useCampaignStore } from '../store';
+import { useTranslation } from 'react-i18next';
 
 const Explore: React.FC = () => {
+  const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState('All');
   const [urgentOnly, setUrgentOnly] = useState(false);
   const [status, setStatus] = useState<'approved' | 'pending_verification' | 'rejected' | 'draft' | 'closed' | 'all'>('all');
@@ -59,11 +61,11 @@ const Explore: React.FC = () => {
   };
 
   const statusLabels: Record<string, string> = {
-    approved: 'Approved',
-    pending_verification: 'Pending',
-    rejected: 'Rejected',
-    draft: 'Draft',
-    closed: 'Closed'
+    approved: t('status.approved'),
+    pending_verification: t('status.pending'),
+    rejected: t('status.rejected'),
+    draft: t('status.draft'),
+    closed: t('status.closed')
   };
 
   const categories = ['All', 'Education', 'Medical', 'Environment', 'Disaster Relief', 'Community'];
@@ -87,8 +89,8 @@ const Explore: React.FC = () => {
   return (
     <div ref={containerRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8" data-animate="section">
-        <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-2">Explore Campaigns</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl">Browse all active, pending, and rejected campaigns with clear status labels.</p>
+        <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-2">{t('pages.explore.title')}</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl">{t('pages.explore.subtitle')}</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
@@ -96,14 +98,14 @@ const Explore: React.FC = () => {
         <aside className="w-full lg:w-72 flex-shrink-0" data-animate="section">
           <div className="sticky top-24 space-y-8">
             <div className="space-y-3">
-              <label className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Keywords</label>
+              <label className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">{t('pages.explore.keywords')}</label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Search className="size-4 text-slate-400" aria-hidden="true" />
                 </span>
                 <input
                   className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-primary focus:border-primary placeholder-slate-400"
-                  placeholder="Refine search..."
+                  placeholder={t('pages.explore.searchPlaceholder')}
                   type="text"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
@@ -113,8 +115,8 @@ const Explore: React.FC = () => {
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Categories</label>
-                <button onClick={() => setActiveCategory('All')} className="text-xs text-primary font-medium hover:underline">Clear</button>
+                <label className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">{t('pages.explore.categories')}</label>
+                <button onClick={() => setActiveCategory('All')} className="text-xs text-primary font-medium hover:underline">{t('pages.explore.clear')}</button>
               </div>
               <div className="space-y-2">
                 {categories.map(cat => (
@@ -133,7 +135,7 @@ const Explore: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-              <label className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Urgency</label>
+              <label className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">{t('pages.explore.urgency')}</label>
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
                   type="checkbox"
@@ -141,23 +143,23 @@ const Explore: React.FC = () => {
                   onChange={(event) => setUrgentOnly(event.target.checked)}
                   className="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent"
                 />
-                <span className="text-slate-600 dark:text-slate-300">Urgent only</span>
+                <span className="text-slate-600 dark:text-slate-300">{t('pages.explore.urgentOnly')}</span>
               </label>
             </div>
 
             <div className="space-y-3">
-              <label className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Status</label>
+              <label className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">{t('pages.explore.status')}</label>
               <select
                 value={status}
                 onChange={(event) => setStatus(event.target.value as typeof status)}
                 className="w-full px-3 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-sm"
               >
-                <option value="approved">Approved</option>
-                <option value="pending_verification">Pending</option>
-                <option value="rejected">Rejected</option>
-                <option value="draft">Draft</option>
-                <option value="closed">Closed</option>
-                <option value="all">All</option>
+                <option value="approved">{t('status.approved')}</option>
+                <option value="pending_verification">{t('status.pending')}</option>
+                <option value="rejected">{t('status.rejected')}</option>
+                <option value="draft">{t('status.draft')}</option>
+                <option value="closed">{t('status.closed')}</option>
+                <option value="all">{t('common.all')}</option>
               </select>
             </div>
           </div>
@@ -167,7 +169,7 @@ const Explore: React.FC = () => {
         <main className="flex-1" data-animate="section">
           <div className="flex items-center justify-between mb-6">
             <p className="text-slate-500 dark:text-slate-400 font-medium">
-              <span className="text-slate-900 dark:text-white font-bold">{filteredCampaigns.length}</span> campaigns found
+              <span className="text-slate-900 dark:text-white font-bold">{filteredCampaigns.length}</span> {t('pages.explore.campaignsFound')}
             </p>
           </div>
 
@@ -175,7 +177,7 @@ const Explore: React.FC = () => {
             {filteredCampaigns.map((campaign) => {
               const raised = campaign.raisedAmount ?? 0;
               const goal = campaign.goalAmount ?? 1;
-              const percent = Math.min(100, Math.round((raised / goal) * 100));
+              const percent = Math.round((raised / goal) * 100);
               const image = campaign.media?.[0] ?? 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2000&auto=format&fit=crop';
 
               return (
@@ -194,7 +196,7 @@ const Explore: React.FC = () => {
                     )}
                     {campaign.urgent && (
                       <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1 shadow-sm animate-pulse">
-                        <AlertTriangle className="size-3.5" aria-hidden="true" /> Urgent
+                        <AlertTriangle className="size-3.5" aria-hidden="true" /> {t('status.urgent')}
                       </div>
                     )}
                   </Link>
@@ -211,7 +213,7 @@ const Explore: React.FC = () => {
                     <div className="mt-auto space-y-4">
                       <div>
                         <div className="flex justify-between text-sm font-medium mb-1.5">
-                          <span className="text-slate-900 dark:text-slate-200">ETB {raised.toLocaleString()} raised</span>
+                          <span className="text-slate-900 dark:text-slate-200">ETB {raised.toLocaleString()} {t('pages.explore.raised')}</span>
                           <span className="text-slate-500">{percent}%</span>
                         </div>
                         <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2">
@@ -229,7 +231,7 @@ const Explore: React.FC = () => {
                         }}
                         className="w-full py-2.5 px-4 bg-primary hover:bg-primary/90 text-white font-semibold rounded-lg shadow-sm flex items-center justify-center gap-2"
                       >
-                        Donate Now <Heart className="size-4" aria-hidden="true" />
+                        {t('pages.explore.donateNow')} <Heart className="size-4" aria-hidden="true" />
                       </button>
                     </div>
                   </div>
@@ -252,7 +254,7 @@ const Explore: React.FC = () => {
                 className="px-6 py-2.5 rounded-lg bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 text-sm font-semibold hover:border-primary hover:text-primary transition"
                 disabled={isLoading}
               >
-                {isLoading ? 'Loading...' : 'Load more'}
+                {isLoading ? t('pages.explore.loading') : t('pages.explore.loadMore')}
               </button>
             )}
           </div>
@@ -266,12 +268,12 @@ const Explore: React.FC = () => {
               <AlertTriangle className="size-5 text-rose-500 mt-1" aria-hidden="true" />
               <div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                  {warningCampaign?.status === 'closed' ? 'Campaign closed' : 'Campaign not approved'}
+                  {warningCampaign?.status === 'closed' ? t('pages.explore.campaignClosed') : t('pages.explore.campaignNotApproved')}
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
                   {warningCampaign?.status === 'closed'
-                    ? 'This campaign is closed and can no longer accept donations.'
-                    : 'This campaign is not approved. The platform is not responsible for donations made to unapproved campaigns.'}
+                    ? t('pages.explore.campaignClosedBody')
+                    : t('pages.explore.campaignNotApprovedBody')}
                 </p>
               </div>
             </div>
@@ -281,7 +283,7 @@ const Explore: React.FC = () => {
                 onClick={() => setWarningCampaignId(null)}
                 className="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-primary"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               {warningCampaign?.status !== 'closed' && (
                 <button
@@ -293,7 +295,7 @@ const Explore: React.FC = () => {
                   }}
                   className="px-5 py-2 rounded-lg bg-rose-600 text-white text-sm font-bold"
                 >
-                  Continue anyway
+                  {t('pages.explore.continueAnyway')}
                 </button>
               )}
             </div>

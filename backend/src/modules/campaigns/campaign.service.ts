@@ -114,7 +114,7 @@ export const campaignService = {
   getById: async (campaignId: string) => {
     const campaign = await campaignRepository.findByIdLean(campaignId);
     if (!campaign) {
-      throw { status: 404, message: 'Campaign not found' };
+      throw { status: 404, message: 'errors.campaignNotFound' };
     }
     const now = new Date();
     if (campaign.status === 'approved' && campaign.deadline && new Date(campaign.deadline) <= now) {
@@ -167,7 +167,7 @@ export const campaignService = {
   updateCampaign: async (campaignId: string, payload: Record<string, unknown>) => {
     const campaign = await campaignRepository.updateById(campaignId, payload);
     if (!campaign) {
-      throw { status: 404, message: 'Campaign not found' };
+      throw { status: 404, message: 'errors.campaignNotFound' };
     }
     await cache.invalidateByPrefix('campaigns:list:');
     return campaign;
@@ -180,7 +180,7 @@ export const campaignService = {
     const urls = uploads.map((upload) => upload.secure_url);
     const campaign = await campaignRepository.updateById(campaignId, { $push: { media: { $each: urls } } } as never);
     if (!campaign) {
-      throw { status: 404, message: 'Campaign not found' };
+      throw { status: 404, message: 'errors.campaignNotFound' };
     }
     await cache.invalidateByPrefix('campaigns:list:');
     return campaign;
@@ -188,7 +188,7 @@ export const campaignService = {
   submitCampaign: async (campaignId: string) => {
     const campaign = await campaignRepository.updateById(campaignId, { status: 'pending_verification' });
     if (!campaign) {
-      throw { status: 404, message: 'Campaign not found' };
+      throw { status: 404, message: 'errors.campaignNotFound' };
     }
     await cache.invalidateByPrefix('campaigns:list:');
     return campaign;
@@ -212,18 +212,18 @@ export const campaignService = {
   createActionRequest: async (payload: { campaignId: string; userId: string; action: 'pause' | 'delete'; message: string }) => {
     const campaign = await campaignRepository.findById(payload.campaignId);
     if (!campaign) {
-      throw { status: 404, message: 'Campaign not found' };
+      throw { status: 404, message: 'errors.campaignNotFound' };
     }
 
     const ownerId = campaign.organizer.toString();
     const createdById = (campaign as { createdBy?: { toString: () => string } }).createdBy?.toString?.();
     if (ownerId !== payload.userId && createdById !== payload.userId) {
-      throw { status: 403, message: 'You are not allowed to modify this campaign' };
+      throw { status: 403, message: 'errors.notAllowedToModifyCampaign' };
     }
 
     const existing = await campaignActionRequestRepository.findPendingByCampaignAndAction(payload.campaignId, payload.action);
     if (existing) {
-      throw { status: 409, message: 'A pending request already exists for this campaign' };
+      throw { status: 409, message: 'errors.pendingRequestExists' };
     }
 
     const request = await campaignActionRequestRepository.create({

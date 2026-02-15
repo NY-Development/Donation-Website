@@ -1,124 +1,159 @@
 export type HelpArticle = {
   id: string;
-  title: string;
-  summary: string;
-  content: string[];
-  tags: string[];
-  category: 'account' | 'donations' | 'campaigns' | 'safety' | 'verification';
+  titleKey: string;
+  summaryKey: string;
+  contentKeys: string[];
+  tagKeys: string[];
+  categoryKey: string;
 };
 
-export const helpTopics = ['Donations', 'Receipts', 'Verification', 'Campaign tips', 'Security', 'Account'] as const;
+export const helpTopics = ['donations', 'receipts', 'verification', 'campaignTips', 'security', 'account'] as const;
 
 export const helpArticles: HelpArticle[] = [
   {
     id: 'donate-guest',
-    title: 'How to donate without logging in',
-    summary: 'You can donate as a guest and still support a campaign securely.',
-    content: [
-      'Open a campaign and tap Donate Now.',
-      'Choose your ETB amount and enter your name. Email is optional but helps with receipts and updates.',
-      'Submit the donation. If you want, attach a receipt image as proof.',
-      'Create an account later to track your impact from the dashboard.'
+    titleKey: 'pages.helpCenter.articles.donateGuest.title',
+    summaryKey: 'pages.helpCenter.articles.donateGuest.summary',
+    contentKeys: [
+      'pages.helpCenter.articles.donateGuest.content.0',
+      'pages.helpCenter.articles.donateGuest.content.1',
+      'pages.helpCenter.articles.donateGuest.content.2',
+      'pages.helpCenter.articles.donateGuest.content.3'
     ],
-    tags: ['donations', 'guest', 'receipts', 'dashboard'],
-    category: 'donations'
+    tagKeys: [
+      'pages.helpCenter.tags.donations',
+      'pages.helpCenter.tags.guest',
+      'pages.helpCenter.tags.receipts',
+      'pages.helpCenter.tags.dashboard'
+    ],
+    categoryKey: 'pages.helpCenter.categories.donations'
   },
   {
     id: 'donation-receipts',
-    title: 'How to track donations and receipts',
-    summary: 'See totals and donation history from your dashboard after you log in.',
-    content: [
-      'Log in and open your dashboard to view Total Donated and recent activity.',
-      'Receipts are attached to successful donations when provided.',
-      'If a receipt is missing, submit your donation with a proof image next time for faster tracking.'
+    titleKey: 'pages.helpCenter.articles.donationReceipts.title',
+    summaryKey: 'pages.helpCenter.articles.donationReceipts.summary',
+    contentKeys: [
+      'pages.helpCenter.articles.donationReceipts.content.0',
+      'pages.helpCenter.articles.donationReceipts.content.1',
+      'pages.helpCenter.articles.donationReceipts.content.2'
     ],
-    tags: ['donations', 'receipts', 'dashboard'],
-    category: 'donations'
+    tagKeys: [
+      'pages.helpCenter.tags.donations',
+      'pages.helpCenter.tags.receipts',
+      'pages.helpCenter.tags.dashboard'
+    ],
+    categoryKey: 'pages.helpCenter.categories.donations'
   },
   {
     id: 'organizer-verification',
-    title: 'How to verify your organizer account',
-    summary: 'Verification protects donors and keeps campaigns trustworthy.',
-    content: [
-      'Go to Organizer Verification from your dashboard.',
-      'Upload your national ID (front and back) and a clear live photo.',
-      'Submit the form and wait for approval. You will see the status in your account.'
+    titleKey: 'pages.helpCenter.articles.organizerVerification.title',
+    summaryKey: 'pages.helpCenter.articles.organizerVerification.summary',
+    contentKeys: [
+      'pages.helpCenter.articles.organizerVerification.content.0',
+      'pages.helpCenter.articles.organizerVerification.content.1',
+      'pages.helpCenter.articles.organizerVerification.content.2'
     ],
-    tags: ['verification', 'organizer', 'national id'],
-    category: 'verification'
+    tagKeys: [
+      'pages.helpCenter.tags.verification',
+      'pages.helpCenter.tags.organizer',
+      'pages.helpCenter.tags.nationalId'
+    ],
+    categoryKey: 'pages.helpCenter.categories.verification'
   },
   {
     id: 'campaign-draft',
-    title: 'How to create a campaign draft',
-    summary: 'Start a campaign and save progress as you go.',
-    content: [
-      'Open Start Campaign and fill in the title, story, and goal.',
-      'Add a deadline if you want the campaign to auto-close on a specific date.',
-      'Upload media to make your campaign more credible and engaging.',
-      'Launch when ready, or keep editing until you are satisfied.'
+    titleKey: 'pages.helpCenter.articles.campaignDraft.title',
+    summaryKey: 'pages.helpCenter.articles.campaignDraft.summary',
+    contentKeys: [
+      'pages.helpCenter.articles.campaignDraft.content.0',
+      'pages.helpCenter.articles.campaignDraft.content.1',
+      'pages.helpCenter.articles.campaignDraft.content.2',
+      'pages.helpCenter.articles.campaignDraft.content.3'
     ],
-    tags: ['campaigns', 'draft', 'deadline'],
-    category: 'campaigns'
+    tagKeys: [
+      'pages.helpCenter.tags.campaigns',
+      'pages.helpCenter.tags.draft',
+      'pages.helpCenter.tags.deadline'
+    ],
+    categoryKey: 'pages.helpCenter.categories.campaigns'
   },
   {
     id: 'campaign-updates',
-    title: 'How to update your campaign story',
-    summary: 'Keep donors informed with clear progress updates.',
-    content: [
-      'Open your campaign from the dashboard and edit the story or goal as needed.',
-      'Add new media to show progress and build trust.',
-      'If you need to pause or delete, submit a request from the dashboard.'
+    titleKey: 'pages.helpCenter.articles.campaignUpdates.title',
+    summaryKey: 'pages.helpCenter.articles.campaignUpdates.summary',
+    contentKeys: [
+      'pages.helpCenter.articles.campaignUpdates.content.0',
+      'pages.helpCenter.articles.campaignUpdates.content.1',
+      'pages.helpCenter.articles.campaignUpdates.content.2'
     ],
-    tags: ['campaigns', 'updates', 'dashboard'],
-    category: 'campaigns'
+    tagKeys: [
+      'pages.helpCenter.tags.campaigns',
+      'pages.helpCenter.tags.updates',
+      'pages.helpCenter.tags.dashboard'
+    ],
+    categoryKey: 'pages.helpCenter.categories.campaigns'
   },
   {
     id: 'campaign-closure',
-    title: 'When does a campaign close?',
-    summary: 'Campaigns close when the deadline passes or when the goal is reached.',
-    content: [
-      'If you set a deadline, the campaign closes automatically on that date.',
-      'If the goal is reached first, the campaign is marked as a success story and closes.',
-      'Closed campaigns no longer accept donations.'
+    titleKey: 'pages.helpCenter.articles.campaignClosure.title',
+    summaryKey: 'pages.helpCenter.articles.campaignClosure.summary',
+    contentKeys: [
+      'pages.helpCenter.articles.campaignClosure.content.0',
+      'pages.helpCenter.articles.campaignClosure.content.1',
+      'pages.helpCenter.articles.campaignClosure.content.2'
     ],
-    tags: ['campaigns', 'deadline', 'goal reached'],
-    category: 'campaigns'
+    tagKeys: [
+      'pages.helpCenter.tags.campaigns',
+      'pages.helpCenter.tags.deadline',
+      'pages.helpCenter.tags.goalReached'
+    ],
+    categoryKey: 'pages.helpCenter.categories.campaigns'
   },
   {
     id: 'security-basics',
-    title: 'How we keep donations secure',
-    summary: 'We use secure sessions, protected routes, and controlled access.',
-    content: [
-      'Authentication protects personal data and donation history.',
-      'Organizer verification reduces fraud risk for campaigns.',
-      'We monitor activity and provide support for suspicious issues.'
+    titleKey: 'pages.helpCenter.articles.securityBasics.title',
+    summaryKey: 'pages.helpCenter.articles.securityBasics.summary',
+    contentKeys: [
+      'pages.helpCenter.articles.securityBasics.content.0',
+      'pages.helpCenter.articles.securityBasics.content.1',
+      'pages.helpCenter.articles.securityBasics.content.2'
     ],
-    tags: ['security', 'privacy', 'trust'],
-    category: 'safety'
+    tagKeys: [
+      'pages.helpCenter.tags.security',
+      'pages.helpCenter.tags.privacy',
+      'pages.helpCenter.tags.trust'
+    ],
+    categoryKey: 'pages.helpCenter.categories.safety'
   },
   {
     id: 'report-issue',
-    title: 'How to report suspicious activity',
-    summary: 'Contact support with details so we can help quickly.',
-    content: [
-      'Use the Report an issue action in the Help Center.',
-      'Describe the campaign and any evidence you have.',
-      'Our team will review and respond to your report.'
+    titleKey: 'pages.helpCenter.articles.reportIssue.title',
+    summaryKey: 'pages.helpCenter.articles.reportIssue.summary',
+    contentKeys: [
+      'pages.helpCenter.articles.reportIssue.content.0',
+      'pages.helpCenter.articles.reportIssue.content.1',
+      'pages.helpCenter.articles.reportIssue.content.2'
     ],
-    tags: ['safety', 'support'],
-    category: 'safety'
+    tagKeys: [
+      'pages.helpCenter.tags.safety',
+      'pages.helpCenter.tags.support'
+    ],
+    categoryKey: 'pages.helpCenter.categories.safety'
   },
   {
     id: 'account-access',
-    title: 'Account access and recovery',
-    summary: 'Log in securely and recover access if needed.',
-    content: [
-      'Use the login page with your email and password.',
-      'If you forgot your password, use the Forgot Password link.',
-      'Contact support if you cannot regain access.'
+    titleKey: 'pages.helpCenter.articles.accountAccess.title',
+    summaryKey: 'pages.helpCenter.articles.accountAccess.summary',
+    contentKeys: [
+      'pages.helpCenter.articles.accountAccess.content.0',
+      'pages.helpCenter.articles.accountAccess.content.1',
+      'pages.helpCenter.articles.accountAccess.content.2'
     ],
-    tags: ['account', 'login'],
-    category: 'account'
+    tagKeys: [
+      'pages.helpCenter.tags.account',
+      'pages.helpCenter.tags.login'
+    ],
+    categoryKey: 'pages.helpCenter.categories.account'
   }
 ];
 
@@ -133,27 +168,27 @@ export const popularGuides = [
 
 export const faqs = [
   {
-    q: 'How do I verify my email with OTP?',
-    a: 'After signup, we send a 6-digit OTP to your email. Enter it on the verification page to activate your account.'
+    qKey: 'pages.helpCenter.faqs.0.q',
+    aKey: 'pages.helpCenter.faqs.0.a'
   },
   {
-    q: 'Can I donate without an account?',
-    a: 'Yes. You can complete a donation as a guest. Create an account later to track receipts and impact.'
+    qKey: 'pages.helpCenter.faqs.1.q',
+    aKey: 'pages.helpCenter.faqs.1.a'
   },
   {
-    q: 'Where can I see my total donated?',
-    a: 'Log in and open your dashboard to see Total Donated and your donation timeline.'
+    qKey: 'pages.helpCenter.faqs.2.q',
+    aKey: 'pages.helpCenter.faqs.2.a'
   },
   {
-    q: 'What happens when a campaign reaches its goal?',
-    a: 'The campaign is marked as a success story and closes automatically to new donations.'
+    qKey: 'pages.helpCenter.faqs.3.q',
+    aKey: 'pages.helpCenter.faqs.3.a'
   },
   {
-    q: 'What happens when a campaign deadline passes?',
-    a: 'The campaign closes automatically and no longer accepts donations.'
+    qKey: 'pages.helpCenter.faqs.4.q',
+    aKey: 'pages.helpCenter.faqs.4.a'
   },
   {
-    q: 'How do I report a problem?',
-    a: 'Use the Report an issue action in the Help Center to email our support team.'
+    qKey: 'pages.helpCenter.faqs.5.q',
+    aKey: 'pages.helpCenter.faqs.5.a'
   }
 ];

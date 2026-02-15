@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
+import { useTranslation } from 'react-i18next';
 import {
   BadgeCheck,
   BookOpen,
@@ -17,7 +18,7 @@ import {
 } from 'lucide-react';
 import organizerService from '../Services/organizer';
 import { useAuthStore } from '../store';
-import { faqs, helpArticles, helpTopics, popularGuides, type HelpArticle } from '../data/help';
+import { faqs, helpArticles, helpTopics, popularGuides } from '../data/help';
 
 type ModalContent = {
   title: string;
@@ -25,7 +26,17 @@ type ModalContent = {
   meta?: Array<{ label: string; value: string }>;
 };
 
+type LocalizedArticle = {
+  id: string;
+  title: string;
+  summary: string;
+  content: string[];
+  tags: string[];
+  category: string;
+};
+
 const HelpCenter: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user);
@@ -36,20 +47,35 @@ const HelpCenter: React.FC = () => {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
 
+  const supportEmail = 'nydevofficial@gmail.com';
+
+  const localizedArticles = useMemo<LocalizedArticle[]>(
+    () =>
+      helpArticles.map((article) => ({
+        id: article.id,
+        title: t(article.titleKey),
+        summary: t(article.summaryKey),
+        content: article.contentKeys.map((key) => t(key)),
+        tags: article.tagKeys.map((key) => t(key)),
+        category: t(article.categoryKey)
+      })),
+    [t]
+  );
+
   const articleMap = useMemo(() => {
-    const map = new Map<string, HelpArticle>();
-    helpArticles.forEach((article) => map.set(article.id, article));
+    const map = new Map<string, LocalizedArticle>();
+    localizedArticles.forEach((article) => map.set(article.id, article));
     return map;
-  }, []);
+  }, [localizedArticles]);
 
   const searchResults = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    if (!query) return [] as HelpArticle[];
-    return helpArticles.filter((article) => {
+    if (!query) return [] as LocalizedArticle[];
+    return localizedArticles.filter((article) => {
       const content = [article.title, article.summary, article.content.join(' '), article.tags.join(' ')].join(' ').toLowerCase();
       return content.includes(query);
     });
-  }, [searchQuery]);
+  }, [localizedArticles, searchQuery]);
 
   useLayoutEffect(() => {
     ensureGsap();
@@ -104,30 +130,33 @@ const HelpCenter: React.FC = () => {
       }
 
       const statusLabel = data?.isOrganizerVerified
-        ? 'Verified'
+        ? t('pages.helpCenter.identity.statusVerified')
         : data?.status === 'pending'
-          ? 'Pending review'
-          : 'Submitted';
+          ? t('pages.helpCenter.identity.statusPending')
+          : t('pages.helpCenter.identity.statusSubmitted');
 
       setModalContent({
-        title: 'Identity status',
+        title: t('pages.helpCenter.identity.title'),
         body: [
-          'Your national ID is on file for verification.',
-          'If you need to update your documents, visit the organizer verification page.'
+          t('pages.helpCenter.identity.body.0'),
+          t('pages.helpCenter.identity.body.1')
         ],
         meta: [
-          { label: 'Name', value: user?.name ?? 'Organizer' },
-          { label: 'National ID', value: 'On file' },
-          { label: 'Status', value: statusLabel },
-          { label: 'Submitted', value: data?.submittedAt ? new Date(data.submittedAt).toLocaleDateString() : 'N/A' }
+          { label: t('pages.helpCenter.identity.meta.name'), value: user?.name ?? t('pages.helpCenter.identity.meta.fallbackName') },
+          { label: t('pages.helpCenter.identity.meta.nationalId'), value: t('pages.helpCenter.identity.meta.onFile') },
+          { label: t('pages.helpCenter.identity.meta.status'), value: statusLabel },
+          {
+            label: t('pages.helpCenter.identity.meta.submitted'),
+            value: data?.submittedAt ? new Date(data.submittedAt).toLocaleDateString() : t('pages.helpCenter.identity.meta.na')
+          }
         ]
       });
     } catch {
       setModalContent({
-        title: 'Identity status',
+        title: t('pages.helpCenter.identity.title'),
         body: [
-          'We could not load your verification status right now.',
-          'Please try again in a moment or contact support if the issue persists.'
+          t('pages.helpCenter.identity.error.0'),
+          t('pages.helpCenter.identity.error.1')
         ]
       });
     } finally {
@@ -141,19 +170,18 @@ const HelpCenter: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-8">
             <div className="mb-10">
-              <p className="text-primary text-sm font-bold uppercase tracking-[0.3em]">Help Center</p>
+              <p className="text-primary text-sm font-bold uppercase tracking-[0.3em]">{t('pages.helpCenter.kicker')}</p>
               <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mt-3">
-                How can we help?
+                {t('pages.helpCenter.title')}
               </h1>
               <p className="text-gray-600 dark:text-gray-400 mt-4 max-w-2xl">
-                Find quick answers about donating, running campaigns, account access, verification, and safety. If you
-                do not see what you need, contact our team anytime.
+                {t('pages.helpCenter.subtitle')}
               </p>
             </div>
 
             <div className="bg-white dark:bg-surface-dark rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm p-6 mb-10">
               <label className="text-sm font-semibold text-gray-900 dark:text-white" htmlFor="help-search">
-                Search the Help Center
+                {t('pages.helpCenter.search.label')}
               </label>
               <form className="mt-3 flex flex-col sm:flex-row gap-3" onSubmit={handleSearch}>
                 <input
@@ -161,14 +189,14 @@ const HelpCenter: React.FC = () => {
                   type="text"
                   value={searchInput}
                   onChange={(event) => setSearchInput(event.target.value)}
-                  placeholder="Try: receipts, verification, deadline, donations"
+                  placeholder={t('pages.helpCenter.search.placeholder')}
                   className="flex-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none"
                 />
                 <button
                   type="submit"
                   className="px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-hover transition"
                 >
-                  Search
+                  {t('pages.helpCenter.search.button')}
                 </button>
               </form>
               <div className="mt-4 flex flex-wrap gap-2">
@@ -178,11 +206,12 @@ const HelpCenter: React.FC = () => {
                     type="button"
                     className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold"
                     onClick={() => {
-                      setSearchInput(topic);
-                      setSearchQuery(topic);
+                      const label = t(`pages.helpCenter.topics.${topic}`);
+                      setSearchInput(label);
+                      setSearchQuery(label);
                     }}
                   >
-                    {topic}
+                    {t(`pages.helpCenter.topics.${topic}`)}
                   </button>
                 ))}
               </div>
@@ -191,7 +220,7 @@ const HelpCenter: React.FC = () => {
             {searchQuery && (
               <div className="space-y-4 mb-12">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-black text-gray-900 dark:text-white">Search results</h2>
+                  <h2 className="text-2xl font-black text-gray-900 dark:text-white">{t('pages.helpCenter.search.results')}</h2>
                   <button
                     type="button"
                     onClick={() => {
@@ -200,7 +229,7 @@ const HelpCenter: React.FC = () => {
                     }}
                     className="text-sm font-semibold text-gray-500 hover:text-primary"
                   >
-                    Clear
+                    {t('pages.helpCenter.search.clear')}
                   </button>
                 </div>
                 {searchResults.length ? (
@@ -223,7 +252,7 @@ const HelpCenter: React.FC = () => {
                   </div>
                 ) : (
                   <div className="rounded-2xl border border-dashed border-gray-200 dark:border-gray-800 p-6 text-sm text-gray-500">
-                    No results found. Try different keywords or contact support at nydevofficial@gmail.com.
+                    {t('pages.helpCenter.search.empty', { email: supportEmail })}
                   </div>
                 )}
               </div>
@@ -232,23 +261,23 @@ const HelpCenter: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
               {[
                 {
-                  title: 'Account and Access',
-                  description: 'Profile, password, email changes, and login help.',
+                  title: t('pages.helpCenter.cards.account.title'),
+                  description: t('pages.helpCenter.cards.account.body'),
                   icon: UserCircle
                 },
                 {
-                  title: 'Donation Support',
-                  description: 'Payment methods, receipts, refunds, and chargebacks.',
+                  title: t('pages.helpCenter.cards.donations.title'),
+                  description: t('pages.helpCenter.cards.donations.body'),
                   icon: CreditCard
                 },
                 {
-                  title: 'Campaign Management',
-                  description: 'Create, edit, verify, and update your fundraiser.',
+                  title: t('pages.helpCenter.cards.campaigns.title'),
+                  description: t('pages.helpCenter.cards.campaigns.body'),
                   icon: Rocket
                 },
                 {
-                  title: 'Safety and Trust',
-                  description: 'Reporting issues, fraud prevention, and community safety.',
+                  title: t('pages.helpCenter.cards.safety.title'),
+                  description: t('pages.helpCenter.cards.safety.body'),
                   icon: ShieldCheck
                 }
               ].map((item) => (
@@ -266,7 +295,7 @@ const HelpCenter: React.FC = () => {
             </div>
 
             <div className="space-y-4 mb-12">
-              <h2 className="text-2xl font-black text-gray-900 dark:text-white">Popular Guides</h2>
+              <h2 className="text-2xl font-black text-gray-900 dark:text-white">{t('pages.helpCenter.popularGuides')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {popularGuides.map((guideId) => {
                   const guide = articleMap.get(guideId);
@@ -287,17 +316,17 @@ const HelpCenter: React.FC = () => {
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-2xl font-black text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+              <h2 className="text-2xl font-black text-gray-900 dark:text-white">{t('pages.helpCenter.faqsTitle')}</h2>
               {faqs.map((item) => (
                 <details
-                  key={item.q}
+                  key={item.qKey}
                   className="group rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark p-5"
                 >
                   <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold text-gray-900 dark:text-white">
-                    {item.q}
+                    {t(item.qKey)}
                     <span className="text-primary group-open:rotate-180 transition-transform">+</span>
                   </summary>
-                  <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">{item.a}</p>
+                  <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">{t(item.aKey)}</p>
                 </details>
               ))}
             </div>
@@ -307,36 +336,36 @@ const HelpCenter: React.FC = () => {
             <div className="rounded-2xl border border-primary/20 bg-primary/10 p-6">
               <div className="flex items-center gap-3">
                 <HelpCircle className="size-5 text-primary" aria-hidden="true" />
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Need personal help?</h3>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('pages.helpCenter.sidebar.personalHelpTitle')}</h3>
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-300 mt-3">
-                Our support team is here 24/7 to help with account access, payments, and safety concerns.
+                {t('pages.helpCenter.sidebar.personalHelpBody')}
               </p>
               <div className="mt-4 space-y-2 text-sm">
                 <div className="flex items-center gap-2">
                   <Mail className="size-4 text-primary" aria-hidden="true" />
                   <a
-                    href="mailto:nydevofficial@gmail.com"
+                    href={`mailto:${supportEmail}`}
                     className="hover:text-primary transition-colors"
                   >
-                    nydevofficial@gmail.com
+                    {supportEmail}
                   </a>
                 </div>
               </div>
             </div>
 
             <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark p-6">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Quick Actions</h3>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('pages.helpCenter.sidebar.quickActions')}</h3>
               <div className="mt-4 space-y-3">
                 <button
                   type="button"
                   onClick={() => {
-                    window.location.href = 'mailto:nydevofficial@gmail.com?subject=ImpactGive%20Issue';
+                    window.location.href = `mailto:${supportEmail}?subject=ImpactGive%20Issue`;
                   }}
                   className="flex w-full items-center gap-3 rounded-xl border border-gray-100 dark:border-gray-800 p-3 text-left hover:border-primary/40 hover:bg-primary/5 transition"
                 >
                   <LifeBuoy className="size-4 text-primary" aria-hidden="true" />
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">Report an issue</span>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">{t('pages.helpCenter.sidebar.reportIssue')}</span>
                 </button>
                 <button
                   type="button"
@@ -346,7 +375,9 @@ const HelpCenter: React.FC = () => {
                 >
                   <BadgeCheck className="size-4 text-primary" aria-hidden="true" />
                   <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                    {identityLoading ? 'Checking identity...' : 'Verify identity status'}
+                    {identityLoading
+                      ? t('pages.helpCenter.sidebar.identityChecking')
+                      : t('pages.helpCenter.sidebar.identityStatus')}
                   </span>
                 </button>
                 <button
@@ -355,7 +386,7 @@ const HelpCenter: React.FC = () => {
                   className="flex w-full items-center gap-3 rounded-xl border border-gray-100 dark:border-gray-800 p-3 text-left hover:border-primary/40 hover:bg-primary/5 transition"
                 >
                   <Lock className="size-4 text-primary" aria-hidden="true" />
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">Security & privacy</span>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">{t('pages.helpCenter.sidebar.securityPrivacy')}</span>
                 </button>
                 <button
                   type="button"
@@ -363,25 +394,25 @@ const HelpCenter: React.FC = () => {
                   className="flex w-full items-center gap-3 rounded-xl border border-gray-100 dark:border-gray-800 p-3 text-left hover:border-primary/40 hover:bg-primary/5 transition"
                 >
                   <HeartHandshake className="size-4 text-primary" aria-hidden="true" />
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">Donation protection</span>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">{t('pages.helpCenter.sidebar.donationProtection')}</span>
                 </button>
               </div>
             </div>
 
             <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark p-6">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Safety Checklist</h3>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('pages.helpCenter.sidebar.safetyTitle')}</h3>
               <ul className="mt-4 space-y-3 text-sm text-gray-600 dark:text-gray-400">
                 <li className="flex items-start gap-2">
                   <ShieldCheck className="size-4 text-primary mt-0.5" aria-hidden="true" />
-                  <span>Only donate to campaigns with clear updates and verified organizers.</span>
+                  <span>{t('pages.helpCenter.sidebar.safetyItems.0')}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <ShieldCheck className="size-4 text-primary mt-0.5" aria-hidden="true" />
-                  <span>Never share your login codes or payment details.</span>
+                  <span>{t('pages.helpCenter.sidebar.safetyItems.1')}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <ShieldCheck className="size-4 text-primary mt-0.5" aria-hidden="true" />
-                  <span>Report suspicious activity immediately to our trust team.</span>
+                  <span>{t('pages.helpCenter.sidebar.safetyItems.2')}</span>
                 </li>
               </ul>
             </div>
@@ -403,7 +434,7 @@ const HelpCenter: React.FC = () => {
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Guide</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">{t('pages.helpCenter.modal.guideLabel')}</p>
                 <h3 className="text-2xl font-black text-gray-900 dark:text-white mt-2">
                   {modalContent.title}
                 </h3>
@@ -413,7 +444,7 @@ const HelpCenter: React.FC = () => {
                 onClick={() => setModalContent(null)}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
               >
-                <span className="sr-only">Close</span>
+                <span className="sr-only">{t('pages.helpCenter.modal.close')}</span>
                 X
               </button>
             </div>

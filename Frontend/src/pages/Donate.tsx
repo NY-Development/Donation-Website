@@ -9,8 +9,10 @@ import { useQuery } from '@tanstack/react-query';
 import campaignService from '../Services/campaigns';
 import { getApiData } from '../store/apiHelpers';
 import type { Campaign } from '../../types';
+import { useTranslation } from 'react-i18next';
 
 const Donate: React.FC = () => {
+  const { t } = useTranslation();
   const [amount, setAmount] = useState('50');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -136,34 +138,34 @@ const Donate: React.FC = () => {
         data-animate="button"
       >
         <ArrowLeft className="size-4" aria-hidden="true" />
-        Back
+        {t('pages.donate.back')}
       </button>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-12">
         <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-8">
           <div className="flex flex-col gap-2" data-animate="section">
             <h1 className="text-3xl md:text-4xl font-black leading-tight tracking-tight text-gray-900 dark:text-white">
-              Complete your donation
+              {t('pages.donate.title')}
             </h1>
             <div className="flex items-center gap-2 text-primary font-medium">
               <ShieldCheck className="size-4" aria-hidden="true" />
-              <p>Secure donation experience</p>
+              <p>{t('pages.donate.secure')}</p>
             </div>
             {!isAuthenticated && (
               <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-800">
-                You can donate without an account, but we can only track your impact if you log in.
+                {t('pages.donate.noAccount')}
               </div>
             )}
             {(isClosed || isExpired) && (
               <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700">
-                This campaign is closed and can no longer accept donations.
+                {t('pages.donate.closed')}
               </div>
             )}
             {campaign?.status && campaign.status !== 'approved' && !isClosed && (
               <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-700 flex items-start gap-2">
                 <AlertTriangle className="size-4 mt-0.5" aria-hidden="true" />
                 <div>
-                  <p className="font-semibold">This campaign is not approved.</p>
-                  <p className="text-xs">Donate at your own risk. The platform is not responsible for unapproved campaigns.</p>
+                  <p className="font-semibold">{t('pages.donate.notApprovedTitle')}</p>
+                  <p className="text-xs">{t('pages.donate.notApprovedBody')}</p>
                 </div>
               </div>
             )}
@@ -179,12 +181,12 @@ const Donate: React.FC = () => {
             <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-primary/5">
               <h3 className="text-lg font-bold flex items-center gap-2">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">1</span>
-                Choose an amount
+                {t('pages.donate.step1')}
               </h3>
             </div>
             <div className="p-6" data-animate="form">
               <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700 mb-4">
-                The verified payment amount must match the amount you select here.
+                {t('pages.donate.step1Hint')}
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                 {['25', '50', '100', '250'].map(val => (
@@ -208,7 +210,7 @@ const Donate: React.FC = () => {
                   type="number" 
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  placeholder="Other amount"
+                  placeholder={t('pages.donate.otherAmount')}
                   className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none"
                   data-animate="input"
                 />
@@ -221,12 +223,12 @@ const Donate: React.FC = () => {
             <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-primary/5">
               <h3 className="text-lg font-bold flex items-center gap-2">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">2</span>
-                Who is donating?
+                {t('pages.donate.step2')}
               </h3>
             </div>
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4" data-animate="form">
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-semibold">First Name</label>
+                <label className="text-sm font-semibold">{t('pages.donate.firstName')}</label>
                 <input
                   className="w-full px-4 py-3 rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
                   placeholder="Jane"
@@ -237,7 +239,7 @@ const Donate: React.FC = () => {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-semibold">Last Name</label>
+                <label className="text-sm font-semibold">{t('pages.donate.lastName')}</label>
                 <input
                   className="w-full px-4 py-3 rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
                   placeholder="Doe"
@@ -248,7 +250,7 @@ const Donate: React.FC = () => {
                 />
               </div>
               <div className="flex flex-col gap-1.5 md:col-span-2">
-                <label className="text-sm font-semibold">Email Address (optional)</label>
+                <label className="text-sm font-semibold">{t('pages.donate.email')}</label>
                 <input
                   className="w-full px-4 py-3 rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900"
                   placeholder="jane@example.com"
@@ -257,7 +259,7 @@ const Donate: React.FC = () => {
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                 />
-                <p className="text-xs text-gray-500">Optional, but helpful if you want a receipt or updates.</p>
+                <p className="text-xs text-gray-500">{t('pages.donate.emailHint')}</p>
               </div>
             </div>
           </div>
@@ -267,7 +269,7 @@ const Donate: React.FC = () => {
             <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-primary/5">
               <h3 className="text-lg font-bold flex items-center gap-2">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">3</span>
-                Donation proof (optional)
+                {t('pages.donate.step3')}
               </h3>
             </div>
             <div className="p-6 space-y-4" data-animate="form">
@@ -275,7 +277,7 @@ const Donate: React.FC = () => {
                 <label className="flex flex-col gap-2 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 p-4 text-sm text-gray-500 cursor-pointer">
                   <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
                     <FileImage className="size-4" aria-hidden="true" />
-                    <span>{receipt ? receipt.name : 'Upload a receipt or proof (optional)'}</span>
+                    <span>{receipt ? receipt.name : t('pages.donate.uploadProof')}</span>
                   </div>
                   <input
                     className="hidden"
@@ -286,12 +288,12 @@ const Donate: React.FC = () => {
                 </label>
                 {receipt ? (
                   <div className="rounded-xl border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">
-                    <p className="text-xs text-gray-500 mb-2">Preview</p>
+                    <p className="text-xs text-gray-500 mb-2">{t('pages.donate.preview')}</p>
                     <div className="flex items-center gap-3">
                       {receiptPreview && (
                         <img
                           src={receiptPreview}
-                          alt="Receipt preview"
+                          alt={t('pages.donate.receiptPreviewAlt')}
                           className="h-16 w-16 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
                         />
                       )}
@@ -302,7 +304,7 @@ const Donate: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-xs text-gray-400">Upload an image if you want to include proof.</p>
+                  <p className="text-xs text-gray-400">{t('pages.donate.uploadHint')}</p>
                 )}
               </div>
               {campaign?.status && campaign.status !== 'approved' && !isClosed && (
@@ -313,7 +315,7 @@ const Donate: React.FC = () => {
                     checked={acknowledgeRisk}
                     onChange={(event) => setAcknowledgeRisk(event.target.checked)}
                   />
-                  <span>I understand this campaign is not approved and I donate at my own risk.</span>
+                  <span>{t('pages.donate.acknowledge')}</span>
                 </label>
               )}
             </div>
@@ -325,7 +327,7 @@ const Donate: React.FC = () => {
                     disabled={isLoading || isClosed || isExpired}
                   aria-busy={isLoading}
               >
-                <span>{isLoading ? 'Processing...' : `Donate ETB ${amount} Now`}</span>
+                <span>{isLoading ? t('pages.donate.processing') : t('pages.donate.donateAmount', { amount })}</span>
                 <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
               </button>
             </div>
@@ -342,25 +344,25 @@ const Donate: React.FC = () => {
               </div>
               <div className="p-6 flex flex-col gap-4">
                 <div>
-                  <p className="text-primary text-xs font-bold uppercase tracking-widest mb-1">Supporting</p>
-                  <h3 className="text-xl font-bold leading-tight">{campaign?.title ?? 'Campaign'}</h3>
+                  <p className="text-primary text-xs font-bold uppercase tracking-widest mb-1">{t('pages.donate.supporting')}</p>
+                  <h3 className="text-xl font-bold leading-tight">{campaign?.title ?? t('pages.campaignDetail.campaign')}</h3>
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-100 dark:border-gray-700">
                   <div className="flex gap-3 items-start text-sm">
                     <Leaf className="size-4 text-primary" aria-hidden="true" />
                     <div>
-                      <p className="font-semibold">Your impact</p>
-                      <p className="text-gray-500">Your ETB {amount} donation supports this cause directly.</p>
+                      <p className="font-semibold">{t('pages.donate.yourImpact')}</p>
+                      <p className="text-gray-500">{t('pages.donate.impactBody', { amount })}</p>
                     </div>
                   </div>
                 </div>
                 <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-gray-700">
                   <div className="flex justify-between text-sm text-gray-500">
-                    <span>Donation</span>
+                    <span>{t('pages.donate.donation')}</span>
                     <span className="font-medium">ETB {Number(amount).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-base font-bold pt-2 border-t border-gray-100 dark:border-gray-800">
-                    <span>Total Due</span>
+                    <span>{t('pages.donate.totalDue')}</span>
                     <span>ETB {Number(amount).toFixed(2)}</span>
                   </div>
                 </div>

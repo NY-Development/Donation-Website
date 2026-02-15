@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import adminService from '../../Services/admin';
 import { getApiData } from '../../store/apiHelpers';
+import { useTranslation } from 'react-i18next';
 
 type OrganizerVerification = {
   userId: string;
@@ -15,6 +16,7 @@ type OrganizerVerification = {
 };
 
 const AdminReports: React.FC = () => {
+  const { t } = useTranslation();
   const [actionId, setActionId] = useState<string | null>(null);
 
   const { data, refetch } = useQuery({
@@ -38,7 +40,7 @@ const AdminReports: React.FC = () => {
   const handleReject = async (userId: string) => {
     setActionId(userId);
     try {
-      await adminService.rejectOrganizer(userId, { reason: 'Insufficient verification details.' });
+      await adminService.rejectOrganizer(userId, { reason: t('pages.admin.reports.rejectReason') });
       await refetch();
     } finally {
       setActionId(null);
@@ -52,10 +54,8 @@ const AdminReports: React.FC = () => {
       <main className="p-8">
         <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Reports & Appeals</h1>
-            <p className="text-slate-500 dark:text-slate-400 mt-1">
-              Review organizer verification submissions and resolve moderation actions.
-            </p>
+            <h1 className="text-3xl font-bold tracking-tight">{t('pages.admin.reports.title')}</h1>
+            <p className="text-slate-500 dark:text-slate-400 mt-1">{t('pages.admin.reports.subtitle')}</p>
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -63,7 +63,7 @@ const AdminReports: React.FC = () => {
               onClick={() => refetch()}
               className="bg-primary text-white px-5 py-2 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
             >
-              Refresh
+              {t('pages.admin.reports.refresh')}
             </button>
           </div>
         </header>
@@ -78,28 +78,30 @@ const AdminReports: React.FC = () => {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     <span className="bg-primary/10 text-primary text-[10px] uppercase font-bold px-2 py-1 rounded tracking-wider">
-                      Verification Review
+                      {t('pages.admin.reports.tag')}
                     </span>
                     <span className="text-xs text-slate-400">{report.email}</span>
                   </div>
                   <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{report.name}</h3>
                   <p className="text-slate-600 dark:text-slate-400 text-sm">
-                    Submitted {report.submittedAt ? new Date(report.submittedAt).toLocaleString() : 'recently'}.
+                    {t('pages.admin.reports.submitted', {
+                      date: report.submittedAt ? new Date(report.submittedAt).toLocaleString() : t('pages.admin.reports.recently')
+                    })}
                   </p>
                   <div className="mt-4 flex flex-wrap gap-4 items-center">
                     {report.idFrontUrl && (
                       <a className="text-xs text-primary hover:underline" href={report.idFrontUrl} target="_blank" rel="noreferrer">
-                        View ID Front
+                        {t('pages.admin.reports.viewIdFront')}
                       </a>
                     )}
                     {report.idBackUrl && (
                       <a className="text-xs text-primary hover:underline" href={report.idBackUrl} target="_blank" rel="noreferrer">
-                        View ID Back
+                        {t('pages.admin.reports.viewIdBack')}
                       </a>
                     )}
                     {report.livePhotoUrl && (
                       <a className="text-xs text-primary hover:underline" href={report.livePhotoUrl} target="_blank" rel="noreferrer">
-                        View Live Photo
+                        {t('pages.admin.reports.viewLivePhoto')}
                       </a>
                     )}
                   </div>
@@ -111,7 +113,7 @@ const AdminReports: React.FC = () => {
                     className="px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
                     disabled={actionId === report.userId}
                   >
-                    Reject
+                    {t('pages.admin.reports.reject')}
                   </button>
                   <button
                     type="button"
@@ -119,7 +121,7 @@ const AdminReports: React.FC = () => {
                     className="px-4 py-2 text-sm font-semibold bg-primary text-white hover:bg-primary/90 rounded-lg transition-colors"
                     disabled={actionId === report.userId}
                   >
-                    Approve
+                    {t('pages.admin.reports.approve')}
                   </button>
                 </div>
               </div>
@@ -127,7 +129,7 @@ const AdminReports: React.FC = () => {
           ))}
           {reports.length === 0 && (
             <div className="bg-white dark:bg-slate-900 p-8 rounded-xl border border-slate-200 dark:border-slate-800 text-center text-sm text-slate-500">
-              No pending reports or verification requests.
+              {t('pages.admin.reports.empty')}
             </div>
           )}
         </div>

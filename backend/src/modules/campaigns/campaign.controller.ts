@@ -6,7 +6,8 @@ export const campaignController = {
   getFeatured: async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await campaignService.getFeatured();
-      res.json({ success: true, message: 'Featured campaigns fetched', data });
+      const t = (res.req as Request & { t?: (key: string) => string }).t ?? ((key: string) => key);
+      res.json({ success: true, message: t('messages.featuredCampaignsFetched'), data });
     } catch (error) {
       next(error);
     }
@@ -14,7 +15,8 @@ export const campaignController = {
   list: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await campaignService.list(req.query as never);
-      res.json({ success: true, message: 'Campaigns fetched', data });
+      const t = (req as Request & { t?: (key: string) => string }).t ?? ((key: string) => key);
+      res.json({ success: true, message: t('messages.campaignsFetched'), data });
     } catch (error) {
       next(error);
     }
@@ -22,7 +24,8 @@ export const campaignController = {
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const campaign = await campaignService.getById(req.params.id);
-      res.json({ success: true, message: 'Campaign fetched', data: campaign });
+      const t = (req as Request & { t?: (key: string) => string }).t ?? ((key: string) => key);
+      res.json({ success: true, message: t('messages.campaignFetched'), data: campaign });
     } catch (error) {
       next(error);
     }
@@ -30,7 +33,8 @@ export const campaignController = {
   getDonors: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await campaignService.getDonors(req.params.id);
-      res.json({ success: true, message: 'Donors fetched', data });
+      const t = (req as Request & { t?: (key: string) => string }).t ?? ((key: string) => key);
+      res.json({ success: true, message: t('messages.donorsFetched'), data });
     } catch (error) {
       next(error);
     }
@@ -41,7 +45,8 @@ export const campaignController = {
         ...req.body,
         organizerId: req.user?.id ?? ''
       });
-      res.status(201).json({ success: true, message: 'Campaign draft created', data: campaign });
+      const t = req.t ?? ((key: string) => key);
+      res.status(201).json({ success: true, message: t('messages.campaignDraftCreated'), data: campaign });
     } catch (error) {
       next(error);
     }
@@ -49,7 +54,8 @@ export const campaignController = {
   update: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const campaign = await campaignService.updateCampaign(req.params.id, req.body);
-      res.json({ success: true, message: 'Campaign updated', data: campaign });
+      const t = (req as Request & { t?: (key: string) => string }).t ?? ((key: string) => key);
+      res.json({ success: true, message: t('messages.campaignUpdated'), data: campaign });
     } catch (error) {
       next(error);
     }
@@ -57,7 +63,8 @@ export const campaignController = {
   uploadMedia: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const campaign = await campaignService.uploadMedia(req.params.id, req.body.media);
-      res.json({ success: true, message: 'Media uploaded', data: campaign });
+      const t = (req as Request & { t?: (key: string) => string }).t ?? ((key: string) => key);
+      res.json({ success: true, message: t('messages.mediaUploaded'), data: campaign });
     } catch (error) {
       next(error);
     }
@@ -65,7 +72,8 @@ export const campaignController = {
   submit: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const campaign = await campaignService.submitCampaign(req.params.id);
-      res.json({ success: true, message: 'Campaign submitted', data: campaign });
+      const t = (req as Request & { t?: (key: string) => string }).t ?? ((key: string) => key);
+      res.json({ success: true, message: t('messages.campaignSubmitted'), data: campaign });
     } catch (error) {
       next(error);
     }
@@ -73,7 +81,8 @@ export const campaignController = {
   getGlobalStats: async (_req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await campaignService.getGlobalStats();
-      res.json({ success: true, message: 'Global stats fetched', data });
+      const t = (res.req as Request & { t?: (key: string) => string }).t ?? ((key: string) => key);
+      res.json({ success: true, message: t('messages.globalStatsFetched'), data });
     } catch (error) {
       next(error);
     }
@@ -82,7 +91,8 @@ export const campaignController = {
     try {
       const limit = req.query.limit ? Number(req.query.limit) : 6;
       const data = await campaignService.getSuccessStories(limit);
-      res.json({ success: true, message: 'Success stories fetched', data });
+      const t = (req as Request & { t?: (key: string) => string }).t ?? ((key: string) => key);
+      res.json({ success: true, message: t('messages.successStoriesFetched'), data });
     } catch (error) {
       next(error);
     }
@@ -95,7 +105,8 @@ export const campaignController = {
         action: req.body.action,
         message: req.body.message
       });
-      res.status(201).json({ success: true, message: 'Request submitted', data });
+      const t = req.t ?? ((key: string) => key);
+      res.status(201).json({ success: true, message: t('messages.requestSubmitted'), data });
     } catch (error) {
       next(error);
     }

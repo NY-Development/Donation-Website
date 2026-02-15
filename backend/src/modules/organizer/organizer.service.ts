@@ -19,7 +19,7 @@ export const organizerService = {
       .lean();
 
     if (!user) {
-      throw { status: 404, message: 'User not found' };
+      throw { status: 404, message: 'errors.userNotFound' };
     }
 
     return {
@@ -36,13 +36,13 @@ export const organizerService = {
     livePhoto?: Express.Multer.File;
   }, payload?: { documentType?: 'national_id' | 'driver_license' | 'passport' }) => {
     if (!files.idFront || !files.livePhoto) {
-      throw { status: 400, message: 'ID front and live photo are required' };
+      throw { status: 400, message: 'errors.idFrontAndLivePhotoRequired' };
     }
 
     const documentType = payload?.documentType ?? 'national_id';
     const requiresBack = documentType !== 'passport';
     if (requiresBack && !files.idBack) {
-      throw { status: 400, message: 'ID back is required for this document type' };
+      throw { status: 400, message: 'errors.idBackRequired' };
     }
 
     const uploads = await Promise.all([
@@ -73,7 +73,7 @@ export const organizerService = {
     );
 
     if (!user) {
-      throw { status: 404, message: 'User not found' };
+      throw { status: 404, message: 'errors.userNotFound' };
     }
 
     return { status: user.organizerVerification?.status ?? 'pending' };

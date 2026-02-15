@@ -24,8 +24,8 @@ const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const schema = z.object({
-      email: z.string().email('Enter a valid email address.'),
-      password: z.string().min(8, 'Password must be at least 8 characters.')
+      email: z.string().email(t('pages.auth.login.validation.email')),
+      password: z.string().min(8, t('pages.auth.login.validation.password'))
     });
     const parsed = schema.safeParse({ email, password });
     if (!parsed.success) {
@@ -145,7 +145,7 @@ const Login: React.FC = () => {
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-label={showPassword ? t('pages.auth.login.hidePassword') : t('pages.auth.login.showPassword')}
                   >
                     {showPassword ? <EyeOff className="size-4" aria-hidden="true" /> : <Eye className="size-4" aria-hidden="true" />}
                   </button>

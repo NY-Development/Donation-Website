@@ -4,6 +4,7 @@ import campaignService from '../../Services/campaigns';
 import adminService from '../../Services/admin';
 import { getApiData } from '../../store/apiHelpers';
 import type { Campaign } from '../../../types';
+import { useTranslation } from 'react-i18next';
 
 type CampaignActionRequest = {
   id: string;
@@ -15,6 +16,7 @@ type CampaignActionRequest = {
 };
 
 const AdminCampaignModeration: React.FC = () => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [actionId, setActionId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -52,6 +54,16 @@ const AdminCampaignModeration: React.FC = () => {
     });
   }, [data, search]);
 
+  const statusLabels = useMemo(
+    () => ({
+      approved: t('status.approved'),
+      rejected: t('status.rejected'),
+      paused: t('pages.admin.campaigns.status.paused'),
+      pending_verification: t('pages.admin.campaigns.status.pendingVerification')
+    }),
+    [t]
+  );
+
   const requests = requestData ?? [];
 
   const handleVerify = async (id: string, nextStatus: 'approved' | 'rejected') => {
@@ -65,7 +77,7 @@ const AdminCampaignModeration: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    const confirmed = window.confirm('Delete this campaign and all its donations? This cannot be undone.');
+    const confirmed = window.confirm(t('pages.admin.campaigns.confirm.deleteOne'));
     if (!confirmed) return;
 
     setDeleteId(id);
@@ -78,7 +90,7 @@ const AdminCampaignModeration: React.FC = () => {
   };
 
   const handleDeleteAll = async () => {
-    const confirmed = window.confirm('Delete all campaigns and all donations? This cannot be undone.');
+    const confirmed = window.confirm(t('pages.admin.campaigns.confirm.deleteAll'));
     if (!confirmed) return;
 
     setBulkDeleting(true);
@@ -96,7 +108,7 @@ const AdminCampaignModeration: React.FC = () => {
   };
 
   const handleRejectRequest = async (requestId: string) => {
-    const reason = window.prompt('Reason for rejection (optional):') ?? undefined;
+    const reason = window.prompt(t('pages.admin.campaigns.prompt.rejectReason')) ?? undefined;
     await adminService.rejectCampaignRequest(requestId, reason ? { reason } : undefined);
     await refetchRequests();
   };
@@ -107,16 +119,16 @@ const AdminCampaignModeration: React.FC = () => {
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
             <nav className="flex text-sm text-slate-500 mb-2 gap-2">
-              <span>Admin</span>
+              <span>{t('pages.admin.breadcrumb.admin')}</span>
               <span>/</span>
-              <span className="text-primary font-medium">Campaign Moderation</span>
+              <span className="text-primary font-medium">{t('pages.admin.campaigns.breadcrumb')}</span>
             </nav>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Moderation Queue</h1>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{t('pages.admin.campaigns.title')}</h1>
           </div>
           <div className="flex gap-3">
             <button className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
               <span className="material-icons text-[18px]">file_download</span>
-              Export CSV
+              {t('pages.admin.campaigns.export')}
             </button>
             <button
               type="button"
@@ -125,7 +137,7 @@ const AdminCampaignModeration: React.FC = () => {
               className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-60"
             >
               <span className="material-icons text-[18px]">delete_forever</span>
-              {bulkDeleting ? 'Deleting...' : 'Delete All'}
+              {bulkDeleting ? t('pages.admin.campaigns.deleting') : t('pages.admin.campaigns.deleteAll')}
             </button>
             <button
               type="button"
@@ -133,7 +145,7 @@ const AdminCampaignModeration: React.FC = () => {
               className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
             >
               <span className="material-icons text-[18px]">refresh</span>
-              {isFetching ? 'Syncing...' : 'Sync Data'}
+              {isFetching ? t('pages.admin.campaigns.syncing') : t('pages.admin.campaigns.syncData')}
             </button>
           </div>
         </header>
@@ -145,7 +157,7 @@ const AdminCampaignModeration: React.FC = () => {
                 <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
                 <input
                   className="w-full pl-10 pr-4 py-2 bg-background-light dark:bg-zinc-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary"
-                  placeholder="Search campaigns or organizers..."
+                  placeholder={t('pages.admin.campaigns.searchPlaceholder')}
                   type="text"
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
@@ -154,7 +166,7 @@ const AdminCampaignModeration: React.FC = () => {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">
-                Viewing {campaigns.length} campaigns
+                {t('pages.admin.campaigns.viewing', { count: campaigns.length })}
               </span>
             </div>
           </div>
@@ -163,11 +175,11 @@ const AdminCampaignModeration: React.FC = () => {
             <table className="w-full min-w-[720px] text-left border-collapse scroll-auto">
               <thead>
                 <tr className="bg-slate-50/50 dark:bg-zinc-800/50">
-                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Campaign</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Category</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Goal</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">{t('pages.admin.campaigns.table.campaign')}</th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">{t('pages.admin.campaigns.table.category')}</th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">{t('pages.admin.campaigns.table.goal')}</th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">{t('pages.admin.campaigns.table.status')}</th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">{t('pages.admin.campaigns.table.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-zinc-800">
@@ -195,7 +207,7 @@ const AdminCampaignModeration: React.FC = () => {
                                 : 'bg-amber-100 text-amber-800'
                         }`}
                       >
-                        {campaign.status.replace(/_/g, ' ')}
+                        {statusLabels[campaign.status] ?? campaign.status.replace(/_/g, ' ')}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -208,7 +220,7 @@ const AdminCampaignModeration: React.FC = () => {
                               className="bg-primary text-white px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-primary/90"
                               disabled={actionId === campaign._id || deleteId === campaign._id}
                             >
-                              Approve
+                              {t('pages.admin.campaigns.actions.approve')}
                             </button>
                             <button
                               type="button"
@@ -216,7 +228,7 @@ const AdminCampaignModeration: React.FC = () => {
                               className="px-4 py-1.5 rounded-lg text-sm font-semibold border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
                               disabled={actionId === campaign._id || deleteId === campaign._id}
                             >
-                              Reject
+                              {t('pages.admin.campaigns.actions.reject')}
                             </button>
                           </>
                         )}
@@ -226,7 +238,7 @@ const AdminCampaignModeration: React.FC = () => {
                           className="px-4 py-1.5 rounded-lg text-sm font-semibold border border-red-200 text-red-600 hover:text-red-700"
                           disabled={deleteId === campaign._id || actionId === campaign._id}
                         >
-                          Delete
+                          {t('pages.admin.campaigns.actions.delete')}
                         </button>
                       </div>
                     </td>
@@ -235,7 +247,7 @@ const AdminCampaignModeration: React.FC = () => {
                 {campaigns.length === 0 && (
                   <tr>
                     <td colSpan={5} className="px-6 py-8 text-center text-sm text-slate-500">
-                      No campaigns found for this filter.
+                      {t('pages.admin.campaigns.empty')}
                     </td>
                   </tr>
                 )}
@@ -247,8 +259,8 @@ const AdminCampaignModeration: React.FC = () => {
         <div className="mt-8 bg-white dark:bg-zinc-900 rounded-xl border border-slate-200 dark:border-zinc-800 shadow-sm overflow-hidden">
           <div className="p-4 border-b border-slate-200 dark:border-zinc-800 flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Campaign Action Requests</h2>
-              <p className="text-xs text-slate-500">Pause or delete requests from campaign owners</p>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">{t('pages.admin.campaigns.requests.title')}</h2>
+              <p className="text-xs text-slate-500">{t('pages.admin.campaigns.requests.subtitle')}</p>
             </div>
             <button
               type="button"
@@ -256,7 +268,7 @@ const AdminCampaignModeration: React.FC = () => {
               className="flex items-center gap-2 px-3 py-2 text-xs font-semibold border border-slate-200 dark:border-zinc-700 rounded-lg"
             >
               <span className="material-icons text-[16px]">refresh</span>
-              {requestsLoading ? 'Syncing...' : 'Refresh'}
+              {requestsLoading ? t('pages.admin.campaigns.syncing') : t('pages.admin.campaigns.refresh')}
             </button>
           </div>
 
@@ -266,16 +278,19 @@ const AdminCampaignModeration: React.FC = () => {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
                     <span className="px-2 py-1 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-600">
-                      {request.action}
+                      {t(`pages.admin.campaigns.requestActions.${request.action}`)}
                     </span>
-                    <span>Campaign:</span>
+                    <span>{t('pages.admin.campaigns.requests.campaignLabel')}</span>
                     <span className="text-slate-700 dark:text-slate-300">
-                      {request.campaign?.title ?? 'Campaign'}
+                      {request.campaign?.title ?? t('pages.admin.campaigns.requests.campaignFallback')}
                     </span>
                   </div>
                   <p className="text-sm text-slate-700 dark:text-slate-200">{request.message}</p>
                   <p className="text-xs text-slate-500">
-                    Requested by {request.requestedBy?.name ?? 'User'} · {new Date(request.createdAt).toLocaleDateString()}
+                    {t('pages.admin.campaigns.requests.requestedBy', {
+                      name: request.requestedBy?.name ?? t('pages.admin.campaigns.requests.userFallback'),
+                      date: new Date(request.createdAt).toLocaleDateString()
+                    })}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -284,20 +299,20 @@ const AdminCampaignModeration: React.FC = () => {
                     onClick={() => handleApproveRequest(request.id)}
                     className="px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-white"
                   >
-                    Approve
+                    {t('pages.admin.campaigns.actions.approve')}
                   </button>
                   <button
                     type="button"
                     onClick={() => handleRejectRequest(request.id)}
                     className="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-200 dark:border-zinc-700"
                   >
-                    Reject
+                    {t('pages.admin.campaigns.actions.reject')}
                   </button>
                 </div>
               </div>
             ))}
             {requests.length === 0 && (
-              <div className="p-6 text-sm text-slate-500">No pending campaign requests.</div>
+              <div className="p-6 text-sm text-slate-500">{t('pages.admin.campaigns.requests.empty')}</div>
             )}
           </div>
         </div>

@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import organizerService from '../Services/organizer';
 import { ShieldCheck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const VerificationPending: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +32,7 @@ const VerificationPending: React.FC = () => {
         }
       } catch {
         if (isActive) {
-          setError('Unable to load verification status.');
+          setError(t('pages.verificationPending.error'));
         }
       }
     };
@@ -72,15 +74,17 @@ const VerificationPending: React.FC = () => {
           <div className="mx-auto mb-8 size-20 rounded-full bg-primary/10 flex items-center justify-center">
             <ShieldCheck className="size-10 text-primary" aria-hidden="true" />
           </div>
-          <h1 className="text-3xl font-black">{isVerified ? 'Verification Approved' : 'Verification Pending'}</h1>
+          <h1 className="text-3xl font-black">
+            {isVerified ? t('pages.verificationPending.approvedTitle') : t('pages.verificationPending.pendingTitle')}
+          </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-3 max-w-lg mx-auto">
             {isVerified
-              ? 'Your organizer account is verified. You can now launch your campaign.'
-              : 'We are reviewing your documents. You will receive an email confirmation once the admin team validates your submission.'}
+              ? t('pages.verificationPending.approvedBody')
+              : t('pages.verificationPending.pendingBody')}
           </p>
           {!isVerified && (
             <p className="mt-4 text-sm text-gray-500">
-              Returning to your dashboard in {secondsLeft}s.
+              {t('pages.verificationPending.returning', { seconds: secondsLeft })}
             </p>
           )}
 
@@ -90,25 +94,25 @@ const VerificationPending: React.FC = () => {
               onClick={() => navigate(isVerified ? '/create' : '/dashboard')}
               className="px-8 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-hover shadow-lg shadow-primary/20"
             >
-              {isVerified ? 'Launch campaign' : 'Back to dashboard'}
+              {isVerified ? t('pages.verificationPending.launch') : t('pages.verificationPending.back')}
             </button>
             <button
               type="button"
               onClick={() => navigate('/uploadID')}
               className="px-8 py-3 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-50 dark:hover:bg-gray-800"
             >
-              View submission
+              {t('pages.verificationPending.viewSubmission')}
             </button>
           </div>
 
           <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 text-sm text-gray-500">
-            Need help?{' '}
+            {t('pages.verificationPending.needHelp')}{' '}
             <button
               type="button"
               onClick={() => navigate('/help-center')}
               className="text-primary font-semibold hover:underline"
             >
-              Contact our trust and safety team
+              {t('pages.verificationPending.contact')}
             </button>
           </div>
         </div>

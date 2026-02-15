@@ -12,6 +12,7 @@ import campaignService from '../Services/campaigns';
 import adminService from '../Services/admin';
 import { getApiData } from '../store/apiHelpers';
 import type { AdminOverview, Campaign } from '../../types';
+import { useTranslation } from 'react-i18next';
 
 type CampaignRow = {
   id: string;
@@ -24,10 +25,10 @@ type CampaignRow = {
 };
 
 const navItems = [
-  { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-  { id: 'moderation', label: 'Moderation', icon: Gavel, badge: 12 },
-  { id: 'users', label: 'Users', icon: Users },
-  { id: 'financials', label: 'Financials', icon: Wallet },
+  { id: 'overview', labelKey: 'pages.adminDashboard.nav.overview', icon: LayoutDashboard },
+  { id: 'moderation', labelKey: 'pages.adminDashboard.nav.moderation', icon: Gavel, badge: 12 },
+  { id: 'users', labelKey: 'pages.adminDashboard.nav.users', icon: Users },
+  { id: 'financials', labelKey: 'pages.adminDashboard.nav.financials', icon: Wallet },
 ];
 
 const mapStatus = (status: Campaign['status']): CampaignRow['status'] => {
@@ -45,6 +46,7 @@ const statusStyles: Record<CampaignRow['status'], string> = {
 };
 
 const AdminDashboard: React.FC = () => {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeNav, setActiveNav] = useState('overview');
@@ -53,6 +55,16 @@ const AdminDashboard: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | CampaignRow['status']>('all');
   const [actionLoading, setActionLoading] = useState(false);
+
+  const statusLabels = useMemo(
+    () => ({
+      pending: t('pages.adminDashboard.status.pending'),
+      active: t('pages.adminDashboard.status.active'),
+      flagged: t('pages.adminDashboard.status.flagged'),
+      completed: t('pages.adminDashboard.status.completed')
+    }),
+    [t]
+  );
 
   const { data: overview } = useQuery({
     queryKey: ['admin', 'overview'],
@@ -249,8 +261,8 @@ const AdminDashboard: React.FC = () => {
       >
         <aside className="h-full bg-white dark:bg-surface-dark border-r border-gray-200 dark:border-gray-800 flex flex-col">
           <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-800">
-            <p className="text-lg font-bold text-gray-900 dark:text-white">ImpactGive Admin</p>
-            <p className="text-xs text-gray-500">Operations console</p>
+            <p className="text-lg font-bold text-gray-900 dark:text-white">{t('pages.adminDashboard.brandTitle')}</p>
+            <p className="text-xs text-gray-500">{t('pages.adminDashboard.brandSubtitle')}</p>
           </div>
           <nav className="flex-1 p-4 space-y-1">
             {navItems.map((item) => {
@@ -269,7 +281,7 @@ const AdminDashboard: React.FC = () => {
                   }`}
                 >
                   <Icon className="size-4" aria-hidden="true" />
-                  <span>{item.label}</span>
+                  <span>{t(item.labelKey)}</span>
                   {item.badge && (
                     <span className="ml-auto bg-amber-100 text-amber-600 text-[10px] font-bold px-2 py-0.5 rounded-full">
                       {item.badge}
@@ -290,49 +302,49 @@ const AdminDashboard: React.FC = () => {
                 type="button"
                 onClick={() => setSidebarOpen((prev) => !prev)}
                 className="lg:hidden p-2 rounded-lg border border-gray-200 dark:border-gray-700"
-                aria-label="Toggle navigation"
+                aria-label={t('pages.adminDashboard.actions.toggleNav')}
               >
                 <Menu className="size-4" aria-hidden="true" />
               </button>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Platform Health</h1>
-                <p className="text-sm text-gray-500">Overview of activities and campaign status</p>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('pages.adminDashboard.header.title')}</h1>
+                <p className="text-sm text-gray-500">{t('pages.adminDashboard.header.subtitle')}</p>
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <button className="flex items-center gap-2 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-lg text-sm font-medium shadow-sm">
-                <Download className="size-4" aria-hidden="true" /> Export CSV
+                <Download className="size-4" aria-hidden="true" /> {t('pages.adminDashboard.actions.export')}
               </button>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm" data-animate="card">
-              <p className="text-sm font-medium text-gray-500 mb-1">Total Funds</p>
+              <p className="text-sm font-medium text-gray-500 mb-1">{t('pages.adminDashboard.cards.totalFunds')}</p>
               <h3 className="text-2xl font-black text-gray-900 dark:text-white">
                 ETB {totalFunds.toLocaleString()}
               </h3>
               <div className="text-green-500 text-xs font-bold mt-2 flex items-center gap-1">
-                <TrendingUp className="size-3.5" aria-hidden="true" /> +14.2%
+                <TrendingUp className="size-3.5" aria-hidden="true" /> {t('pages.adminDashboard.cards.totalFundsDelta')}
               </div>
             </div>
             <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm" data-animate="card">
-              <p className="text-sm font-medium text-gray-500 mb-1">Active Campaigns</p>
+              <p className="text-sm font-medium text-gray-500 mb-1">{t('pages.adminDashboard.cards.activeCampaigns')}</p>
               <h3 className="text-2xl font-black text-gray-900 dark:text-white">{activeCampaigns}</h3>
               <div className="text-green-500 text-xs font-bold mt-2 flex items-center gap-1">
-                <TrendingUp className="size-3.5" aria-hidden="true" /> +5.1%
+                <TrendingUp className="size-3.5" aria-hidden="true" /> {t('pages.adminDashboard.cards.activeCampaignsDelta')}
               </div>
             </div>
             <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-amber-200 dark:border-amber-900/30 shadow-sm" data-animate="card">
-              <p className="text-sm font-medium text-gray-500 mb-1">Pending Verifications</p>
+              <p className="text-sm font-medium text-gray-500 mb-1">{t('pages.adminDashboard.cards.pendingVerifications')}</p>
               <h3 className="text-2xl font-black text-gray-900 dark:text-white">{pendingCount}</h3>
-              <div className="text-amber-600 text-xs font-bold mt-2">Needs Action</div>
+              <div className="text-amber-600 text-xs font-bold mt-2">{t('pages.adminDashboard.cards.needsAction')}</div>
             </div>
             <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm" data-animate="card">
-              <p className="text-sm font-medium text-gray-500 mb-1">Total Donors</p>
+              <p className="text-sm font-medium text-gray-500 mb-1">{t('pages.adminDashboard.cards.totalDonors')}</p>
               <h3 className="text-2xl font-black text-gray-900 dark:text-white">{totalDonors.toLocaleString()}</h3>
               <div className="text-green-500 text-xs font-bold mt-2 flex items-center gap-1">
-                <TrendingUp className="size-3.5" aria-hidden="true" /> +8.4%
+                <TrendingUp className="size-3.5" aria-hidden="true" /> {t('pages.adminDashboard.cards.totalDonorsDelta')}
               </div>
             </div>
           </div>
@@ -340,13 +352,13 @@ const AdminDashboard: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" data-animate="section">
           <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm" data-animate="card">
-            <h3 className="font-bold text-lg mb-6">Donation Volume</h3>
+            <h3 className="font-bold text-lg mb-6">{t('pages.adminDashboard.charts.donations')}</h3>
             <div className="h-64 w-full">
               <ReactECharts option={donationOption} style={{ height: '100%', width: '100%' }} />
             </div>
           </div>
           <div className="bg-white dark:bg-surface-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm" data-animate="card">
-            <h3 className="font-bold text-lg mb-6">User Growth</h3>
+            <h3 className="font-bold text-lg mb-6">{t('pages.adminDashboard.charts.users')}</h3>
             <div className="h-64 w-full">
               <ReactECharts option={userGrowthOption} style={{ height: '100%', width: '100%' }} />
             </div>
@@ -356,13 +368,13 @@ const AdminDashboard: React.FC = () => {
         <div className="bg-white dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden" data-animate="section">
           <div className="p-6 border-b border-gray-200 dark:border-gray-800 space-y-4">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <h3 className="font-bold text-lg">Campaign Verification Queue</h3>
+              <h3 className="font-bold text-lg">{t('pages.adminDashboard.queue.title')}</h3>
               <div className="flex flex-wrap items-center gap-2">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" aria-hidden="true" />
                   <input
                     className="pl-9 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm bg-transparent"
-                    placeholder="Search campaigns"
+                    placeholder={t('pages.adminDashboard.queue.searchPlaceholder')}
                     value={searchTerm}
                     onChange={(event) => setSearchTerm(event.target.value)}
                   />
@@ -374,17 +386,17 @@ const AdminDashboard: React.FC = () => {
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value as CampaignRow['status'] | 'all')}
                   >
-                    <option value="all">All status</option>
-                    <option value="pending">Pending</option>
-                    <option value="active">Active</option>
-                    <option value="flagged">Flagged</option>
-                    <option value="completed">Completed</option>
+                    <option value="all">{t('pages.adminDashboard.queue.filters.all')}</option>
+                    <option value="pending">{t('pages.adminDashboard.status.pending')}</option>
+                    <option value="active">{t('pages.adminDashboard.status.active')}</option>
+                    <option value="flagged">{t('pages.adminDashboard.status.flagged')}</option>
+                    <option value="completed">{t('pages.adminDashboard.status.completed')}</option>
                   </select>
                 </div>
               </div>
             </div>
             <p className="text-sm text-gray-500">
-              {filteredCampaigns.length} campaigns matched
+              {t('pages.adminDashboard.queue.matched', { count: filteredCampaigns.length })}
             </p>
           </div>
           <div className="p-4">
@@ -398,11 +410,11 @@ const AdminDashboard: React.FC = () => {
               rowSelected={(args) => setSelectedCampaign(args.data as CampaignRow)}
             >
               <ColumnsDirective>
-                <ColumnDirective field="title" headerText="Campaign" width="220" />
-                <ColumnDirective field="organizer" headerText="Organizer" width="160" />
+                <ColumnDirective field="title" headerText={t('pages.adminDashboard.table.campaign')} width="220" />
+                <ColumnDirective field="organizer" headerText={t('pages.adminDashboard.table.organizer')} width="160" />
                 <ColumnDirective
                   field="raised"
-                  headerText="Raised"
+                  headerText={t('pages.adminDashboard.table.raised')}
                   textAlign="Right"
                   width="120"
                   template={(props: CampaignRow) => (
@@ -413,7 +425,7 @@ const AdminDashboard: React.FC = () => {
                 />
                 <ColumnDirective
                   field="goal"
-                  headerText="Goal"
+                  headerText={t('pages.adminDashboard.table.goal')}
                   textAlign="Right"
                   width="120"
                   template={(props: CampaignRow) => (
@@ -424,17 +436,17 @@ const AdminDashboard: React.FC = () => {
                 />
                 <ColumnDirective
                   field="status"
-                  headerText="Status"
+                  headerText={t('pages.adminDashboard.table.status')}
                   width="140"
                   template={(props: CampaignRow) => (
                     <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold uppercase ${statusStyles[props.status]}`}>
-                      {props.status}
+                      {statusLabels[props.status]}
                     </span>
                   )}
                 />
-                <ColumnDirective field="updatedAt" headerText="Last Update" width="140" />
+                <ColumnDirective field="updatedAt" headerText={t('pages.adminDashboard.table.lastUpdate')} width="140" />
                 <ColumnDirective
-                  headerText="Actions"
+                  headerText={t('pages.adminDashboard.table.actions')}
                   width="130"
                   textAlign="Center"
                   template={(props: CampaignRow) => (
@@ -442,7 +454,9 @@ const AdminDashboard: React.FC = () => {
                       className="text-primary text-xs font-bold hover:underline"
                       onClick={() => setSelectedCampaign(props)}
                     >
-                      {props.status === 'pending' ? 'Review' : 'Open'}
+                      {props.status === 'pending'
+                        ? t('pages.adminDashboard.table.review')
+                        : t('pages.adminDashboard.table.open')}
                     </button>
                   )}
                 />
@@ -456,25 +470,27 @@ const AdminDashboard: React.FC = () => {
           <div className="bg-white dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm p-6" data-animate="section">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-sm text-gray-500">Selected campaign</p>
+                <p className="text-sm text-gray-500">{t('pages.adminDashboard.selected.label')}</p>
                 <h4 className="text-xl font-bold text-gray-900 dark:text-white">{selectedCampaign.title}</h4>
-                <p className="text-sm text-gray-500">Organizer: {selectedCampaign.organizer}</p>
+                <p className="text-sm text-gray-500">
+                  {t('pages.adminDashboard.selected.organizer', { name: selectedCampaign.organizer })}
+                </p>
               </div>
               <div className="flex flex-wrap gap-2">
                 <ButtonComponent
-                  content="Approve"
+                  content={t('pages.adminDashboard.selected.approve')}
                   cssClass="e-success"
                   disabled={actionLoading}
                   onClick={() => handleVerify('approved')}
                 />
                 <ButtonComponent
-                  content="Flag"
+                  content={t('pages.adminDashboard.selected.flag')}
                   cssClass="e-warning"
                   disabled={actionLoading}
                   onClick={() => handleVerify('rejected')}
                 />
                 <ButtonComponent
-                  content="Close"
+                  content={t('pages.adminDashboard.selected.close')}
                   cssClass="e-outline"
                   onClick={() => setSelectedCampaign(null)}
                 />

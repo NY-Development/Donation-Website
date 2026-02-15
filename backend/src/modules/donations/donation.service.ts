@@ -11,29 +11,29 @@ import { env } from '../../config/env';
 export const donationService = {
   createCheckout: async (payload: { campaignId: string; amount: number; userId?: string }) => {
     if (payload.amount <= 0) {
-      throw { status: 400, message: 'Invalid donation amount' };
+      throw { status: 400, message: 'errors.invalidDonationAmount' };
     }
 
     const campaign = await campaignRepository.findById(payload.campaignId);
     if (!campaign) {
-      throw { status: 404, message: 'Campaign not found' };
+      throw { status: 404, message: 'errors.campaignNotFound' };
     }
     if (campaign.status === 'paused') {
-      throw { status: 400, message: 'Campaign is paused and cannot accept donations' };
+      throw { status: 400, message: 'errors.campaignPaused' };
     }
     if (campaign.status === 'closed') {
-      throw { status: 400, message: 'Campaign is closed and cannot accept donations' };
+      throw { status: 400, message: 'errors.campaignClosed' };
     }
     if (campaign.status !== 'approved') {
-      throw { status: 400, message: 'Campaign is not accepting donations' };
+      throw { status: 400, message: 'errors.campaignNotAcceptingDonations' };
     }
     if (campaign.deadline && campaign.deadline <= new Date()) {
       await campaignRepository.updateById(payload.campaignId, { status: 'closed', closedAt: new Date() });
-      throw { status: 400, message: 'Campaign deadline has passed' };
+      throw { status: 400, message: 'errors.campaignDeadlinePassed' };
     }
 
     if (paymentProvider !== 'stripe' || !stripe) {
-      throw { status: 400, message: 'Payment provider not configured' };
+      throw { status: 400, message: 'errors.paymentProviderNotConfigured' };
     }
 
     const intent = await stripe.paymentIntents.create({
@@ -63,23 +63,23 @@ export const donationService = {
     donorEmail?: string;
   }) => {
     if (!Number.isFinite(payload.amount) || payload.amount <= 0) {
-      throw { status: 400, message: 'Invalid donation amount' };
+      throw { status: 400, message: 'errors.invalidDonationAmount' };
     }
 
     const campaign = await campaignRepository.findById(payload.campaignId);
     if (!campaign) {
-      throw { status: 404, message: 'Campaign not found' };
+      throw { status: 404, message: 'errors.campaignNotFound' };
     }
     if (campaign.status === 'closed') {
-      throw { status: 400, message: 'Campaign is closed and cannot accept donations' };
+      throw { status: 400, message: 'errors.campaignClosed' };
     }
     if (campaign.deadline && campaign.deadline <= new Date()) {
       await campaignRepository.updateById(payload.campaignId, { status: 'closed', closedAt: new Date() });
-      throw { status: 400, message: 'Campaign deadline has passed' };
+      throw { status: 400, message: 'errors.campaignDeadlinePassed' };
     }
     const trimmedTransactionId = payload.transactionId?.trim();
     if (!trimmedTransactionId && !payload.screenshotBuffer) {
-      throw { status: 400, message: 'Transaction ID or QR screenshot is required' };
+      throw { status: 400, message: 'errors.transactionIdOrScreenshotRequired' };
     }
 
     let screenshotUpload: { secure_url?: string; public_id?: string } | null = null;
@@ -127,16 +127,16 @@ export const donationService = {
   },
   handleWebhook: async (signature: string | string[] | undefined, payload: Buffer) => {
     if (paymentProvider !== 'stripe' || !stripe) {
-      throw { status: 400, message: 'Payment provider not configured' };
+      throw { status: 400, message: 'errors.paymentProviderNotConfigured' };
     }
 
     if (!signature) {
-      throw { status: 400, message: 'Missing webhook signature' };
+      throw { status: 400, message: 'errors.missingWebhookSignature' };
     }
 
     const secret = env.STRIPE_WEBHOOK_SECRET;
     if (!secret) {
-      throw { status: 400, message: 'Stripe webhook secret missing' };
+      throw { status: 400, message: 'errors.stripeWebhookSecretMissing' };
     }
 
     const event = stripe.webhooks.constructEvent(payload, signature, secret);
@@ -182,25 +182,25 @@ export const donationService = {
     receiptBuffer?: Buffer;
   }) => {
     if (!Number.isFinite(payload.amount) || payload.amount <= 0) {
-      throw { status: 400, message: 'Invalid donation amount' };
+      throw { status: 400, message: 'errors.invalidDonationAmount' };
     }
 
     const campaign = await campaignRepository.findById(payload.campaignId);
     if (!campaign) {
-      throw { status: 404, message: 'Campaign not found' };
+      throw { status: 404, message: 'errors.campaignNotFound' };
     }
     if (campaign.status === 'paused') {
-      throw { status: 400, message: 'Campaign is paused and cannot accept donations' };
+      throw { status: 400, message: 'errors.campaignPaused' };
     }
     if (campaign.status === 'closed') {
-      throw { status: 400, message: 'Campaign is closed and cannot accept donations' };
+      throw { status: 400, message: 'errors.campaignClosed' };
     }
     if (campaign.status !== 'approved') {
-      throw { status: 400, message: 'Campaign is not accepting donations' };
+      throw { status: 400, message: 'errors.campaignNotAcceptingDonations' };
     }
     if (campaign.deadline && campaign.deadline <= new Date()) {
       await campaignRepository.updateById(payload.campaignId, { status: 'closed', closedAt: new Date() });
-      throw { status: 400, message: 'Campaign deadline has passed' };
+      throw { status: 400, message: 'errors.campaignDeadlinePassed' };
     }
 
     let receiptUpload: { secure_url?: string; public_id?: string } | null = null;

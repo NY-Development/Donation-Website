@@ -25,14 +25,14 @@ const Signup: React.FC = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     const schema = z.object({
-      name: z.string().min(3, 'Please enter your full name.'),
-      email: z.string().email('Enter a valid email address.'),
-      password: z.string().min(8, 'Password must be at least 8 characters.')
+      name: z.string().min(3, t('pages.auth.signup.validation.name')),
+      email: z.string().email(t('pages.auth.signup.validation.email')),
+      password: z.string().min(8, t('pages.auth.signup.validation.password'))
     });
 
     const parsed = schema.safeParse({ name: fullName.trim(), email, password });
     if (!parsed.success) {
-      setFormError(parsed.error.issues[0]?.message ?? 'Please check your details.');
+      setFormError(parsed.error.issues[0]?.message ?? t('pages.auth.signup.validation.fallback'));
       return;
     }
 

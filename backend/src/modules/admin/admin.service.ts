@@ -5,7 +5,6 @@ import { userRepository } from '../users/user.repository';
 import { UserModel } from '../users/user.model';
 import { cloudinary } from '../../config/cloudinary';
 import { AdminSettingsModel } from './adminSettings.model';
-import { campaignActionRequestRepository } from '../campaigns/campaignActionRequest.repository';
 import { sendOrganizerVerificationApprovedEmail, sendOrganizerVerificationRejectedEmail } from '../../utils/mailer';
 
 export const adminService = {
@@ -63,7 +62,7 @@ export const adminService = {
   verifyCampaign: async (campaignId: string, status: 'approved' | 'rejected') => {
     const campaign = await campaignRepository.updateById(campaignId, { status });
     if (!campaign) {
-      throw { status: 404, message: 'Campaign not found' };
+      throw { status: 404, message: 'errors.campaignNotFound' };
     }
     return campaign;
   },
@@ -240,10 +239,10 @@ export const adminService = {
   deleteUser: async (userId: string) => {
     const user = await UserModel.findById(userId).select('role');
     if (!user) {
-      throw { status: 404, message: 'User not found' };
+      throw { status: 404, message: 'errors.userNotFound' };
     }
     if (user.role === 'admin') {
-      throw { status: 403, message: 'Admin accounts cannot be deleted' };
+      throw { status: 403, message: 'errors.adminDeleteForbidden' };
     }
 
     const campaignIds = await campaignRepository.findIdsByOwnerIds([userId]);
@@ -274,7 +273,7 @@ export const adminService = {
   deleteCampaign: async (campaignId: string) => {
     const campaign = await campaignRepository.findById(campaignId);
     if (!campaign) {
-      throw { status: 404, message: 'Campaign not found' };
+      throw { status: 404, message: 'errors.campaignNotFound' };
     }
 
     await donationRepository.deleteByCampaignIds([campaignId]);
@@ -319,10 +318,10 @@ export const adminService = {
   approveCampaignActionRequest: async (requestId: string, adminId: string) => {
     const request = await campaignActionRequestRepository.findById(requestId);
     if (!request) {
-      throw { status: 404, message: 'Request not found' };
+      throw { status: 404, message: 'errors.requestNotFound' };
     }
     if (request.status !== 'pending') {
-      throw { status: 400, message: 'Request already processed' };
+      throw { status: 400, message: 'errors.requestAlreadyProcessed' };
     }
 
     const campaignId = request.campaign.toString();
@@ -346,10 +345,10 @@ export const adminService = {
   rejectCampaignActionRequest: async (requestId: string, adminId: string, reason?: string) => {
     const request = await campaignActionRequestRepository.findById(requestId);
     if (!request) {
-      throw { status: 404, message: 'Request not found' };
+      throw { status: 404, message: 'errors.requestNotFound' };
     }
     if (request.status !== 'pending') {
-      throw { status: 400, message: 'Request already processed' };
+      throw { status: 400, message: 'errors.requestAlreadyProcessed' };
     }
 
     const updated = await campaignActionRequestRepository.updateStatus(requestId, {

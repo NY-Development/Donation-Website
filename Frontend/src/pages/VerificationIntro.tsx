@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import organizerService from '../Services/organizer';
 import { Check, Fingerprint, ShieldCheck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const VerificationIntro: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +32,7 @@ const VerificationIntro: React.FC = () => {
         }
       } catch {
         if (isActive) {
-          setError('Unable to load verification status. Please try again.');
+          setError(t('pages.verificationIntro.error'));
         }
       } finally {
         if (isActive) setIsLoading(false);
@@ -41,14 +43,14 @@ const VerificationIntro: React.FC = () => {
     return () => {
       isActive = false;
     };
-  }, [navigate]);
+  }, [navigate, t]);
 
   if (isLoading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-6">
         <div className="text-center">
-          <p className="text-lg font-semibold text-gray-900 dark:text-white">Preparing verification...</p>
-          <p className="text-sm text-gray-500">Hang tight while we load your details.</p>
+          <p className="text-lg font-semibold text-gray-900 dark:text-white">{t('pages.verificationIntro.loadingTitle')}</p>
+          <p className="text-sm text-gray-500">{t('pages.verificationIntro.loadingSubtitle')}</p>
         </div>
       </div>
     );
@@ -65,13 +67,12 @@ const VerificationIntro: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-10 items-center">
           <div className="flex-1 space-y-8">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Identity verification</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">{t('pages.verificationIntro.kicker')}</p>
               <h1 className="text-4xl font-black leading-tight text-gray-900 dark:text-white mt-3">
-                Keep your campaigns safe and transparent.
+                {t('pages.verificationIntro.title')}
               </h1>
               <p className="text-lg text-gray-600 dark:text-gray-400 mt-4">
-                To ensure a secure environment for all creators and prevent fraud, we require a quick identity check
-                before you can launch your first campaign.
+                {t('pages.verificationIntro.subtitle')}
               </p>
             </div>
 
@@ -81,9 +82,9 @@ const VerificationIntro: React.FC = () => {
                   <ShieldCheck className="size-5" aria-hidden="true" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">ID Scan</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">{t('pages.verificationIntro.step1Title')}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    Upload a photo of your government-issued ID (Passport, DL, or ID card).
+                    {t('pages.verificationIntro.step1Body')}
                   </p>
                 </div>
               </div>
@@ -92,9 +93,9 @@ const VerificationIntro: React.FC = () => {
                   <Fingerprint className="size-5" aria-hidden="true" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Selfie Check</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">{t('pages.verificationIntro.step2Title')}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    A quick face scan to confirm it is really you. No recording stored.
+                    {t('pages.verificationIntro.step2Body')}
                   </p>
                 </div>
               </div>
@@ -103,19 +104,19 @@ const VerificationIntro: React.FC = () => {
                   <Check className="size-5" aria-hidden="true" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Instant Results</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">{t('pages.verificationIntro.step3Title')}</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    Verification usually takes less than 24 hours via our automated system.
+                    {t('pages.verificationIntro.step3Body')}
                   </p>
                 </div>
               </div>
             </div>
 
             <div className="pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-wrap items-center gap-4 text-xs text-gray-500">
-              <span className="uppercase tracking-[0.2em] font-semibold">Encrypted and secure</span>
+              <span className="uppercase tracking-[0.2em] font-semibold">{t('pages.verificationIntro.secure')}</span>
               <span className="inline-flex items-center gap-2">
                 <span className="size-2 rounded-full bg-primary" aria-hidden="true" />
-                GDPR compliant
+                {t('pages.verificationIntro.gdpr')}
               </span>
             </div>
           </div>
@@ -128,9 +129,9 @@ const VerificationIntro: React.FC = () => {
                 <Fingerprint className="size-20 text-primary" aria-hidden="true" />
               </div>
             </div>
-            <h2 className="text-2xl font-bold mt-6">Ready to start?</h2>
+            <h2 className="text-2xl font-bold mt-6">{t('pages.verificationIntro.readyTitle')}</h2>
             <p className="text-sm text-gray-500 mt-3">
-              Please have your valid government ID ready and ensure you are in a well-lit area.
+              {t('pages.verificationIntro.readyBody')}
             </p>
             <div className="mt-8 space-y-3">
               <button
@@ -138,18 +139,18 @@ const VerificationIntro: React.FC = () => {
                 onClick={() => navigate('/uploadID')}
                 className="w-full py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-hover transition"
               >
-                Start Verification
+                {t('pages.verificationIntro.start')}
               </button>
               <button
                 type="button"
                 onClick={() => navigate('/help-center')}
                 className="w-full py-3 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               >
-                Learn more about our process
+                {t('pages.verificationIntro.learnMore')}
               </button>
             </div>
             <p className="mt-6 text-xs text-gray-400">
-              Your data is end-to-end encrypted. We never share your documents with third parties.
+              {t('pages.verificationIntro.privacyNote')}
             </p>
           </div>
         </div>

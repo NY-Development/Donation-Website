@@ -4,8 +4,10 @@ import adminService from '../../Services/admin';
 import { getApiData } from '../../store/apiHelpers';
 import type { AdminOverview as AdminOverviewStats, AdminTopCampaign, DonationTrendPoint } from '../../../types';
 import { TrendingDown, TrendingUp } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const AdminOverview: React.FC = () => {
+  const { t } = useTranslation();
   const { data } = useQuery({
     queryKey: ['admin', 'overview'],
     queryFn: async () => {
@@ -47,7 +49,7 @@ const AdminOverview: React.FC = () => {
           <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
           <input
             className="w-full bg-slate-50 dark:bg-slate-900 border-none rounded-lg pl-10 pr-4 py-2 focus:ring-2 focus:ring-primary/20 text-sm"
-            placeholder="Search campaigns, donors, or ID..."
+            placeholder={t('pages.admin.overview.searchPlaceholder')}
             type="text"
           />
         </div>
@@ -58,15 +60,15 @@ const AdminOverview: React.FC = () => {
           </button>
           <button className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-primary/90 transition-all shadow-md shadow-primary/20">
             <span className="material-icons text-sm">add</span>
-            <span>New Campaign</span>
+            <span>{t('pages.admin.overview.newCampaign')}</span>
           </button>
         </div>
       </header>
 
       <div className="p-8 space-y-8">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Welcome back</h1>
-          <p className="text-slate-500 dark:text-slate-400">Here is the latest performance snapshot.</p>
+          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">{t('pages.admin.overview.welcome')}</h1>
+          <p className="text-slate-500 dark:text-slate-400">{t('pages.admin.overview.subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -79,7 +81,7 @@ const AdminOverview: React.FC = () => {
                 <TrendingUp className="size-3" aria-hidden="true" /> 12.5%
               </span>
             </div>
-            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Funds Raised</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{t('pages.admin.overview.cards.totalFunds')}</p>
             <h3 className="text-2xl font-bold mt-1 text-slate-900 dark:text-white">ETB {totalDonated.toLocaleString()}</h3>
           </div>
           <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -91,7 +93,7 @@ const AdminOverview: React.FC = () => {
                 <TrendingUp className="size-3" aria-hidden="true" /> 4.2%
               </span>
             </div>
-            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Approved Campaigns</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{t('pages.admin.overview.cards.approvedCampaigns')}</p>
             <h3 className="text-2xl font-bold mt-1 text-slate-900 dark:text-white">{campaignsApproved}</h3>
           </div>
           <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -103,7 +105,7 @@ const AdminOverview: React.FC = () => {
                 <TrendingUp className="size-3" aria-hidden="true" /> 8.1%
               </span>
             </div>
-            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Donors</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{t('pages.admin.overview.cards.totalDonors')}</p>
             <h3 className="text-2xl font-bold mt-1 text-slate-900 dark:text-white">{donorsCount}</h3>
           </div>
           <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -115,7 +117,7 @@ const AdminOverview: React.FC = () => {
                 <TrendingDown className="size-3" aria-hidden="true" /> 0.5%
               </span>
             </div>
-            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Registered Users</p>
+            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">{t('pages.admin.overview.cards.registeredUsers')}</p>
             <h3 className="text-2xl font-bold mt-1 text-slate-900 dark:text-white">{usersCount}</h3>
           </div>
         </div>
@@ -123,14 +125,14 @@ const AdminOverview: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="font-bold text-lg text-slate-900 dark:text-white">Donation Trends</h3>
+              <h3 className="font-bold text-lg text-slate-900 dark:text-white">{t('pages.admin.overview.trends.title')}</h3>
               <div className="flex gap-2">
                 <button className="px-3 py-1 text-xs font-bold bg-slate-50 dark:bg-slate-800 text-slate-500 rounded hover:text-primary transition-colors">
-                  W
+                  {t('pages.admin.overview.trends.week')}
                 </button>
-                <button className="px-3 py-1 text-xs font-bold bg-primary text-white rounded">M</button>
+                <button className="px-3 py-1 text-xs font-bold bg-primary text-white rounded">{t('pages.admin.overview.trends.month')}</button>
                 <button className="px-3 py-1 text-xs font-bold bg-slate-50 dark:bg-slate-800 text-slate-500 rounded hover:text-primary transition-colors">
-                  Y
+                  {t('pages.admin.overview.trends.year')}
                 </button>
               </div>
             </div>
@@ -152,7 +154,7 @@ const AdminOverview: React.FC = () => {
                   );
                 })}
                 {trendSeries.length === 0 && (
-                  <div className="text-xs text-slate-400">No trend data</div>
+                  <div className="text-xs text-slate-400">{t('pages.admin.overview.trends.empty')}</div>
                 )}
               </div>
               <div className="flex justify-between mt-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">
@@ -164,7 +166,7 @@ const AdminOverview: React.FC = () => {
           </div>
 
           <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-            <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-6">Top Campaigns</h3>
+            <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-6">{t('pages.admin.overview.topCampaigns')}</h3>
             <div className="space-y-6">
               {(topCampaigns ?? []).map((campaign) => {
                 const progress = campaign.goalAmount
@@ -186,7 +188,7 @@ const AdminOverview: React.FC = () => {
                 );
               })}
               {(topCampaigns ?? []).length === 0 && (
-                <p className="text-sm text-slate-500">No campaigns yet.</p>
+                <p className="text-sm text-slate-500">{t('pages.admin.overview.noCampaigns')}</p>
               )}
             </div>
           </div>

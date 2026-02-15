@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import organizerService from '../Services/organizer';
 import { useVerificationStore } from '../store/verificationStore';
 import { CheckCircle, FileText, IdCard, Lightbulb } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const VerificationUpload: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { documentType, idFront, idBack, setDocumentType, setIdFront, setIdBack } = useVerificationStore();
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +36,7 @@ const VerificationUpload: React.FC = () => {
         }
       } catch {
         if (isActive) {
-          setError('Unable to load verification status. Please try again.');
+          setError(t('pages.verificationUpload.error'));
         }
       } finally {
         if (isActive) setIsLoading(false);
@@ -49,7 +51,7 @@ const VerificationUpload: React.FC = () => {
 
   const handleContinue = () => {
     if (!idFront || !idBack) {
-      setError('Please upload both the front and back of your ID.');
+      setError(t('pages.verificationUpload.bothRequired'));
       return;
     }
     navigate('/liveSelfie');
@@ -59,8 +61,8 @@ const VerificationUpload: React.FC = () => {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-6">
         <div className="text-center">
-          <p className="text-lg font-semibold text-gray-900 dark:text-white">Loading verification...</p>
-          <p className="text-sm text-gray-500">One moment while we prepare your form.</p>
+          <p className="text-lg font-semibold text-gray-900 dark:text-white">{t('pages.verificationUpload.loadingTitle')}</p>
+          <p className="text-sm text-gray-500">{t('pages.verificationUpload.loadingSubtitle')}</p>
         </div>
       </div>
     );
@@ -72,28 +74,27 @@ const VerificationUpload: React.FC = () => {
         <div className="flex items-center justify-center gap-4 mb-10 text-sm">
           <div className="flex items-center gap-2">
             <span className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold">1</span>
-            <span className="text-gray-500">Campaign Details</span>
+            <span className="text-gray-500">{t('pages.verificationUpload.step1')}</span>
           </div>
           <div className="h-px w-16 bg-primary/40" />
           <div className="flex items-center gap-2">
             <span className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-semibold">2</span>
-            <span className="font-semibold text-gray-900 dark:text-white">Identity Verification</span>
+            <span className="font-semibold text-gray-900 dark:text-white">{t('pages.verificationUpload.step2')}</span>
           </div>
           <div className="h-px w-16 bg-gray-200 dark:bg-gray-800" />
           <div className="flex items-center gap-2">
             <span className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-500 flex items-center justify-center font-semibold">3</span>
-            <span className="text-gray-500">Launch Campaign</span>
+            <span className="text-gray-500">{t('pages.verificationUpload.step3')}</span>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           <div className="lg:col-span-8">
             <header className="mb-8">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Identity verification</p>
-              <h1 className="text-3xl font-black mt-3">Verify your identity</h1>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">{t('pages.verificationUpload.kicker')}</p>
+              <h1 className="text-3xl font-black mt-3">{t('pages.verificationUpload.title')}</h1>
               <p className="text-gray-600 dark:text-gray-400 mt-2">
-                Upload a clear photo of your government-issued ID to proceed. This helps us ensure the security of our
-                community.
+                {t('pages.verificationUpload.subtitle')}
               </p>
             </header>
 
@@ -104,7 +105,7 @@ const VerificationUpload: React.FC = () => {
             )}
 
             <div className="mb-10">
-              <label className="block text-sm font-semibold mb-4">Select Document Type</label>
+              <label className="block text-sm font-semibold mb-4">{t('pages.verificationUpload.docType')}</label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <button
                   type="button"
@@ -116,7 +117,7 @@ const VerificationUpload: React.FC = () => {
                   }`}
                 >
                   <IdCard className="mb-2" aria-hidden="true" />
-                  <span className="text-sm font-medium">National ID</span>
+                  <span className="text-sm font-medium">{t('pages.verificationUpload.nationalId')}</span>
                 </button>
                 <button
                   type="button"
@@ -128,7 +129,7 @@ const VerificationUpload: React.FC = () => {
                   }`}
                 >
                   <FileText className="mb-2" aria-hidden="true" />
-                  <span className="text-sm font-medium">Passport</span>
+                  <span className="text-sm font-medium">{t('pages.verificationUpload.passport')}</span>
                 </button>
                 <button
                   type="button"
@@ -140,20 +141,20 @@ const VerificationUpload: React.FC = () => {
                   }`}
                 >
                   <IdCard className="mb-2" aria-hidden="true" />
-                  <span className="text-sm font-medium">Driver's License</span>
+                  <span className="text-sm font-medium">{t('pages.verificationUpload.driver')}</span>
                 </button>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
               <div className="space-y-3">
-                <label className="text-sm font-semibold">Front of ID Card</label>
+                <label className="text-sm font-semibold">{t('pages.verificationUpload.frontLabel')}</label>
                 <div className="relative border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-slate-900/50 p-8 flex flex-col items-center justify-center text-center transition-all hover:border-primary hover:bg-primary/5">
                   <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4 text-primary">
                     <IdCard aria-hidden="true" />
                   </div>
-                  <p className="text-sm font-medium mb-1">Click to upload or drag and drop</p>
-                  <p className="text-xs text-gray-500">PNG, JPG, or PDF up to 10MB</p>
+                  <p className="text-sm font-medium mb-1">{t('pages.verificationUpload.uploadTitle')}</p>
+                  <p className="text-xs text-gray-500">{t('pages.verificationUpload.uploadHint')}</p>
                   {idFront && <p className="mt-2 text-xs text-primary">{idFront.name}</p>}
                   <input
                     type="file"
@@ -164,13 +165,13 @@ const VerificationUpload: React.FC = () => {
                 </div>
               </div>
               <div className="space-y-3">
-                <label className="text-sm font-semibold">Back of ID Card</label>
+                <label className="text-sm font-semibold">{t('pages.verificationUpload.backLabel')}</label>
                 <div className="relative border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-slate-900/50 p-8 flex flex-col items-center justify-center text-center transition-all hover:border-primary hover:bg-primary/5">
                   <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4 text-primary">
                     <IdCard aria-hidden="true" />
                   </div>
-                  <p className="text-sm font-medium mb-1">Click to upload or drag and drop</p>
-                  <p className="text-xs text-gray-500">PNG, JPG, or PDF up to 10MB</p>
+                  <p className="text-sm font-medium mb-1">{t('pages.verificationUpload.uploadTitle')}</p>
+                  <p className="text-xs text-gray-500">{t('pages.verificationUpload.uploadHint')}</p>
                   {idBack && <p className="mt-2 text-xs text-primary">{idBack.name}</p>}
                   <input
                     type="file"
@@ -188,7 +189,7 @@ const VerificationUpload: React.FC = () => {
                 onClick={() => navigate('/verIntro')}
                 className="px-6 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
               >
-                Back
+                {t('pages.verificationUpload.back')}
               </button>
               <button
                 type="button"
@@ -198,7 +199,7 @@ const VerificationUpload: React.FC = () => {
                 }`}
                 disabled={!canContinue}
               >
-                Continue
+                {t('pages.verificationUpload.continue')}
               </button>
             </div>
           </div>
@@ -207,33 +208,33 @@ const VerificationUpload: React.FC = () => {
             <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 sticky top-24">
               <h3 className="font-bold text-lg mb-4 flex items-center">
                 <Lightbulb className="text-primary mr-2" aria-hidden="true" />
-                Submission Tips
+                {t('pages.verificationUpload.tipsTitle')}
               </h3>
               <div className="space-y-5 text-sm text-gray-600 dark:text-gray-400">
                 <div className="flex items-start gap-3">
                   <CheckCircle className="text-green-500 size-4 mt-1" aria-hidden="true" />
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white">Good Lighting</h4>
-                    <p className="text-xs">Ensure the document is well-lit without reflections or glare.</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-white">{t('pages.verificationUpload.tip1Title')}</h4>
+                    <p className="text-xs">{t('pages.verificationUpload.tip1Body')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="text-green-500 size-4 mt-1" aria-hidden="true" />
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white">Visible Corners</h4>
-                    <p className="text-xs">All four corners of the document must be visible within the frame.</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-white">{t('pages.verificationUpload.tip2Title')}</h4>
+                    <p className="text-xs">{t('pages.verificationUpload.tip2Body')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle className="text-green-500 size-4 mt-1" aria-hidden="true" />
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white">Sharp and Clear</h4>
-                    <p className="text-xs">Information must be legible. Avoid shaky or blurry captures.</p>
+                    <h4 className="font-semibold text-gray-900 dark:text-white">{t('pages.verificationUpload.tip3Title')}</h4>
+                    <p className="text-xs">{t('pages.verificationUpload.tip3Body')}</p>
                   </div>
                 </div>
               </div>
               <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
-                <p className="text-xs text-gray-500">Your data is encrypted and used only for verification.</p>
+                <p className="text-xs text-gray-500">{t('pages.verificationUpload.dataNote')}</p>
               </div>
             </div>
           </div>

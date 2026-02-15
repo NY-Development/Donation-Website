@@ -3,8 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import organizerService from '../Services/organizer';
 import type { OrganizerVerificationStatus } from '../../types';
 import { useAuthStore } from '../store';
+import { useTranslation } from 'react-i18next';
 
 const OrganizerVerification: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const [status, setStatus] = useState<OrganizerVerificationStatus | null>(null);
@@ -40,7 +42,7 @@ const OrganizerVerification: React.FC = () => {
         }
       } catch (err) {
         if (isActive) {
-          setError('Unable to fetch verification status. Please try again.');
+          setError(t('pages.organizerVerification.statusError'));
         }
       } finally {
         if (isActive) {
@@ -86,11 +88,11 @@ const OrganizerVerification: React.FC = () => {
     setCameraError(null);
     try {
       if (!navigator.mediaDevices?.getUserMedia) {
-        setCameraError('Camera access is not supported on this device.');
+        setCameraError(t('pages.verificationSelfie.cameraUnsupported'));
         return;
       }
       if (!window.isSecureContext) {
-        setCameraError('Camera access requires HTTPS or localhost.');
+        setCameraError(t('pages.verificationSelfie.cameraHttps'));
         return;
       }
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -106,7 +108,7 @@ const OrganizerVerification: React.FC = () => {
       }
       setIsCameraActive(true);
     } catch {
-      setCameraError('Unable to access the camera. Please allow camera access and try again.');
+      setCameraError(t('pages.verificationSelfie.cameraDenied'));
       setIsCameraActive(false);
     }
   };
@@ -143,8 +145,8 @@ const OrganizerVerification: React.FC = () => {
 
     if (!idFront || (requiresBack && !idBack) || !livePhoto) {
       setError(requiresBack
-        ? 'Please upload your ID front, ID back, and a live photo.'
-        : 'Please upload your passport and a live photo.');
+        ? t('pages.organizerVerification.missing')
+        : t('pages.organizerVerification.missingPassport'));
       return;
     }
 
@@ -159,10 +161,10 @@ const OrganizerVerification: React.FC = () => {
       formData.append('documentType', documentType);
 
       await organizerService.verify(formData);
-      setSuccess('Verification submitted. We will review your documents shortly.');
+      setSuccess(t('pages.organizerVerification.submitSuccess'));
       navigate('/verPending', { replace: true });
     } catch (err) {
-      setError('Unable to submit verification. Please try again.');
+      setError(t('pages.organizerVerification.submitError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -172,8 +174,8 @@ const OrganizerVerification: React.FC = () => {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-6">
         <div className="text-center">
-          <p className="text-lg font-semibold text-gray-900 dark:text-white">Checking verification status...</p>
-          <p className="text-sm text-gray-500">Hang tight while we load your details.</p>
+          <p className="text-lg font-semibold text-gray-900 dark:text-white">{t('pages.organizerVerification.loadingTitle')}</p>
+          <p className="text-sm text-gray-500">{t('pages.organizerVerification.loadingSubtitle')}</p>
         </div>
       </div>
     );
@@ -183,8 +185,8 @@ const OrganizerVerification: React.FC = () => {
     return (
       <div className="max-w-3xl mx-auto py-12 px-6">
         <div className="bg-white dark:bg-surface-dark rounded-2xl border border-gray-100 dark:border-gray-800 p-8 text-center">
-          <h1 className="text-2xl font-black text-gray-900 dark:text-white">You are verified</h1>
-          <p className="text-gray-500 mt-3">Your organizer account is verified. You can start a campaign right away.</p>
+          <h1 className="text-2xl font-black text-gray-900 dark:text-white">{t('pages.organizerVerification.verifiedTitle')}</h1>
+          <p className="text-gray-500 mt-3">{t('pages.organizerVerification.verifiedBody')}</p>
           <button
             type="button"
             onClick={() => {
@@ -196,7 +198,7 @@ const OrganizerVerification: React.FC = () => {
             className="inline-flex items-center justify-center mt-6 px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition disabled:opacity-70"
             aria-busy={isLaunching}
           >
-            {isLaunching ? 'Launching...' : 'Start a campaign'}
+            {isLaunching ? t('pages.organizerVerification.launching') : t('pages.organizerVerification.startCampaign')}
           </button>
         </div>
       </div>
@@ -206,27 +208,27 @@ const OrganizerVerification: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto py-10 px-6">
       <div className="mb-8">
-        <p className="text-sm uppercase tracking-widest text-primary font-semibold">Organizer verification</p>
-        <h1 className="text-3xl font-black text-gray-900 dark:text-white mt-2">Verify your identity</h1>
+        <p className="text-sm uppercase tracking-widest text-primary font-semibold">{t('pages.organizerVerification.kicker')}</p>
+        <h1 className="text-3xl font-black text-gray-900 dark:text-white mt-2">{t('pages.organizerVerification.title')}</h1>
         <p className="text-gray-500 mt-3 max-w-2xl">
-          To protect donors and beneficiaries, we require a government-issued ID and a live selfie before you can launch campaigns.
+          {t('pages.organizerVerification.subtitle')}
         </p>
         <p className="text-sm text-gray-500 mt-2">
-          For the live photo, please use a mobile device with a front camera.
+          {t('pages.organizerVerification.mobileHint')}
         </p>
       </div>
 
       {status?.status === 'pending' && status.submittedAt && (
         <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-amber-800">
-          <p className="font-semibold">Verification under review</p>
-          <p className="text-sm mt-1">We received your documents and are reviewing them now.</p>
+          <p className="font-semibold">{t('pages.organizerVerification.pendingTitle')}</p>
+          <p className="text-sm mt-1">{t('pages.organizerVerification.pendingBody')}</p>
         </div>
       )}
 
       {status?.status === 'rejected' && (
         <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-red-700">
-          <p className="font-semibold">Verification rejected</p>
-          <p className="text-sm mt-1">{status.rejectionReason ?? 'Please resubmit clearer images to continue.'}</p>
+          <p className="font-semibold">{t('pages.organizerVerification.rejectedTitle')}</p>
+          <p className="text-sm mt-1">{status.rejectionReason ?? t('pages.organizerVerification.rejectedBody')}</p>
         </div>
       )}
 
@@ -243,7 +245,7 @@ const OrganizerVerification: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="bg-white dark:bg-surface-dark rounded-2xl border border-gray-100 dark:border-gray-800 p-8 space-y-6">
         <div>
-          <label className="block text-sm font-semibold text-gray-900 dark:text-white">Document type</label>
+          <label className="block text-sm font-semibold text-gray-900 dark:text-white">{t('pages.organizerVerification.docType')}</label>
           <select
             className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 text-sm"
             value={documentType}
@@ -256,15 +258,15 @@ const OrganizerVerification: React.FC = () => {
             }}
             disabled={!canSubmit || isSubmitting}
           >
-            <option value="national_id">National ID</option>
-            <option value="driver_license">Driver License</option>
-            <option value="passport">Passport</option>
+            <option value="national_id">{t('pages.organizerVerification.nationalId')}</option>
+            <option value="driver_license">{t('pages.organizerVerification.driver')}</option>
+            <option value="passport">{t('pages.organizerVerification.passport')}</option>
           </select>
         </div>
 
         <div>
           <label className="block text-sm font-semibold text-gray-900 dark:text-white">
-            {documentType === 'passport' ? 'Passport' : 'ID Front'}
+            {documentType === 'passport' ? t('pages.organizerVerification.passportLabel') : t('pages.organizerVerification.idFront')}
           </label>
           <input
             type="file"
@@ -277,7 +279,7 @@ const OrganizerVerification: React.FC = () => {
 
         {requiresBack && (
           <div>
-            <label className="block text-sm font-semibold text-gray-900 dark:text-white">ID Back</label>
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white">{t('pages.organizerVerification.idBack')}</label>
             <input
               type="file"
               accept="image/*"
@@ -289,7 +291,7 @@ const OrganizerVerification: React.FC = () => {
         )}
 
         <div>
-          <label className="block text-sm font-semibold text-gray-900 dark:text-white">Live Photo</label>
+          <label className="block text-sm font-semibold text-gray-900 dark:text-white">{t('pages.organizerVerification.livePhoto')}</label>
           <div className="mt-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">
             <div className="relative w-full overflow-hidden rounded-lg bg-black">
               <video
@@ -304,7 +306,7 @@ const OrganizerVerification: React.FC = () => {
               )}
               {!isCameraActive && !selfiePreview && (
                 <div className="flex items-center justify-center py-12 text-sm text-gray-500">
-                  Camera preview will appear here.
+                  {t('pages.organizerVerification.cameraPreview')}
                 </div>
               )}
             </div>
@@ -319,7 +321,7 @@ const OrganizerVerification: React.FC = () => {
                   className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-hover"
                   disabled={!canSubmit || isSubmitting}
                 >
-                  {livePhoto ? 'Retake selfie' : 'Start camera'}
+                  {livePhoto ? t('pages.organizerVerification.retake') : t('pages.organizerVerification.startCamera')}
                 </button>
               ) : (
                 <button
@@ -327,7 +329,7 @@ const OrganizerVerification: React.FC = () => {
                   onClick={captureSelfie}
                   className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-hover"
                 >
-                  Capture selfie
+                  {t('pages.organizerVerification.capture')}
                 </button>
               )}
               {isCameraActive && (
@@ -336,12 +338,12 @@ const OrganizerVerification: React.FC = () => {
                   onClick={stopCamera}
                   className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-semibold text-gray-700 dark:text-gray-200"
                 >
-                  Cancel
+                  {t('pages.organizerVerification.cancel')}
                 </button>
               )}
             </div>
           </div>
-          <p className="text-xs text-gray-500 mt-2">Use a well-lit selfie that clearly shows your face.</p>
+          <p className="text-xs text-gray-500 mt-2">{t('pages.organizerVerification.photoHint')}</p>
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -351,14 +353,14 @@ const OrganizerVerification: React.FC = () => {
             disabled={!canSubmit || isSubmitting}
             aria-busy={isSubmitting}
           >
-            {isSubmitting ? 'Submitting...' : 'Submit verification'}
+            {isSubmitting ? t('pages.organizerVerification.submitting') : t('pages.organizerVerification.submit')}
           </button>
           <button
             type="button"
             onClick={() => navigate('/dashboard')}
             className="w-full sm:w-auto px-6 py-3 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition"
           >
-            Back to dashboard
+            {t('pages.organizerVerification.backDashboard')}
           </button>
         </div>
       </form>

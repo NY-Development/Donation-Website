@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import organizerService from '../Services/organizer';
 import { useVerificationStore } from '../store/verificationStore';
 import { Camera, CircleDashed, ShieldCheck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const VerificationSelfie: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -39,11 +41,11 @@ const VerificationSelfie: React.FC = () => {
     setCameraError(null);
     try {
       if (!navigator.mediaDevices?.getUserMedia) {
-        setCameraError('Camera access is not supported on this device.');
+        setCameraError(t('pages.verificationSelfie.cameraUnsupported'));
         return;
       }
       if (!window.isSecureContext) {
-        setCameraError('Camera access requires HTTPS or localhost.');
+        setCameraError(t('pages.verificationSelfie.cameraHttps'));
         return;
       }
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -59,7 +61,7 @@ const VerificationSelfie: React.FC = () => {
       }
       setIsCameraActive(true);
     } catch {
-      setCameraError('Unable to access the camera. Please allow camera access and try again.');
+      setCameraError(t('pages.verificationSelfie.cameraDenied'));
       setIsCameraActive(false);
     }
   };
@@ -91,7 +93,7 @@ const VerificationSelfie: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!idFront || !idBack || !livePhoto) {
-      setError('Please upload your ID front, ID back, and a live selfie.');
+      setError(t('pages.verificationSelfie.missing'));
       return;
     }
 
@@ -107,7 +109,7 @@ const VerificationSelfie: React.FC = () => {
       reset();
       navigate('/verPending');
     } catch {
-      setError('Unable to submit verification. Please try again.');
+      setError(t('pages.verificationSelfie.error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -119,10 +121,10 @@ const VerificationSelfie: React.FC = () => {
         <div className="mb-10">
           <div className="flex justify-between items-end">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.3em] text-primary">Identity verification</p>
-              <h1 className="text-2xl font-black mt-2">Live Selfie Check</h1>
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-primary">{t('pages.verificationSelfie.kicker')}</p>
+              <h1 className="text-2xl font-black mt-2">{t('pages.verificationSelfie.title')}</h1>
             </div>
-            <span className="text-sm font-semibold text-gray-500">Step 3 of 3</span>
+            <span className="text-sm font-semibold text-gray-500">{t('pages.verificationSelfie.step')}</span>
           </div>
           <div className="mt-4 h-2 bg-primary/10 rounded-full overflow-hidden">
             <div className="h-full bg-primary rounded-full" />
@@ -138,7 +140,7 @@ const VerificationSelfie: React.FC = () => {
         <div className="bg-white dark:bg-surface-dark rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-8 md:p-10">
           <div className="flex flex-col items-center">
             <p className="text-center text-gray-600 dark:text-gray-400 mb-8 max-w-sm">
-              Position your face within the frame and look directly at the camera to complete your profile.
+              {t('pages.verificationSelfie.instruction')}
             </p>
 
             <div className="relative">
@@ -155,7 +157,7 @@ const VerificationSelfie: React.FC = () => {
                 {!isCameraActive && selfiePreview && (
                   <img
                     src={selfiePreview}
-                    alt="Selfie preview"
+                    alt={t('pages.verificationSelfie.selfiePreviewAlt')}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                 )}
@@ -163,7 +165,7 @@ const VerificationSelfie: React.FC = () => {
                   <div className="w-[90%] h-[90%] border-2 border-dashed border-primary/40 rounded-full" />
                 </div>
                 <span className="absolute bottom-6 px-3 py-1 bg-primary text-white text-[10px] font-bold rounded-full uppercase tracking-wider">
-                  Ready to Scan
+                  {t('pages.verificationSelfie.ready')}
                 </span>
               </div>
             </div>
@@ -179,7 +181,7 @@ const VerificationSelfie: React.FC = () => {
                   className="w-full md:w-64 bg-primary hover:bg-primary-hover text-white font-semibold py-4 rounded-xl shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2"
                 >
                   <Camera className="size-5" aria-hidden="true" />
-                  {livePhoto ? 'Retake selfie' : 'Start camera'}
+                  {livePhoto ? t('pages.verificationSelfie.retake') : t('pages.verificationSelfie.startCamera')}
                 </button>
               ) : (
                 <button
@@ -188,7 +190,7 @@ const VerificationSelfie: React.FC = () => {
                   className="w-full md:w-64 bg-primary hover:bg-primary-hover text-white font-semibold py-4 rounded-xl shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2"
                 >
                   <Camera className="size-5" aria-hidden="true" />
-                  Capture selfie
+                  {t('pages.verificationSelfie.capture')}
                 </button>
               )}
               {isCameraActive && (
@@ -197,7 +199,7 @@ const VerificationSelfie: React.FC = () => {
                   onClick={stopCamera}
                   className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-sm font-medium transition-colors"
                 >
-                  Cancel
+                  {t('pages.verificationSelfie.cancel')}
                 </button>
               )}
               <button
@@ -205,7 +207,7 @@ const VerificationSelfie: React.FC = () => {
                 onClick={() => navigate('/uploadID')}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-sm font-medium transition-colors"
               >
-                Use another method
+                {t('pages.verificationSelfie.altMethod')}
               </button>
             </div>
 
@@ -214,22 +216,22 @@ const VerificationSelfie: React.FC = () => {
                 <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mb-2 text-primary">
                   <ShieldCheck className="size-5" aria-hidden="true" />
                 </div>
-                <h4 className="text-xs font-bold uppercase tracking-wide">Good Lighting</h4>
-                <p className="text-[11px] text-gray-500">Ensure your face is visible without shadows.</p>
+                <h4 className="text-xs font-bold uppercase tracking-wide">{t('pages.verificationSelfie.tip1Title')}</h4>
+                <p className="text-[11px] text-gray-500">{t('pages.verificationSelfie.tip1Body')}</p>
               </div>
               <div className="flex flex-col items-center">
                 <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mb-2 text-primary">
                   <ShieldCheck className="size-5" aria-hidden="true" />
                 </div>
-                <h4 className="text-xs font-bold uppercase tracking-wide">Natural Look</h4>
-                <p className="text-[11px] text-gray-500">Remove glasses or hats for better accuracy.</p>
+                <h4 className="text-xs font-bold uppercase tracking-wide">{t('pages.verificationSelfie.tip2Title')}</h4>
+                <p className="text-[11px] text-gray-500">{t('pages.verificationSelfie.tip2Body')}</p>
               </div>
               <div className="flex flex-col items-center">
                 <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center mb-2 text-primary">
                   <ShieldCheck className="size-5" aria-hidden="true" />
                 </div>
-                <h4 className="text-xs font-bold uppercase tracking-wide">Stay Centered</h4>
-                <p className="text-[11px] text-gray-500">Keep your head inside the dashed circle.</p>
+                <h4 className="text-xs font-bold uppercase tracking-wide">{t('pages.verificationSelfie.tip3Title')}</h4>
+                <p className="text-[11px] text-gray-500">{t('pages.verificationSelfie.tip3Body')}</p>
               </div>
             </div>
           </div>
@@ -244,14 +246,14 @@ const VerificationSelfie: React.FC = () => {
               isReady ? 'bg-primary hover:bg-primary-hover' : 'bg-gray-300 cursor-not-allowed'
             }`}
           >
-            {isSubmitting ? 'Submitting...' : 'Submit verification'}
+            {isSubmitting ? t('pages.verificationSelfie.submitting') : t('pages.verificationSelfie.submit')}
           </button>
           <button
             type="button"
             onClick={() => navigate('/uploadID')}
             className="px-6 py-3 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-50 dark:hover:bg-gray-800"
           >
-            Back
+            {t('pages.verificationSelfie.back')}
           </button>
         </div>
       </div>

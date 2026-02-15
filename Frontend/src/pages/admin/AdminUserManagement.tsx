@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import adminService from '../../Services/admin';
 import { getApiData } from '../../store/apiHelpers';
+import { useTranslation } from 'react-i18next';
 
 type AdminUser = {
   id: string;
@@ -21,6 +22,7 @@ type UserResponse = {
 };
 
 const AdminUserManagement: React.FC = () => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [role, setRole] = useState<'all' | 'donor' | 'organizer' | 'admin'>('all');
   const [verification, setVerification] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
@@ -50,7 +52,7 @@ const AdminUserManagement: React.FC = () => {
   }, [users]);
 
   const handleDeleteUser = async (userId: string) => {
-    const confirmed = window.confirm('Delete this user and their related data? This cannot be undone.');
+    const confirmed = window.confirm(t('pages.admin.users.confirm.deleteOne'));
     if (!confirmed) return;
 
     setActionId(userId);
@@ -63,7 +65,7 @@ const AdminUserManagement: React.FC = () => {
   };
 
   const handleDeleteAllUsers = async () => {
-    const confirmed = window.confirm('Delete all non-admin users and their related data? This cannot be undone.');
+    const confirmed = window.confirm(t('pages.admin.users.confirm.deleteAll'));
     if (!confirmed) return;
 
     setBulkDeleting(true);
@@ -79,10 +81,10 @@ const AdminUserManagement: React.FC = () => {
     <div className="min-h-screen">
       <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8">
         <div className="flex items-center gap-4">
-          <h1 className="text-xl font-bold text-slate-800 dark:text-white">User Management</h1>
+          <h1 className="text-xl font-bold text-slate-800 dark:text-white">{t('pages.admin.users.title')}</h1>
           <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
           <span className="text-sm text-slate-500 font-medium">
-            Showing {users.length} of {data?.total ?? 0} users
+            {t('pages.admin.users.showing', { shown: users.length, total: data?.total ?? 0 })}
           </span>
         </div>
       </header>
@@ -90,24 +92,24 @@ const AdminUserManagement: React.FC = () => {
       <div className="flex-1 overflow-y-auto p-8">
         {isError && (
           <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            Unable to load users. Please try again.
+            {t('pages.admin.users.loadError')}
           </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-            <p className="text-slate-500 text-sm font-medium">Total Donors</p>
+            <p className="text-slate-500 text-sm font-medium">{t('pages.admin.users.stats.totalDonors')}</p>
             <p className="text-2xl font-bold mt-2">{counts.donors}</p>
           </div>
           <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-            <p className="text-slate-500 text-sm font-medium">Organizers</p>
+            <p className="text-slate-500 text-sm font-medium">{t('pages.admin.users.stats.organizers')}</p>
             <p className="text-2xl font-bold mt-2">{counts.organizers}</p>
           </div>
           <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-            <p className="text-slate-500 text-sm font-medium">Pending Verification</p>
+            <p className="text-slate-500 text-sm font-medium">{t('pages.admin.users.stats.pending')}</p>
             <p className="text-2xl font-bold mt-2">{counts.pending}</p>
           </div>
           <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-            <p className="text-slate-500 text-sm font-medium">Admins</p>
+            <p className="text-slate-500 text-sm font-medium">{t('pages.admin.users.stats.admins')}</p>
             <p className="text-2xl font-bold mt-2">{users.filter((user) => user.role === 'admin').length}</p>
           </div>
         </div>
@@ -119,7 +121,7 @@ const AdminUserManagement: React.FC = () => {
                 <span className="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
                 <input
                   className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all"
-                  placeholder="Search by name, email or ID..."
+                  placeholder={t('pages.admin.users.searchPlaceholder')}
                   type="text"
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
@@ -127,9 +129,9 @@ const AdminUserManagement: React.FC = () => {
               </div>
               <div className="flex items-center bg-slate-50 dark:bg-slate-800 p-1 rounded-lg">
                 {[
-                  { label: 'All', value: 'all' },
-                  { label: 'Approved', value: 'approved' },
-                  { label: 'Pending', value: 'pending' }
+                  { label: t('pages.admin.users.tabs.all'), value: 'all' },
+                  { label: t('pages.admin.users.tabs.approved'), value: 'approved' },
+                  { label: t('pages.admin.users.tabs.pending'), value: 'pending' }
                 ].map((tab) => (
                   <button
                     key={tab.value}
@@ -152,10 +154,10 @@ const AdminUserManagement: React.FC = () => {
                 value={role}
                 onChange={(event) => setRole(event.target.value as typeof role)}
               >
-                <option value="all">All Roles</option>
-                <option value="donor">Donors</option>
-                <option value="organizer">Organizers</option>
-                <option value="admin">Admins</option>
+                <option value="all">{t('pages.admin.users.roles.all')}</option>
+                <option value="donor">{t('pages.admin.users.roles.donor')}</option>
+                <option value="organizer">{t('pages.admin.users.roles.organizer')}</option>
+                <option value="admin">{t('pages.admin.users.roles.admin')}</option>
               </select>
               <button
                 type="button"
@@ -164,7 +166,7 @@ const AdminUserManagement: React.FC = () => {
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:opacity-60"
               >
                 <span className="material-icons-round text-sm">delete_forever</span>
-                {bulkDeleting ? 'Deleting...' : 'Delete All Users'}
+                {bulkDeleting ? t('pages.admin.users.deleting') : t('pages.admin.users.deleteAll')}
               </button>
             </div>
           </div>
@@ -173,11 +175,11 @@ const AdminUserManagement: React.FC = () => {
             <table className="w-full min-w-[720px] text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50/50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
-                  <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800">User</th>
-                  <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800">Role</th>
-                  <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800">Verification</th>
-                  <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 text-center">Joined</th>
-                  <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 text-right">Actions</th>
+                  <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800">{t('pages.admin.users.table.user')}</th>
+                  <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800">{t('pages.admin.users.table.role')}</th>
+                  <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800">{t('pages.admin.users.table.verification')}</th>
+                  <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 text-center">{t('pages.admin.users.table.joined')}</th>
+                  <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 text-right">{t('pages.admin.users.table.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -191,12 +193,12 @@ const AdminUserManagement: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                        {user.role}
+                        {t(`pages.admin.users.roles.${user.role}`)}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
-                        {user.verificationStatus}
+                        {t(`pages.admin.users.verification.${user.verificationStatus}`)}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-center text-xs text-slate-500">
@@ -209,7 +211,7 @@ const AdminUserManagement: React.FC = () => {
                         disabled={actionId === user.id || user.role === 'admin'}
                         className="text-xs font-semibold text-red-600 hover:text-red-700 disabled:opacity-50"
                       >
-                        Delete
+                        {t('pages.admin.users.actions.delete')}
                       </button>
                     </td>
                   </tr>
@@ -217,7 +219,7 @@ const AdminUserManagement: React.FC = () => {
                 {users.length === 0 && (
                   <tr>
                     <td colSpan={5} className="px-6 py-8 text-center text-sm text-slate-500">
-                      No users found.
+                      {t('pages.admin.users.empty')}
                     </td>
                   </tr>
                 )}

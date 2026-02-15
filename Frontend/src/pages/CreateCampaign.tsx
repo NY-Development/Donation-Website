@@ -20,30 +20,31 @@ import {
   CheckCircle,
   Flag,
   Image,
-  Italic,
+                <span>
+                  {s === 1
+                    ? t('pages.createCampaign.steps.title')
+                    : s === 2
+                      ? t('pages.createCampaign.steps.story')
+                      : s === 3
+                        ? t('pages.createCampaign.steps.goal')
+                        : t('pages.createCampaign.steps.media')}
+                </span>
   Lightbulb,
   Link as LinkIcon,
   Wallet
 } from 'lucide-react';
-
-const draftSchema = z.object({
-  title: z.string().min(3, 'Campaign title is required.'),
-  category: z.string().min(2, 'Select a campaign category.'),
-  story: z.string().min(10, 'Tell a more detailed story.'),
-  goalAmount: z.number().positive('Goal amount must be greater than 0.'),
-  cbeAccountNumber: z.string().min(6, 'Account number must be at least 6 characters.').optional(),
-  fundingStyle: z.enum(['keep', 'all_or_nothing']),
-  urgent: z.boolean().optional(),
-  deadline: z.string().optional()
-});
+import { useTranslation } from 'react-i18next';
 
 const CreateCampaign: React.FC = () => {
-  const [step, setStep] = useState(1);
+  const { t } = useTranslation();
+        <p className="text-primary text-sm font-bold uppercase tracking-wider mb-2">
+          {t('pages.createCampaign.stepIndicator', { step })}
+        </p>
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('');
-  const [story, setStory] = useState('');
-  const [goalAmount, setGoalAmount] = useState('100');
-  const [cbeAccountNumber, setCbeAccountNumber] = useState('');
+          {step === 1 && t('pages.createCampaign.headings.step1')}
+          {step === 2 && t('pages.createCampaign.headings.step2')}
+          {step === 3 && t('pages.createCampaign.headings.step3')}
+          {step === 4 && t('pages.createCampaign.headings.step4')}
   const [deadline, setDeadline] = useState('');
   const [fundingStyle, setFundingStyle] = useState<'keep' | 'all_or_nothing'>('keep');
   const [urgent, setUrgent] = useState(false);
@@ -62,6 +63,16 @@ const CreateCampaign: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const draftKey = useMemo(() => `campaignDraft:${user?._id ?? 'guest'}`, [user?._id]);
+  const draftSchema = useMemo(() => z.object({
+    title: z.string().min(3, t('pages.createCampaign.validation.title')),
+    category: z.string().min(2, t('pages.createCampaign.validation.category')),
+    story: z.string().min(10, t('pages.createCampaign.validation.story')),
+    goalAmount: z.number().positive(t('pages.createCampaign.validation.goal')),
+    cbeAccountNumber: z.string().min(6, t('pages.createCampaign.validation.account')).optional(),
+    fundingStyle: z.enum(['keep', 'all_or_nothing']),
+    urgent: z.boolean().optional(),
+    deadline: z.string().optional()
+  }), [t]);
   const mediaPreview = useMemo(
     () =>
       mediaFiles.map((file) => ({
@@ -73,17 +84,17 @@ const CreateCampaign: React.FC = () => {
 
   const nextStep = () => {
     if (step === 1 && (!title.trim() || !category)) {
-      setFormError('Please enter a title and select a category to continue.');
+      setFormError(t('pages.createCampaign.validation.step1'));
       return;
     }
     if (step === 2 && story.trim().length < 10) {
-      setFormError('Please provide a longer story before continuing.');
+      setFormError(t('pages.createCampaign.validation.step2'));
       return;
     }
     if (step === 3) {
       const parsedGoal = Number(goalAmount.replace(/,/g, ''));
       if (!Number.isFinite(parsedGoal) || parsedGoal <= 0) {
-        setFormError('Please enter a valid fundraising goal.');
+        setFormError(t('pages.createCampaign.validation.step3'));
         return;
       }
     }
@@ -173,12 +184,12 @@ const CreateCampaign: React.FC = () => {
     });
 
     if (!parsed.success) {
-      setFormError(parsed.error.issues[0]?.message ?? 'Please complete all required fields before submitting.');
+      setFormError(parsed.error.issues[0]?.message ?? t('pages.createCampaign.validation.submitRequired'));
       return;
     }
 
     if (!mediaFiles.length) {
-      setFormError('Please upload at least one campaign image.');
+      setFormError(t('pages.createCampaign.validation.mediaRequired'));
       return;
     }
 
@@ -195,7 +206,7 @@ const CreateCampaign: React.FC = () => {
       });
 
       if (!campaign?._id) {
-        setFormError('Unable to create campaign. Please try again.');
+          setFormError(t('pages.createCampaign.errors.createFailed'));
         return;
       }
 
@@ -204,7 +215,7 @@ const CreateCampaign: React.FC = () => {
           new Promise<string>((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(String(reader.result));
-            reader.onerror = () => reject(new Error('Failed to read image.'));
+              reader.onerror = () => reject(new Error(t('pages.createCampaign.errors.readImage')));
             reader.readAsDataURL(file);
           })
         )
@@ -214,7 +225,7 @@ const CreateCampaign: React.FC = () => {
       clearDraft();
       navigate('/dashboard');
     } catch (error) {
-      setFormError('Unable to submit your campaign. Please try again.');
+        setFormError(t('pages.createCampaign.errors.submitFailed'));
     } finally{
       setLoading(false);
     }
@@ -273,7 +284,7 @@ const CreateCampaign: React.FC = () => {
         }
       } catch {
         if (isActive) {
-          setFormError('Unable to verify organizer status. Please try again.');
+          setFormError(t('pages.createCampaign.errors.verifyFailed'));
         }
       } finally {
         if (isActive) setIsCheckingVerification(false);
@@ -320,8 +331,8 @@ const CreateCampaign: React.FC = () => {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-6">
         <div className="text-center">
-          <p className="text-lg font-semibold text-gray-900 dark:text-white">Checking verification...</p>
-          <p className="text-sm text-gray-500">Preparing your campaign workspace.</p>
+          <p className="text-lg font-semibold text-gray-900 dark:text-white">{t('pages.createCampaign.checking.title')}</p>
+          <p className="text-sm text-gray-500">{t('pages.createCampaign.checking.body')}</p>
         </div>
       </div>
     );
@@ -332,24 +343,22 @@ const CreateCampaign: React.FC = () => {
       {showDraftPrompt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
           <div className="w-full max-w-md rounded-2xl bg-white dark:bg-surface-dark p-6 shadow-xl border border-gray-100 dark:border-gray-800">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Resume your draft?</h2>
-            <p className="mt-2 text-sm text-gray-500">
-              We found a saved draft for this campaign. You can restore it or start fresh.
-            </p>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('pages.createCampaign.draftPrompt.title')}</h2>
+            <p className="mt-2 text-sm text-gray-500">{t('pages.createCampaign.draftPrompt.body')}</p>
             <div className="mt-6 flex flex-col sm:flex-row gap-3">
               <button
                 type="button"
                 onClick={handleDraftRestore}
                 className="flex-1 px-4 py-2 rounded-lg bg-primary text-white font-semibold hover:bg-primary-hover"
               >
-                Restore draft
+                {t('pages.createCampaign.draftPrompt.restore')}
               </button>
               <button
                 type="button"
                 onClick={handleDraftDiscard}
                 className="flex-1 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50"
               >
-                Start fresh
+                {t('pages.createCampaign.draftPrompt.startFresh')}
               </button>
             </div>
           </div>
@@ -359,29 +368,29 @@ const CreateCampaign: React.FC = () => {
       {showExitPrompt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
           <div className="w-full max-w-md rounded-2xl bg-white dark:bg-surface-dark p-6 shadow-xl border border-gray-100 dark:border-gray-800">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Leave campaign setup?</h2>
-            <p className="mt-2 text-sm text-gray-500">Save your progress as a draft or discard it.</p>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('pages.createCampaign.exitPrompt.title')}</h2>
+            <p className="mt-2 text-sm text-gray-500">{t('pages.createCampaign.exitPrompt.body')}</p>
             <div className="mt-6 flex flex-col gap-3">
               <button
                 type="button"
                 onClick={handleExitSave}
                 className="w-full px-4 py-2 rounded-lg bg-primary text-white font-semibold hover:bg-primary-hover"
               >
-                Save draft and exit
+                {t('pages.createCampaign.exitPrompt.save')}
               </button>
               <button
                 type="button"
                 onClick={handleExitDiscard}
                 className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50"
               >
-                Discard draft
+                {t('pages.createCampaign.exitPrompt.discard')}
               </button>
               <button
                 type="button"
                 onClick={() => setShowExitPrompt(false)}
                 className="w-full px-4 py-2 rounded-lg text-gray-500 hover:text-gray-700"
               >
-                Keep editing
+                {t('pages.createCampaign.exitPrompt.keep')}
               </button>
             </div>
           </div>
@@ -432,11 +441,11 @@ const CreateCampaign: React.FC = () => {
             {step === 1 && (
               <div className="space-y-8">
                 <div>
-                  <label className="block text-xl font-bold mb-2">Give your campaign a title</label>
-                  <p className="text-gray-500 text-sm mb-4">This is the first thing people will see. Make it clear and brief.</p>
+                  <label className="block text-xl font-bold mb-2">{t('pages.createCampaign.basics.titleLabel')}</label>
+                  <p className="text-gray-500 text-sm mb-4">{t('pages.createCampaign.basics.titleHelp')}</p>
                   <input
                     className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-lg outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="e.g., Help the Smith Family Rebuild"
+                    placeholder={t('pages.createCampaign.basics.titlePlaceholder')}
                     data-animate="input"
                     value={title}
                     onChange={(event) => {
@@ -446,7 +455,7 @@ const CreateCampaign: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xl font-bold mb-2">Select a category</label>
+                  <label className="block text-xl font-bold mb-2">{t('pages.createCampaign.basics.categoryLabel')}</label>
                   <select
                     className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                     data-animate="input"
@@ -456,11 +465,11 @@ const CreateCampaign: React.FC = () => {
                       if (formError) setFormError(null);
                     }}
                   >
-                    <option value="">Choose a category...</option>
-                    <option>Education</option>
-                    <option>Medical</option>
-                    <option>Environment</option>
-                    <option>Emergency</option>
+                    <option value="">{t('pages.createCampaign.basics.categoryPlaceholder')}</option>
+                    <option>{t('pages.createCampaign.categories.education')}</option>
+                    <option>{t('pages.createCampaign.categories.medical')}</option>
+                    <option>{t('pages.createCampaign.categories.environment')}</option>
+                    <option>{t('pages.createCampaign.categories.emergency')}</option>
                   </select>
                 </div>
               </div>
@@ -469,8 +478,8 @@ const CreateCampaign: React.FC = () => {
             {step === 2 && (
               <div className="space-y-6">
                 <div>
-                  <label className="block text-xl font-bold mb-2">Why are you raising money?</label>
-                  <p className="text-gray-500 text-base mb-4">Connect with your audience by sharing details about the cause.</p>
+                  <label className="block text-xl font-bold mb-2">{t('pages.createCampaign.story.label')}</label>
+                  <p className="text-gray-500 text-base mb-4">{t('pages.createCampaign.story.help')}</p>
                   <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
                     <div className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-2 flex gap-1">
                       <Bold className="size-4 p-1 rounded hover:bg-gray-200 cursor-pointer" aria-hidden="true" />
@@ -479,7 +488,7 @@ const CreateCampaign: React.FC = () => {
                     </div>
                     <textarea
                       className="w-full min-h-[300px] p-4 bg-white dark:bg-gray-800 border-none outline-none focus:ring-0 resize-none"
-                      placeholder="Hi, my name is [Name] and I am raising funds for..."
+                      placeholder={t('pages.createCampaign.story.placeholder')}
                       data-animate="input"
                       value={story}
                       onChange={(event) => {
@@ -495,7 +504,7 @@ const CreateCampaign: React.FC = () => {
             {step === 3 && (
               <div className="space-y-10">
                 <div>
-                  <label className="block text-xl font-bold mb-4">How much would you like to raise?</label>
+                  <label className="block text-xl font-bold mb-4">{t('pages.createCampaign.goal.label')}</label>
                   <div className="relative">
                     <span className="absolute left-6 top-1/2 -translate-y-1/2 text-4xl font-bold text-gray-300">ETB</span>
                     <input
@@ -510,10 +519,10 @@ const CreateCampaign: React.FC = () => {
                     <span className="absolute right-6 top-1/2 -translate-y-1/2 font-bold text-gray-400">ETB</span>
                   </div>
                   <div className="mt-6">
-                    <label className="block text-lg font-bold mb-2">Payout Account Number (optional)</label>
+                    <label className="block text-lg font-bold mb-2">{t('pages.createCampaign.goal.payoutLabel')}</label>
                     <input
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                      placeholder="1000xxxxxxxxx"
+                      placeholder={t('pages.createCampaign.goal.payoutPlaceholder')}
                       value={cbeAccountNumber}
                       onChange={(event) => {
                         setCbeAccountNumber(event.target.value);
@@ -521,10 +530,10 @@ const CreateCampaign: React.FC = () => {
                       }}
                       data-animate="input"
                     />
-                    <p className="text-xs text-gray-500 mt-2">Optional: add a payout account number if you need one.</p>
+                    <p className="text-xs text-gray-500 mt-2">{t('pages.createCampaign.goal.payoutHelp')}</p>
                   </div>
                   <div className="mt-6">
-                    <label className="block text-lg font-bold mb-2">Campaign Deadline (optional)</label>
+                    <label className="block text-lg font-bold mb-2">{t('pages.createCampaign.goal.deadlineLabel')}</label>
                     <input
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                       type="date"
@@ -535,11 +544,11 @@ const CreateCampaign: React.FC = () => {
                       }}
                       data-animate="input"
                     />
-                    <p className="text-xs text-gray-500 mt-2">If set, the campaign closes automatically on this date.</p>
+                    <p className="text-xs text-gray-500 mt-2">{t('pages.createCampaign.goal.deadlineHelp')}</p>
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold mb-4">Funding Style</h3>
+                  <h3 className="text-lg font-bold mb-4">{t('pages.createCampaign.funding.title')}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <label
                       className={`p-5 rounded-xl flex flex-col gap-2 cursor-pointer border-2 transition ${
@@ -560,8 +569,8 @@ const CreateCampaign: React.FC = () => {
                         className={`size-4 ${fundingStyle === 'keep' ? 'text-primary' : 'text-gray-400'}`}
                         aria-hidden="true"
                       />
-                      <p className="font-bold">Keep what you raise</p>
-                      <p className="text-sm text-gray-500">Keep all donations even if you don't reach the goal.</p>
+                      <p className="font-bold">{t('pages.createCampaign.funding.keepTitle')}</p>
+                      <p className="text-sm text-gray-500">{t('pages.createCampaign.funding.keepBody')}</p>
                     </label>
                     <label
                       className={`p-5 rounded-xl flex flex-col gap-2 cursor-pointer border-2 transition ${
@@ -582,8 +591,8 @@ const CreateCampaign: React.FC = () => {
                         className={`size-4 ${fundingStyle === 'all_or_nothing' ? 'text-primary' : 'text-gray-400'}`}
                         aria-hidden="true"
                       />
-                      <p className="font-bold">All or nothing</p>
-                      <p className="text-sm text-gray-500">Only receive funds if you reach the target.</p>
+                      <p className="font-bold">{t('pages.createCampaign.funding.allTitle')}</p>
+                      <p className="text-sm text-gray-500">{t('pages.createCampaign.funding.allBody')}</p>
                     </label>
                   </div>
                 </div>
@@ -593,12 +602,12 @@ const CreateCampaign: React.FC = () => {
             {step === 4 && (
               <div className="space-y-8">
                 <div>
-                  <label className="block text-xl font-bold mb-2">Campaign Cover Photo</label>
+                  <label className="block text-xl font-bold mb-2">{t('pages.createCampaign.media.label')}</label>
                   <div className="mt-4 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl p-8 flex flex-col items-center gap-4 text-center">
                     <Image className="size-12 text-gray-300" aria-hidden="true" />
                     <div>
-                      <p className="font-bold">Upload a cover image</p>
-                      <p className="text-xs text-gray-500 mt-1">Recommended: 1200 x 675px - JPG, PNG, GIF</p>
+                      <p className="font-bold">{t('pages.createCampaign.media.uploadTitle')}</p>
+                      <p className="text-xs text-gray-500 mt-1">{t('pages.createCampaign.media.uploadHelp')}</p>
                     </div>
                     <input
                       type="file"
@@ -632,7 +641,7 @@ const CreateCampaign: React.FC = () => {
                     className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
                   />
                   <label htmlFor="urgent" className="text-sm text-gray-700 dark:text-gray-300">
-                    Mark this campaign as urgent
+                    {t('pages.createCampaign.media.urgentLabel')}
                   </label>
                 </div>
               </div>
@@ -648,7 +657,7 @@ const CreateCampaign: React.FC = () => {
                   className="flex items-center gap-2 px-6 py-3 font-bold text-gray-500 hover:text-gray-900 transition-colors"
                   data-animate="button"
                 >
-                  <ArrowLeft className="size-4" aria-hidden="true" /> Back
+                  <ArrowLeft className="size-4" aria-hidden="true" /> {t('pages.createCampaign.actions.back')}
                 </button>
               ) : null}
               <button
@@ -657,7 +666,7 @@ const CreateCampaign: React.FC = () => {
                 className="px-6 py-3 font-bold text-gray-400 hover:text-gray-600"
                 data-animate="button"
               >
-                Cancel
+                {t('pages.createCampaign.actions.cancel')}
               </button>
             </div>
             <button
@@ -665,9 +674,9 @@ const CreateCampaign: React.FC = () => {
               onClick={step < 4 ? nextStep : handleSubmit}
               className="w-full sm:w-auto px-10 py-3 bg-primary hover:bg-primary-hover text-white font-bold rounded-lg shadow-lg flex items-center justify-center gap-2"
               data-animate="button"
-              diabled={loading}
+              disabled={loading}
             >
-              {step === 4 ? 'Launch Campaign' : 'Continue'}
+              {step === 4 ? t('pages.createCampaign.actions.launch') : t('pages.createCampaign.actions.continue')}
               <ArrowRight className="size-4" aria-hidden="true" />
             </button>
           </div>
@@ -682,16 +691,20 @@ const CreateCampaign: React.FC = () => {
           <div className="bg-gradient-to-br from-white to-gray-50 dark:from-surface-dark dark:to-gray-900 p-6 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm sticky top-24">
             <div className="flex items-center gap-3 mb-6">
               <Lightbulb className="size-4 text-primary" aria-hidden="true" />
-              <h3 className="font-bold text-lg">Tips for success</h3>
+              <h3 className="font-bold text-lg">{t('pages.createCampaign.tips.title')}</h3>
             </div>
             <ul className="space-y-4 text-sm text-gray-600 dark:text-gray-400">
               <li className="flex gap-2">
                 <CheckCircle className="size-4 text-green-500" aria-hidden="true" />
-                <span><strong>Be descriptive.</strong> Specific titles build more trust.</span>
+                <span>
+                  <strong>{t('pages.createCampaign.tips.items.0.title')}</strong> {t('pages.createCampaign.tips.items.0.body')}
+                </span>
               </li>
               <li className="flex gap-2">
                 <CheckCircle className="size-4 text-green-500" aria-hidden="true" />
-                <span><strong>Share your story.</strong> People donate to people, not just causes.</span>
+                <span>
+                  <strong>{t('pages.createCampaign.tips.items.1.title')}</strong> {t('pages.createCampaign.tips.items.1.body')}
+                </span>
               </li>
             </ul>
           </div>

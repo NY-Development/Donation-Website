@@ -8,20 +8,20 @@ export const userService = {
   getProfile: async (userId: string) => {
     const user = await userRepository.findByIdLean(userId);
     if (!user) {
-      throw { status: 404, message: 'User not found' };
+      throw { status: 404, message: 'errors.userNotFound' };
     }
     return user;
   },
   updateProfile: async (userId: string, payload: { name?: string; email?: string; profileImageFile?: Express.Multer.File }) => {
     const user = await userRepository.findById(userId);
     if (!user) {
-      throw { status: 404, message: 'User not found' };
+      throw { status: 404, message: 'errors.userNotFound' };
     }
 
     if (payload.email && payload.email !== user.email) {
       const existing = await userRepository.findByEmail(payload.email);
       if (existing && existing._id.toString() !== userId) {
-        throw { status: 409, message: 'Email already in use' };
+        throw { status: 409, message: 'errors.emailInUse' };
       }
     }
 
@@ -43,7 +43,7 @@ export const userService = {
     });
 
     if (!updated) {
-      throw { status: 404, message: 'User not found' };
+      throw { status: 404, message: 'errors.userNotFound' };
     }
 
     return userRepository.findByIdLean(updated._id.toString());
@@ -56,7 +56,7 @@ export const userService = {
     ]);
 
     if (!user) {
-      throw { status: 404, message: 'User not found' };
+      throw { status: 404, message: 'errors.userNotFound' };
     }
 
     const totalDonated = user.totalDonated ?? 0;

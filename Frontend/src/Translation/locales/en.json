@@ -5,6 +5,7 @@
     "cancel": "Cancel",
     "continue": "Continue",
     "close": "Close",
+    "all": "All",
     "loading": "Loading...",
     "save": "Save",
     "saving": "Saving...",
@@ -17,6 +18,15 @@
     "toggle": "EN/AM",
     "en": "EN",
     "am": "AM"
+  },
+  "status": {
+    "approved": "Approved",
+    "pending": "Pending",
+    "rejected": "Rejected",
+    "draft": "Draft",
+    "closed": "Closed",
+    "verifiedOrg": "Verified Org",
+    "urgent": "Urgent"
   },
   "navbar": {
     "secureVerification": "Secure Verification",
@@ -73,6 +83,953 @@
     "loadingSubtitle": "Warming up your dashboard..."
   },
   "pages": {
+    "home": {
+      "onboardingTitle": "Welcome to Impact",
+      "onboarding": [
+        {
+          "title": "Discover trusted causes",
+          "description": "Browse campaigns vetted for transparency and impact."
+        },
+        {
+          "title": "Choose your ETB amount",
+          "description": "Pick a donation amount that fits your impact goal."
+        },
+        {
+          "title": "Submit your donation",
+          "description": "Share your details and complete the donation in one step."
+        },
+        {
+          "title": "Add proof (optional)",
+          "description": "Upload a receipt or proof to help organizers track support."
+        }
+      ],
+      "back": "Back",
+      "next": "Next",
+      "getStarted": "Get started",
+      "trustedBy": "Trusted by 10k+ Donors",
+      "heroTitle": "Make an Impact Today",
+      "heroSubtitle": "Join thousands of changemakers supporting causes that matter. 100% of your donation goes directly to the field to help those in need.",
+      "donateNow": "Donate Now",
+      "exploreCampaigns": "Explore Campaigns",
+      "totalRaised": "Total Raised",
+      "activeCampaigns": "Active Campaigns",
+      "livesChanged": "Lives Changed",
+      "featuredTitle": "Featured Campaigns",
+      "featuredSubtitle": "Support urgent causes that need your help right now.",
+      "viewAll": "View all campaigns",
+      "successTitle": "Success Stories",
+      "successSubtitle": "Campaigns that reached their goal and are celebrating impact.",
+      "discoverMore": "Discover more",
+      "goalReached": "Goal Reached",
+      "raised": "raised",
+      "howTitle": "How Impact Works",
+      "howSubtitle": "Transparent giving. Visible impact. We make it easy to support the causes you care about.",
+      "howStep1Title": "1. Discover a Cause",
+      "howStep1Body": "Browse through hundreds of verified campaigns from trusted non-profits.",
+      "howStep2Title": "2. Donate Securely",
+      "howStep2Body": "Make a donation with just a few clicks. Our secure platform ensures safety.",
+      "howStep3Title": "3. Receive Updates",
+      "howStep3Body": "Get real-time updates and photos showing exactly how your contribution made a difference.",
+      "communityTitle": "Join Our Community",
+      "communitySubtitle": "Get inspiring stories and impact reports delivered straight to your inbox every week. No noise, just heart.",
+      "emailPlaceholder": "Enter your email",
+      "subscribe": "Subscribe",
+      "joinCount": "Join 5,000+ others. Unsubscribe at any time."
+    },
+    "explore": {
+      "title": "Explore Campaigns",
+      "subtitle": "Browse all active, pending, and rejected campaigns with clear status labels.",
+      "keywords": "Keywords",
+      "searchPlaceholder": "Refine search...",
+      "categories": "Categories",
+      "clear": "Clear",
+      "urgency": "Urgency",
+      "urgentOnly": "Urgent only",
+      "status": "Status",
+      "raised": "raised",
+      "campaignsFound": "campaigns found",
+      "loadMore": "Load more",
+      "loading": "Loading...",
+      "campaignClosed": "Campaign closed",
+      "campaignNotApproved": "Campaign not approved",
+      "campaignClosedBody": "This campaign is closed and can no longer accept donations.",
+      "campaignNotApprovedBody": "This campaign is not approved. The platform is not responsible for donations made to unapproved campaigns.",
+      "continueAnyway": "Continue anyway",
+      "donateNow": "Donate Now"
+    },
+    "campaignDetail": {
+      "home": "Home",
+      "campaigns": "Campaigns",
+      "campaign": "Campaign",
+      "loadingDetails": "Loading campaign details...",
+      "loadingStory": "Loading story...",
+      "organizer": "Organizer",
+      "contact": "Contact",
+      "contactDisabled": "Contact",
+      "approved": "Approved",
+      "closed": "Closed",
+      "rejected": "Rejected",
+      "draft": "Draft",
+      "pending": "Pending",
+      "quote": "\"Every donation brings this mission closer to reality.\"",
+      "everyBirr": "Every birr counts. Whether you can give ETB 5 or ETB 500, your contribution directly impacts a brighter future.",
+      "raisedOf": "raised of ETB {goal} goal",
+      "donations": "donations",
+      "today": "today",
+      "donateNow": "Donate Now",
+      "secureDonation": "Secure donation experience",
+      "heroDonors": "Hero Donors",
+      "anonymous": "Anonymous",
+      "donor": "Donor",
+      "recentDonation": "Recent donation",
+      "warningClosed": "This campaign is closed and cannot accept new donations.",
+      "warningNotApproved": "This campaign is not approved. The platform is not responsible for donations made to unapproved campaigns.",
+      "cancel": "Cancel",
+      "continue": "Continue anyway",
+      "locationFallback": "Global"
+    },
+    "donate": {
+      "back": "Back",
+      "title": "Complete your donation",
+      "secure": "Secure donation experience",
+      "noAccount": "You can donate without an account, but we can only track your impact if you log in.",
+      "closed": "This campaign is closed and can no longer accept donations.",
+      "notApprovedTitle": "This campaign is not approved.",
+      "notApprovedBody": "Donate at your own risk. The platform is not responsible for unapproved campaigns.",
+      "step1": "Choose an amount",
+      "step1Hint": "The verified payment amount must match the amount you select here.",
+      "otherAmount": "Other amount",
+      "step2": "Who is donating?",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email Address (optional)",
+      "emailHint": "Optional, but helpful if you want a receipt or updates.",
+      "step3": "Donation proof (optional)",
+      "uploadProof": "Upload a receipt or proof (optional)",
+      "preview": "Preview",
+      "uploadHint": "Upload an image if you want to include proof.",
+      "acknowledge": "I understand this campaign is not approved and I donate at my own risk.",
+      "processing": "Processing...",
+      "donateAmount": "Donate ETB {amount} Now",
+      "supporting": "Supporting",
+      "yourImpact": "Your impact",
+      "impactBody": "Your ETB {amount} donation supports this cause directly.",
+      "donation": "Donation",
+      "totalDue": "Total Due",
+      "receiptPreviewAlt": "Receipt preview"
+    },
+    "createCampaign": {
+      "checking": {
+        "title": "Checking verification...",
+        "body": "Preparing your campaign workspace."
+      },
+      "draftPrompt": {
+        "title": "Resume your draft?",
+        "body": "We found a saved draft for this campaign. You can restore it or start fresh.",
+        "restore": "Restore draft",
+        "startFresh": "Start fresh"
+      },
+      "exitPrompt": {
+        "title": "Leave campaign setup?",
+        "body": "Save your progress as a draft or discard it.",
+        "save": "Save draft and exit",
+        "discard": "Discard draft",
+        "keep": "Keep editing"
+      },
+      "steps": {
+        "title": "Title",
+        "story": "Story",
+        "goal": "Goal",
+        "media": "Media"
+      },
+      "stepIndicator": "Step {step} of 4",
+      "headings": {
+        "step1": "Let's start with the basics",
+        "step2": "Tell your story",
+        "step3": "Set your fundraising goal",
+        "step4": "Media & Cover Photo"
+      },
+      "basics": {
+        "titleLabel": "Give your campaign a title",
+        "titleHelp": "This is the first thing people will see. Make it clear and brief.",
+        "titlePlaceholder": "e.g., Help the Smith Family Rebuild",
+        "categoryLabel": "Select a category",
+        "categoryPlaceholder": "Choose a category..."
+      },
+      "categories": {
+        "education": "Education",
+        "medical": "Medical",
+        "environment": "Environment",
+        "emergency": "Emergency"
+      },
+      "story": {
+        "label": "Why are you raising money?",
+        "help": "Connect with your audience by sharing details about the cause.",
+        "placeholder": "Hi, my name is [Name] and I am raising funds for..."
+      },
+      "goal": {
+        "label": "How much would you like to raise?",
+        "payoutLabel": "Payout Account Number (optional)",
+        "payoutPlaceholder": "1000xxxxxxxxx",
+        "payoutHelp": "Optional: add a payout account number if you need one.",
+        "deadlineLabel": "Campaign Deadline (optional)",
+        "deadlineHelp": "If set, the campaign closes automatically on this date."
+      },
+      "funding": {
+        "title": "Funding Style",
+        "keepTitle": "Keep what you raise",
+        "keepBody": "Keep all donations even if you don't reach the goal.",
+        "allTitle": "All or nothing",
+        "allBody": "Only receive funds if you reach the target."
+      },
+      "media": {
+        "label": "Campaign Cover Photo",
+        "uploadTitle": "Upload a cover image",
+        "uploadHelp": "Recommended: 1200 x 675px - JPG, PNG, GIF",
+        "urgentLabel": "Mark this campaign as urgent"
+      },
+      "actions": {
+        "back": "Back",
+        "cancel": "Cancel",
+        "continue": "Continue",
+        "launch": "Launch Campaign"
+      },
+      "tips": {
+        "title": "Tips for success",
+        "items": [
+          {
+            "title": "Be descriptive.",
+            "body": "Specific titles build more trust."
+          },
+          {
+            "title": "Share your story.",
+            "body": "People donate to people, not just causes."
+          }
+        ]
+      },
+      "validation": {
+        "title": "Campaign title is required.",
+        "category": "Select a campaign category.",
+        "story": "Tell a more detailed story.",
+        "goal": "Goal amount must be greater than 0.",
+        "account": "Account number must be at least 6 characters.",
+        "step1": "Please enter a title and select a category to continue.",
+        "step2": "Please provide a longer story before continuing.",
+        "step3": "Please enter a valid fundraising goal.",
+        "submitRequired": "Please complete all required fields before submitting.",
+        "mediaRequired": "Please upload at least one campaign image."
+      },
+      "errors": {
+        "verifyFailed": "Unable to verify organizer status. Please try again.",
+        "createFailed": "Unable to create campaign. Please try again.",
+        "readImage": "Failed to read image.",
+        "submitFailed": "Unable to submit your campaign. Please try again."
+      }
+    },
+    "verificationIntro": {
+      "loadingTitle": "Preparing verification...",
+      "loadingSubtitle": "Hang tight while we load your details.",
+      "error": "Unable to load verification status. Please try again.",
+      "kicker": "Identity verification",
+      "title": "Keep your campaigns safe and transparent.",
+      "subtitle": "To ensure a secure environment for all creators and prevent fraud, we require a quick identity check before you can launch your first campaign.",
+      "step1Title": "ID Scan",
+      "step1Body": "Upload a photo of your government-issued ID (Passport, DL, or ID card).",
+      "step2Title": "Selfie Check",
+      "step2Body": "A quick face scan to confirm it is really you. No recording stored.",
+      "step3Title": "Instant Results",
+      "step3Body": "Verification usually takes less than 24 hours via our automated system.",
+      "secure": "Encrypted and secure",
+      "gdpr": "GDPR compliant",
+      "readyTitle": "Ready to start?",
+      "readyBody": "Please have your valid government ID ready and ensure you are in a well-lit area.",
+      "start": "Start Verification",
+      "learnMore": "Learn more about our process",
+      "privacyNote": "Your data is end-to-end encrypted. We never share your documents with third parties."
+    },
+    "verificationUpload": {
+      "loadingTitle": "Loading verification...",
+      "loadingSubtitle": "One moment while we prepare your form.",
+      "error": "Unable to load verification status. Please try again.",
+      "step1": "Campaign Details",
+      "step2": "Identity Verification",
+      "step3": "Launch Campaign",
+      "kicker": "Identity verification",
+      "title": "Verify your identity",
+      "subtitle": "Upload a clear photo of your government-issued ID to proceed. This helps us ensure the security of our community.",
+      "docType": "Select Document Type",
+      "nationalId": "National ID",
+      "passport": "Passport",
+      "driver": "Driver's License",
+      "frontLabel": "Front of ID Card",
+      "backLabel": "Back of ID Card",
+      "uploadTitle": "Click to upload or drag and drop",
+      "uploadHint": "PNG, JPG, or PDF up to 10MB",
+      "back": "Back",
+      "continue": "Continue",
+      "tipsTitle": "Submission Tips",
+      "tip1Title": "Good Lighting",
+      "tip1Body": "Ensure the document is well-lit without reflections or glare.",
+      "tip2Title": "Visible Corners",
+      "tip2Body": "All four corners of the document must be visible within the frame.",
+      "tip3Title": "Sharp and Clear",
+      "tip3Body": "Information must be legible. Avoid shaky or blurry captures.",
+      "dataNote": "Your data is encrypted and used only for verification.",
+      "bothRequired": "Please upload both the front and back of your ID."
+    },
+    "verificationSelfie": {
+      "error": "Unable to submit verification. Please try again.",
+      "missing": "Please upload your ID front, ID back, and a live selfie.",
+      "cameraUnsupported": "Camera access is not supported on this device.",
+      "cameraHttps": "Camera access requires HTTPS or localhost.",
+      "cameraDenied": "Unable to access the camera. Please allow camera access and try again.",
+      "kicker": "Identity verification",
+      "title": "Live Selfie Check",
+      "step": "Step 3 of 3",
+      "instruction": "Position your face within the frame and look directly at the camera to complete your profile.",
+      "ready": "Ready to Scan",
+      "startCamera": "Start camera",
+      "retake": "Retake selfie",
+      "capture": "Capture selfie",
+      "cancel": "Cancel",
+      "altMethod": "Use another method",
+      "tip1Title": "Good Lighting",
+      "tip1Body": "Ensure your face is visible without shadows.",
+      "tip2Title": "Natural Look",
+      "tip2Body": "Remove glasses or hats for better accuracy.",
+      "tip3Title": "Stay Centered",
+      "tip3Body": "Keep your head inside the dashed circle.",
+      "submit": "Submit verification",
+      "submitting": "Submitting...",
+      "back": "Back"
+    },
+    "verificationPending": {
+      "error": "Unable to load verification status.",
+      "approvedTitle": "Verification Approved",
+      "pendingTitle": "Verification Pending",
+      "approvedBody": "Your organizer account is verified. You can now launch your campaign.",
+      "pendingBody": "We are reviewing your documents. You will receive an email confirmation once the admin team validates your submission.",
+      "returning": "Returning to your dashboard in {seconds}s.",
+      "launch": "Launch campaign",
+      "back": "Back to dashboard",
+      "viewSubmission": "View submission",
+      "needHelp": "Need help?",
+      "contact": "Contact our trust and safety team"
+    },
+    "organizerVerification": {
+      "loadingTitle": "Checking verification status...",
+      "loadingSubtitle": "Hang tight while we load your details.",
+      "verifiedTitle": "You are verified",
+      "verifiedBody": "Your organizer account is verified. You can start a campaign right away.",
+      "launching": "Launching...",
+      "startCampaign": "Start a campaign",
+      "kicker": "Organizer verification",
+      "title": "Verify your identity",
+      "subtitle": "To protect donors and beneficiaries, we require a government-issued ID and a live selfie before you can launch campaigns.",
+      "mobileHint": "For the live photo, please use a mobile device with a front camera.",
+      "pendingTitle": "Verification under review",
+      "pendingBody": "We received your documents and are reviewing them now.",
+      "rejectedTitle": "Verification rejected",
+      "rejectedBody": "Please resubmit clearer images to continue.",
+      "docType": "Document type",
+      "nationalId": "National ID",
+      "driver": "Driver License",
+      "passport": "Passport",
+      "passportLabel": "Passport",
+      "idFront": "ID Front",
+      "idBack": "ID Back",
+      "livePhoto": "Live Photo",
+      "cameraPreview": "Camera preview will appear here.",
+      "retake": "Retake selfie",
+      "startCamera": "Start camera",
+      "capture": "Capture selfie",
+      "cancel": "Cancel",
+      "photoHint": "Use a well-lit selfie that clearly shows your face.",
+      "submit": "Submit verification",
+      "submitting": "Submitting...",
+      "backDashboard": "Back to dashboard",
+      "statusError": "Unable to fetch verification status. Please try again.",
+      "submitError": "Unable to submit verification. Please try again.",
+      "missing": "Please upload your ID front, ID back, and a live photo.",
+      "missingPassport": "Please upload your passport and a live photo."
+    },
+    "helpCenter": {
+      "kicker": "Help Center",
+      "title": "How can we help?",
+      "subtitle": "Find quick answers about donating, running campaigns, account access, verification, and safety. If you do not see what you need, contact our team anytime.",
+      "search": {
+        "label": "Search the Help Center",
+        "placeholder": "Try: receipts, verification, deadline, donations",
+        "button": "Search",
+        "results": "Search results",
+        "clear": "Clear",
+        "empty": "No results found. Try different keywords or contact support at {email}."
+      },
+      "topics": {
+        "donations": "Donations",
+        "receipts": "Receipts",
+        "verification": "Verification",
+        "campaignTips": "Campaign tips",
+        "security": "Security",
+        "account": "Account"
+      },
+      "cards": {
+        "account": {
+          "title": "Account and Access",
+          "body": "Profile, password, email changes, and login help."
+        },
+        "donations": {
+          "title": "Donation Support",
+          "body": "Payment methods, receipts, refunds, and chargebacks."
+        },
+        "campaigns": {
+          "title": "Campaign Management",
+          "body": "Create, edit, verify, and update your fundraiser."
+        },
+        "safety": {
+          "title": "Safety and Trust",
+          "body": "Reporting issues, fraud prevention, and community safety."
+        }
+      },
+      "popularGuides": "Popular Guides",
+      "faqsTitle": "Frequently Asked Questions",
+      "sidebar": {
+        "personalHelpTitle": "Need personal help?",
+        "personalHelpBody": "Our support team is here 24/7 to help with account access, payments, and safety concerns.",
+        "quickActions": "Quick Actions",
+        "reportIssue": "Report an issue",
+        "identityChecking": "Checking identity...",
+        "identityStatus": "Verify identity status",
+        "securityPrivacy": "Security & privacy",
+        "donationProtection": "Donation protection",
+        "safetyTitle": "Safety Checklist",
+        "safetyItems": [
+          "Only donate to campaigns with clear updates and verified organizers.",
+          "Never share your login codes or payment details.",
+          "Report suspicious activity immediately to our trust team."
+        ]
+      },
+      "modal": {
+        "guideLabel": "Guide",
+        "close": "Close"
+      },
+      "identity": {
+        "title": "Identity status",
+        "body": [
+          "Your national ID is on file for verification.",
+          "If you need to update your documents, visit the organizer verification page."
+        ],
+        "statusVerified": "Verified",
+        "statusPending": "Pending review",
+        "statusSubmitted": "Submitted",
+        "meta": {
+          "name": "Name",
+          "fallbackName": "Organizer",
+          "nationalId": "National ID",
+          "onFile": "On file",
+          "status": "Status",
+          "submitted": "Submitted",
+          "na": "N/A"
+        },
+        "error": [
+          "We could not load your verification status right now.",
+          "Please try again in a moment or contact support if the issue persists."
+        ]
+      },
+      "categories": {
+        "account": "Account",
+        "donations": "Donations",
+        "campaigns": "Campaigns",
+        "safety": "Safety",
+        "verification": "Verification"
+      },
+      "tags": {
+        "donations": "donations",
+        "guest": "guest",
+        "receipts": "receipts",
+        "dashboard": "dashboard",
+        "verification": "verification",
+        "organizer": "organizer",
+        "nationalId": "national id",
+        "campaigns": "campaigns",
+        "draft": "draft",
+        "deadline": "deadline",
+        "updates": "updates",
+        "goalReached": "goal reached",
+        "security": "security",
+        "privacy": "privacy",
+        "trust": "trust",
+        "safety": "safety",
+        "support": "support",
+        "account": "account",
+        "login": "login"
+      },
+      "articles": {
+        "donateGuest": {
+          "title": "How to donate without logging in",
+          "summary": "You can donate as a guest and still support a campaign securely.",
+          "content": [
+            "Open a campaign and tap Donate Now.",
+            "Choose your ETB amount and enter your name. Email is optional but helps with receipts and updates.",
+            "Submit the donation. If you want, attach a receipt image as proof.",
+            "Create an account later to track your impact from the dashboard."
+          ]
+        },
+        "donationReceipts": {
+          "title": "How to track donations and receipts",
+          "summary": "See totals and donation history from your dashboard after you log in.",
+          "content": [
+            "Log in and open your dashboard to view Total Donated and recent activity.",
+            "Receipts are attached to successful donations when provided.",
+            "If a receipt is missing, submit your donation with a proof image next time for faster tracking."
+          ]
+        },
+        "organizerVerification": {
+          "title": "How to verify your organizer account",
+          "summary": "Verification protects donors and keeps campaigns trustworthy.",
+          "content": [
+            "Go to Organizer Verification from your dashboard.",
+            "Upload your national ID (front and back) and a clear live photo.",
+            "Submit the form and wait for approval. You will see the status in your account."
+          ]
+        },
+        "campaignDraft": {
+          "title": "How to create a campaign draft",
+          "summary": "Start a campaign and save progress as you go.",
+          "content": [
+            "Open Start Campaign and fill in the title, story, and goal.",
+            "Add a deadline if you want the campaign to auto-close on a specific date.",
+            "Upload media to make your campaign more credible and engaging.",
+            "Launch when ready, or keep editing until you are satisfied."
+          ]
+        },
+        "campaignUpdates": {
+          "title": "How to update your campaign story",
+          "summary": "Keep donors informed with clear progress updates.",
+          "content": [
+            "Open your campaign from the dashboard and edit the story or goal as needed.",
+            "Add new media to show progress and build trust.",
+            "If you need to pause or delete, submit a request from the dashboard."
+          ]
+        },
+        "campaignClosure": {
+          "title": "When does a campaign close?",
+          "summary": "Campaigns close when the deadline passes or when the goal is reached.",
+          "content": [
+            "If you set a deadline, the campaign closes automatically on that date.",
+            "If the goal is reached first, the campaign is marked as a success story and closes.",
+            "Closed campaigns no longer accept donations."
+          ]
+        },
+        "securityBasics": {
+          "title": "How we keep donations secure",
+          "summary": "We use secure sessions, protected routes, and controlled access.",
+          "content": [
+            "Authentication protects personal data and donation history.",
+            "Organizer verification reduces fraud risk for campaigns.",
+            "We monitor activity and provide support for suspicious issues."
+          ]
+        },
+        "reportIssue": {
+          "title": "How to report suspicious activity",
+          "summary": "Contact support with details so we can help quickly.",
+          "content": [
+            "Use the Report an issue action in the Help Center.",
+            "Describe the campaign and any evidence you have.",
+            "Our team will review and respond to your report."
+          ]
+        },
+        "accountAccess": {
+          "title": "Account access and recovery",
+          "summary": "Log in securely and recover access if needed.",
+          "content": [
+            "Use the login page with your email and password.",
+            "If you forgot your password, use the Forgot Password link.",
+            "Contact support if you cannot regain access."
+          ]
+        }
+      },
+      "faqs": [
+        {
+          "q": "How do I verify my email with OTP?",
+          "a": "After signup, we send a 6-digit OTP to your email. Enter it on the verification page to activate your account."
+        },
+        {
+          "q": "Can I donate without an account?",
+          "a": "Yes. You can complete a donation as a guest. Create an account later to track receipts and impact."
+        },
+        {
+          "q": "Where can I see my total donated?",
+          "a": "Log in and open your dashboard to see Total Donated and your donation timeline."
+        },
+        {
+          "q": "What happens when a campaign reaches its goal?",
+          "a": "The campaign is marked as a success story and closes automatically to new donations."
+        },
+        {
+          "q": "What happens when a campaign deadline passes?",
+          "a": "The campaign closes automatically and no longer accepts donations."
+        },
+        {
+          "q": "How do I report a problem?",
+          "a": "Use the Report an issue action in the Help Center to email our support team."
+        }
+      ]
+    },
+    "admin": {
+      "layout": {
+        "brandName": "ImpactGive",
+        "toggleNav": "Toggle admin navigation",
+        "closeNav": "Close admin navigation"
+      },
+      "nav": {
+        "dashboard": "Dashboard",
+        "campaigns": "Campaigns",
+        "users": "Users",
+        "reports": "Reports",
+        "settings": "Settings"
+      },
+      "actions": {
+        "logout": "Log Out"
+      },
+      "breadcrumb": {
+        "admin": "Admin"
+      },
+      "overview": {
+        "searchPlaceholder": "Search campaigns, donors, or ID...",
+        "newCampaign": "New Campaign",
+        "welcome": "Welcome back",
+        "subtitle": "Here is the latest performance snapshot.",
+        "cards": {
+          "totalFunds": "Total Funds Raised",
+          "approvedCampaigns": "Approved Campaigns",
+          "totalDonors": "Total Donors",
+          "registeredUsers": "Registered Users"
+        },
+        "trends": {
+          "title": "Donation Trends",
+          "week": "W",
+          "month": "M",
+          "year": "Y",
+          "empty": "No trend data"
+        },
+        "topCampaigns": "Top Campaigns",
+        "noCampaigns": "No campaigns yet."
+      },
+      "campaigns": {
+        "breadcrumb": "Campaign Moderation",
+        "title": "Moderation Queue",
+        "export": "Export CSV",
+        "deleteAll": "Delete All",
+        "deleting": "Deleting...",
+        "syncing": "Syncing...",
+        "syncData": "Sync Data",
+        "refresh": "Refresh",
+        "searchPlaceholder": "Search campaigns or organizers...",
+        "viewing": "Viewing {count} campaigns",
+        "table": {
+          "campaign": "Campaign",
+          "category": "Category",
+          "goal": "Goal",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "actions": {
+          "approve": "Approve",
+          "reject": "Reject",
+          "delete": "Delete"
+        },
+        "status": {
+          "paused": "Paused",
+          "pendingVerification": "Pending verification"
+        },
+        "confirm": {
+          "deleteOne": "Delete this campaign and all its donations? This cannot be undone.",
+          "deleteAll": "Delete all campaigns and all donations? This cannot be undone."
+        },
+        "prompt": {
+          "rejectReason": "Reason for rejection (optional):"
+        },
+        "empty": "No campaigns found for this filter.",
+        "requests": {
+          "title": "Campaign Action Requests",
+          "subtitle": "Pause or delete requests from campaign owners",
+          "campaignLabel": "Campaign:",
+          "campaignFallback": "Campaign",
+          "userFallback": "User",
+          "requestedBy": "Requested by {name} · {date}",
+          "empty": "No pending campaign requests."
+        },
+        "requestActions": {
+          "pause": "pause",
+          "delete": "delete"
+        }
+      },
+      "reports": {
+        "title": "Reports & Appeals",
+        "subtitle": "Review organizer verification submissions and resolve moderation actions.",
+        "refresh": "Refresh",
+        "tag": "Verification Review",
+        "submitted": "Submitted {date}.",
+        "recently": "recently",
+        "viewIdFront": "View ID Front",
+        "viewIdBack": "View ID Back",
+        "viewLivePhoto": "View Live Photo",
+        "reject": "Reject",
+        "approve": "Approve",
+        "empty": "No pending reports or verification requests.",
+        "rejectReason": "Insufficient verification details."
+      },
+      "users": {
+        "title": "User Management",
+        "showing": "Showing {shown} of {total} users",
+        "loadError": "Unable to load users. Please try again.",
+        "stats": {
+          "totalDonors": "Total Donors",
+          "organizers": "Organizers",
+          "pending": "Pending Verification",
+          "admins": "Admins"
+        },
+        "searchPlaceholder": "Search by name, email or ID...",
+        "tabs": {
+          "all": "All",
+          "approved": "Approved",
+          "pending": "Pending"
+        },
+        "roles": {
+          "all": "All Roles",
+          "donor": "Donors",
+          "organizer": "Organizers",
+          "admin": "Admins"
+        },
+        "verification": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected"
+        },
+        "table": {
+          "user": "User",
+          "role": "Role",
+          "verification": "Verification",
+          "joined": "Joined",
+          "actions": "Actions"
+        },
+        "actions": {
+          "delete": "Delete"
+        },
+        "deleting": "Deleting...",
+        "deleteAll": "Delete All Users",
+        "empty": "No users found.",
+        "confirm": {
+          "deleteOne": "Delete this user and their related data? This cannot be undone.",
+          "deleteAll": "Delete all non-admin users and their related data? This cannot be undone."
+        }
+      },
+      "settings": {
+        "loading": "Loading settings...",
+        "title": "System Settings",
+        "breadcrumb": {
+          "admin": "Admin Dashboard",
+          "settings": "Settings"
+        },
+        "sections": {
+          "general": "General Configuration",
+          "payments": "Payment Gateways & Fees",
+          "security": "Security & Compliance",
+          "notifications": "Automated Notifications"
+        },
+        "labels": {
+          "platformName": "Platform Name",
+          "supportEmail": "Support Email Address",
+          "fontFamily": "Global Font",
+          "maintenanceMode": "Maintenance Mode",
+          "platformFee": "Platform Fee",
+          "currency": "Settlement Currency",
+          "enforce2fa": "Enforce Two-Factor Authentication",
+          "sessionTimeout": "Session Timeout Limit",
+          "auditLogging": "Audit Logging",
+          "emailAlerts": "Email Alerts"
+        },
+        "help": {
+          "maintenanceMode": "Disable all public fundraising pages and show a maintenance message.",
+          "enforce2fa": "Require all administrator accounts to use 2FA for login.",
+          "sessionTimeout": "Automatically logout inactive admins after a period of time.",
+          "auditLogging": "Keep detailed records of all administrative actions."
+        },
+        "notifications": {
+          "largeDonation": {
+            "title": "Large Donation Alerts",
+            "body": "Notify admins when a single donation exceeds ETB 1,000."
+          },
+          "newCampaign": {
+            "title": "New Campaign Verification",
+            "body": "Alert staff when a new campaign is submitted for review."
+          }
+        },
+        "options": {
+          "minutes": "{minutes} Minutes",
+          "hour": "{hours} Hour",
+          "hours": "{hours} Hours"
+        },
+        "saveReminder": "Remember to save your changes.",
+        "discard": "Discard Changes",
+        "saving": "Saving...",
+        "save": "Save Changes"
+      }
+    },
+    "adminDashboard": {
+      "brandTitle": "ImpactGive Admin",
+      "brandSubtitle": "Operations console",
+      "nav": {
+        "overview": "Overview",
+        "moderation": "Moderation",
+        "users": "Users",
+        "financials": "Financials"
+      },
+      "actions": {
+        "toggleNav": "Toggle navigation",
+        "export": "Export CSV"
+      },
+      "header": {
+        "title": "Platform Health",
+        "subtitle": "Overview of activities and campaign status"
+      },
+      "cards": {
+        "totalFunds": "Total Funds",
+        "totalFundsDelta": "+14.2%",
+        "activeCampaigns": "Active Campaigns",
+        "activeCampaignsDelta": "+5.1%",
+        "pendingVerifications": "Pending Verifications",
+        "needsAction": "Needs Action",
+        "totalDonors": "Total Donors",
+        "totalDonorsDelta": "+8.4%"
+      },
+      "charts": {
+        "donations": "Donation Volume",
+        "users": "User Growth"
+      },
+      "queue": {
+        "title": "Campaign Verification Queue",
+        "searchPlaceholder": "Search campaigns",
+        "matched": "{count} campaigns matched",
+        "filters": {
+          "all": "All status"
+        }
+      },
+      "status": {
+        "pending": "Pending",
+        "active": "Active",
+        "flagged": "Flagged",
+        "completed": "Completed"
+      },
+      "table": {
+        "campaign": "Campaign",
+        "organizer": "Organizer",
+        "raised": "Raised",
+        "goal": "Goal",
+        "status": "Status",
+        "lastUpdate": "Last Update",
+        "actions": "Actions",
+        "review": "Review",
+        "open": "Open"
+      },
+      "selected": {
+        "label": "Selected campaign",
+        "organizer": "Organizer: {name}",
+        "approve": "Approve",
+        "flag": "Flag",
+        "close": "Close"
+      }
+    },
+    "userDashboard": {
+      "welcome": "Welcome back, {name}!",
+      "friend": "friend",
+      "subtitle": "You're making a real difference. Here's your impact overview.",
+      "donateAgain": "Donate Again",
+      "organizerApproved": {
+        "title": "Organizer verification approved",
+        "body": "You are now verified. You can create and manage campaigns."
+      },
+      "organizerRejected": {
+        "title": "Organizer verification rejected",
+        "fallback": "Please resubmit clearer documents from the organizer verification page."
+      },
+      "stats": {
+        "totalDonated": "Total Donated",
+        "livesTouched": "Lives Touched",
+        "projectsSupported": "Projects Supported"
+      },
+      "campaigns": {
+        "title": "Your Campaigns",
+        "subtitle": "Track how your stories are performing and where support is growing.",
+        "create": "Create Campaign",
+        "stats": {
+          "totalCampaigns": "Total Campaigns",
+          "activeCampaigns": "Active Campaigns",
+          "totalRaised": "Total Raised",
+          "avgProgress": "Average Progress"
+        },
+        "loading": "Loading your campaigns...",
+        "noImage": "No image",
+        "goalReached": "Goal reached",
+        "celebration": "Celebration: you hit 100% of your goal!",
+        "raised": "{amount} raised",
+        "goal": "{amount} goal",
+        "funded": "{progress}% funded",
+        "requestPause": "Request Pause",
+        "requestDelete": "Request Delete",
+        "empty": "You have not created any campaigns yet."
+      },
+      "pending": {
+        "title": "Pending Donation Reviews",
+        "submissions": "{count} submissions",
+        "loading": "Loading pending donations...",
+        "campaignLabel": "Campaign",
+        "submitted": "Submitted {date}",
+        "donorLabel": "Donor",
+        "anonymous": "Anonymous",
+        "referenceLabel": "Reference",
+        "referenceFallback": "Receipt upload",
+        "proofLabel": "Proof",
+        "viewProof": "View screenshot",
+        "noAttachment": "No attachment",
+        "empty": "No pending donation submissions yet."
+      },
+      "timeline": {
+        "title": "Timeline of Impact",
+        "madeDonation": "You made a donation",
+        "campaignFallback": "Campaign {id}",
+        "empty": "No donations yet."
+      },
+      "trends": {
+        "title": "Donation Trends (7 days)",
+        "empty": "No trend data yet."
+      },
+      "badges": {
+        "title": "Badges Earned",
+        "empty": "No badges yet. Make a donation to start earning.",
+        "firstDonation": "First Donation",
+        "impactBuilder": "Impact Builder",
+        "generousGiver": "Generous Giver",
+        "consistentSupporter": "Consistent Supporter"
+      },
+      "status": {
+        "paused": "Paused"
+      },
+      "request": {
+        "title": "Request {action}",
+        "pause": "Pause",
+        "delete": "Delete",
+        "campaign": "Campaign: {title}",
+        "close": "Close",
+        "messageLabel": "Message to admin",
+        "messagePlaceholder": "Explain why you want this action...",
+        "validation": "Please add a short message (at least 5 characters).",
+        "submitting": "Submitting...",
+        "send": "Send Request",
+        "cancel": "Cancel"
+      }
+    },
     "about": {
       "kicker": "About Us",
       "title": "Building trust in giving",
@@ -230,5 +1187,5 @@
       "explore": "Explore Campaigns",
       "signIn": "Sign In"
     }
-  }
+}
 }

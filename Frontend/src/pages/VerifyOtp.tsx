@@ -24,24 +24,24 @@ const VerifyOtp: React.FC = () => {
     setSuccess(null);
 
     const schema = z.object({
-      email: z.string().email('Enter a valid email address.'),
-      otp: z.string().min(6, 'Enter the 6-digit code.').max(6, 'Enter the 6-digit code.')
+      email: z.string().email(t('pages.auth.verifyOtp.validation.email')),
+      otp: z.string().min(6, t('pages.auth.verifyOtp.validation.code')).max(6, t('pages.auth.verifyOtp.validation.code'))
     });
     const parsed = schema.safeParse({ email, otp });
     if (!parsed.success) {
-      setError(parsed.error.issues[0]?.message ?? 'Please check the code and try again.');
+      setError(parsed.error.issues[0]?.message ?? t('pages.auth.verifyOtp.validation.fallback'));
       return;
     }
 
     setIsSubmitting(true);
     try {
       await authService.verifyOtp({ email: parsed.data.email, otp: parsed.data.otp });
-      setSuccess('Email verified successfully. You can now log in.');
+      setSuccess(t('pages.auth.verifyOtp.success'));
       setTimeout(() => {
         navigate('/login');
       }, 800);
     } catch (err: any) {
-      const message = err?.response?.data?.message ?? 'Unable to verify. Please try again.';
+      const message = err?.response?.data?.message ?? t('pages.auth.verifyOtp.failure');
       setError(message);
     } finally {
       setIsSubmitting(false);

@@ -2,8 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { BarChart3, FileText, LayoutDashboard, Menu, Settings, ShieldCheck, Users, X } from 'lucide-react';
 import { useAuthStore } from '../../store';
+import { useTranslation } from 'react-i18next';
 
 const AdminLayout: React.FC = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -11,13 +13,13 @@ const AdminLayout: React.FC = () => {
 
   const navItems = useMemo(
     () => [
-      { label: 'Dashboard', to: '/admin', icon: LayoutDashboard },
-      { label: 'Campaigns', to: '/admin/campaigns', icon: BarChart3 },
-      { label: 'Users', to: '/admin/users', icon: Users },
-      { label: 'Reports', to: '/admin/reports', icon: ShieldCheck },
-      { label: 'Settings', to: '/admin/settings', icon: Settings }
+      { label: t('pages.admin.nav.dashboard'), to: '/admin', icon: LayoutDashboard },
+      { label: t('pages.admin.nav.campaigns'), to: '/admin/campaigns', icon: BarChart3 },
+      { label: t('pages.admin.nav.users'), to: '/admin/users', icon: Users },
+      { label: t('pages.admin.nav.reports'), to: '/admin/reports', icon: ShieldCheck },
+      { label: t('pages.admin.nav.settings'), to: '/admin/settings', icon: Settings }
     ],
-    []
+    [t]
   );
 
   const isActive = (to: string) => {
@@ -41,7 +43,7 @@ const AdminLayout: React.FC = () => {
         <button
           type="button"
           className="fixed inset-0 z-30 bg-black/40 md:hidden"
-          aria-label="Close admin navigation"
+          aria-label={t('pages.admin.layout.closeNav')}
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -50,13 +52,13 @@ const AdminLayout: React.FC = () => {
           <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center text-white">
             <FileText className="size-5" aria-hidden="true" />
           </div>
-          <span className="text-lg font-bold text-primary">ImpactGive</span>
+          <span className="text-lg font-bold text-primary">{t('pages.admin.layout.brandName')}</span>
         </div>
         <button
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
           className="p-2 rounded-lg border border-slate-200 dark:border-slate-800"
-          aria-label="Toggle admin navigation"
+          aria-label={t('pages.admin.layout.toggleNav')}
         >
           {isOpen ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
         </button>
@@ -70,12 +72,12 @@ const AdminLayout: React.FC = () => {
           <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
             <FileText className="size-5" aria-hidden="true" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-primary">ImpactGive</span>
+          <span className="text-xl font-bold tracking-tight text-primary">{t('pages.admin.layout.brandName')}</span>
           <button
             type="button"
             onClick={() => setIsOpen(false)}
             className="ml-auto md:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-800"
-            aria-label="Close admin navigation"
+            aria-label={t('pages.admin.layout.closeNav')}
           >
             <X className="size-4" aria-hidden="true" />
           </button>
@@ -108,7 +110,7 @@ const AdminLayout: React.FC = () => {
             }}
             className="mx-4 mb-6 w-[calc(100%-2rem)] rounded-lg bg-red-600 text-white font-bold py-2.5 hover:bg-red-700 transition-colors"
           >
-            Log Out
+            {t('pages.admin.actions.logout')}
           </button>
         </div>
       </aside>

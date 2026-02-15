@@ -12,7 +12,7 @@ export const authService = {
   signup: async (payload: { name: string; email: string; password: string; role?: UserRole }) => {
     const existing = await userRepository.findByEmail(payload.email);
     if (existing) {
-      throw { status: 409, message: 'Email already in use' };
+      throw { status: 409, message: 'errors.emailInUse' };
     }
 
     let role = UserRole.DONOR;
@@ -51,16 +51,16 @@ export const authService = {
   login: async (payload: { email: string; password: string }) => {
     const user = await userRepository.findByEmail(payload.email);
     if (!user) {
-      throw { status: 401, message: 'Invalid credentials' };
+      throw { status: 401, message: 'errors.invalidCredentials' };
     }
 
     if (!user.emailVerified) {
-      throw { status: 403, message: 'Email not verified. Please verify OTP.' };
+      throw { status: 403, message: 'errors.emailNotVerified' };
     }
 
     const isValid = await bcrypt.compare(payload.password, user.password);
     if (!isValid) {
-      throw { status: 401, message: 'Invalid credentials' };
+      throw { status: 401, message: 'errors.invalidCredentials' };
     }
 
     const tokenId = uuidv4();
@@ -90,7 +90,7 @@ export const authService = {
   resetPassword: async (email: string, password: string) => {
     const user = await userRepository.findByEmail(email);
     if (!user) {
-      throw { status: 404, message: 'User not found' };
+      throw { status: 404, message: 'errors.userNotFound' };
     }
 
     const hashed = await bcrypt.hash(password, 12);
@@ -107,16 +107,16 @@ export const authService = {
     );
 
     if (!user || !user.emailVerificationOtpHash || !user.emailVerificationOtpExpires) {
-      throw { status: 400, message: 'Invalid verification request' };
+      throw { status: 400, message: 'errors.invalidVerificationRequest' };
     }
 
     if (user.emailVerificationOtpExpires.getTime() < Date.now()) {
-      throw { status: 400, message: 'OTP has expired' };
+      throw { status: 400, message: 'errors.otpExpired' };
     }
 
     const isValid = await bcrypt.compare(payload.otp, user.emailVerificationOtpHash);
     if (!isValid) {
-      throw { status: 400, message: 'Invalid OTP' };
+      throw { status: 400, message: 'errors.invalidOtp' };
     }
 
     user.emailVerified = true;
@@ -131,7 +131,7 @@ export const authService = {
     const user = await userRepository.findById(payload.userId);
 
     if (!user || !payload.tokenId || !user.refreshTokens.includes(payload.tokenId)) {
-      throw { status: 401, message: 'Invalid refresh token' };
+      throw { status: 401, message: 'errors.invalidRefreshToken' };
     }
 
     await userRepository.removeRefreshToken(user._id.toString(), payload.tokenId);

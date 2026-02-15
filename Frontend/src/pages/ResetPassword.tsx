@@ -21,11 +21,11 @@ const ResetPassword: React.FC = () => {
     setError(null);
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
+      setError(t('pages.auth.reset.validation.passwordLength'));
       return;
     }
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+      setError(t('pages.auth.reset.validation.passwordMatch'));
       return;
     }
 

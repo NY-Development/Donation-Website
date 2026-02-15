@@ -5,6 +5,7 @@
     "cancel": "ይቅር",
     "continue": "ቀጥል",
     "close": "ዝጋ",
+    "all": "ሁሉም",
     "loading": "በመጫን ላይ...",
     "save": "አስቀምጥ",
     "saving": "በማስቀመጥ ላይ...",
@@ -17,6 +18,15 @@
     "toggle": "EN/AM",
     "en": "EN",
     "am": "AM"
+  },
+  "status": {
+    "approved": "ተፈቅዷል",
+    "pending": "በግምገማ ላይ",
+    "rejected": "ተቀባይነት አልተሰጠውም",
+    "draft": "ንድፍ",
+    "closed": "ተዘግቷል",
+    "verifiedOrg": "የተረጋገጠ ድርጅት",
+    "urgent": "አስቸኳይ"
   },
   "navbar": {
     "secureVerification": "ደህንነቱ የተጠበቀ ማረጋገጫ",
@@ -73,6 +83,953 @@
     "loadingSubtitle": "ዳሽቦርድዎን በማዘጋጀት ላይ..."
   },
   "pages": {
+    "home": {
+      "onboardingTitle": "እንኳን ወደ ኢምፓክት በደህና መጡ",
+      "onboarding": [
+        {
+          "title": "ታመነ ጉዳዮችን ያግኙ",
+          "description": "ግልፅነት እና ተፅዕኖ የተረጋገጡ ዘመቻዎችን ያስሱ።"
+        },
+        {
+          "title": "የETB መጠን ይምረጡ",
+          "description": "ለእርስዎ ተስማሚ የልገሳ መጠን ይምረጡ።"
+        },
+        {
+          "title": "ልገሳዎን ያስገቡ",
+          "description": "መረጃዎን ያስገቡ እና በአንድ እርምጃ ያጠናቅቁ።"
+        },
+        {
+          "title": "ማስረጃ ያክሉ (አማራጭ)",
+          "description": "ደረሰኝ ወይም ማስረጃ በመጫን አዘጋጆች ልገሳን እንዲከታተሉ ያግዙ።"
+        }
+      ],
+      "back": "ተመለስ",
+      "next": "ቀጥል",
+      "getStarted": "ጀምር",
+      "trustedBy": "በ10k+ ደጋፊዎች የታመነ",
+      "heroTitle": "ዛሬ ተፅዕኖ ያስጀምሩ",
+      "heroSubtitle": "ከሚጠቅሙ ጉዳዮች ጋር አብረው የሚሰሩ ሺዎችን ይቀላቀሉ። 100% ልገሳዎ ወደ መሬት ቀጥታ ይደርሳል።",
+      "donateNow": "አሁን ለግስ",
+      "exploreCampaigns": "ዘመቻዎችን ያስሱ",
+      "totalRaised": "ጠቅላላ የተሰበሰበ",
+      "activeCampaigns": "ንቁ ዘመቻዎች",
+      "livesChanged": "የተሻሻሉ ህይወቶች",
+      "featuredTitle": "ተመራማሪ ዘመቻዎች",
+      "featuredSubtitle": "አሁን የሚያስፈልጋቸውን ጉዳዮች ይደግፉ።",
+      "viewAll": "ሁሉንም ዘመቻዎች ይመልከቱ",
+      "successTitle": "የስኬት ታሪኮች",
+      "successSubtitle": "ግባቸውን ያሟሉ እና ተፅዕኖ የሚያከብሩ ዘመቻዎች።",
+      "discoverMore": "ተጨማሪ ያግኙ",
+      "goalReached": "ግብ ተደርሷል",
+      "raised": "ተሰብስቧል",
+      "howTitle": "ኢምፓክት እንዴት ይሰራል",
+      "howSubtitle": "ግልፅ ልገሳ። ታይቶ የሚሰማ ተፅዕኖ። እርስዎን የሚጠቅሙትን ጉዳዮች ለመደገፍ እናደርጋለን።",
+      "howStep1Title": "1. ጉዳይ ያግኙ",
+      "howStep1Body": "ከታመነ ድርጅቶች የተረጋገጡ ዘመቻዎችን ያስሱ።",
+      "howStep2Title": "2. በደህንነት ይለግሱ",
+      "howStep2Body": "በጥቂት ጠቅታዎች ልገሳ ያድርጉ።",
+      "howStep3Title": "3. ዝማኔ ይቀበሉ",
+      "howStep3Body": "የልገሳዎ ተፅዕኖ እንዴት እንደሆነ በቀጥታ ይዩ።",
+      "communityTitle": "ማህበረሰባችንን ይቀላቀሉ",
+      "communitySubtitle": "አበረታች ታሪኮችና የተፅዕኖ ሪፖርቶችን በየሳምንቱ በኢሜልዎ ያግኙ።",
+      "emailPlaceholder": "ኢሜልዎን ያስገቡ",
+      "subscribe": "ይመዝገቡ",
+      "joinCount": "5,000+ ሰዎችን ይቀላቀሉ። ማንኛውንም ጊዜ ማስወገድ ይችላሉ።"
+    },
+    "explore": {
+      "title": "ዘመቻዎችን ያስሱ",
+      "subtitle": "ሁሉንም ንቁ፣ በግምገማ ላይ እና ተቀባይነት አልተሰጠውም ዘመቻዎች ይመልከቱ።",
+      "keywords": "ቁልፍ ቃላት",
+      "searchPlaceholder": "ፍለጋ አጽዳ...",
+      "categories": "ምድቦች",
+      "clear": "አጽዳ",
+      "urgency": "አስቸኳይነት",
+      "urgentOnly": "አስቸኳይ ብቻ",
+      "status": "ሁኔታ",
+      "raised": "ተሰብስቧል",
+      "campaignsFound": "ዘመቻዎች ተገኝተዋል",
+      "loadMore": "ተጨማሪ አሳይ",
+      "loading": "በመጫን ላይ...",
+      "campaignClosed": "ዘመቻ ተዘግቷል",
+      "campaignNotApproved": "ዘመቻ አልተፈቀደም",
+      "campaignClosedBody": "ይህ ዘመቻ ተዘግቷል እና ልገሳ አይቀበልም።",
+      "campaignNotApprovedBody": "ይህ ዘመቻ አልተፈቀደም። መድረኩ ለያልተፈቀዱ ዘመቻዎች ልገሳ ኃላፊነት አይወስድም።",
+      "continueAnyway": "ቢሆንም ቀጥል",
+      "donateNow": "አሁን ለግስ"
+    },
+    "campaignDetail": {
+      "home": "መነሻ",
+      "campaigns": "ዘመቻዎች",
+      "campaign": "ዘመቻ",
+      "loadingDetails": "የዘመቻ ዝርዝር በመጫን ላይ...",
+      "loadingStory": "ታሪክ በመጫን ላይ...",
+      "organizer": "አዘጋጅ",
+      "contact": "ያግኙ",
+      "contactDisabled": "ያግኙ",
+      "approved": "ተፈቅዷል",
+      "closed": "ተዘግቷል",
+      "rejected": "ተቀባይነት አልተሰጠውም",
+      "draft": "ንድፍ",
+      "pending": "በግምገማ ላይ",
+      "quote": "\"እያንዳንዱ ልገሳ ይህን ተልእኮ ወደ እውነት ያቀርባል።\"",
+      "everyBirr": "እያንዳንዱ ብር ይቆጠራል። ETB 5 ወይም ETB 500 ሲሆን ልገሳዎ ለሚበረታታ ወደፊት ትልቅ ተፅዕኖ ያሳድራል።",
+      "raisedOf": "ከETB {goal} ዓላማ ውስጥ ተሰብስቧል",
+      "donations": "ልገሳዎች",
+      "today": "ዛሬ",
+      "donateNow": "አሁን ለግስ",
+      "secureDonation": "ደህንነቱ የተጠበቀ ልገሳ",
+      "heroDonors": "ዋና ደጋፊዎች",
+      "anonymous": "ስም የለሽ",
+      "donor": "ደጋፊ",
+      "recentDonation": "አዲስ ልገሳ",
+      "warningClosed": "ይህ ዘመቻ ተዘግቷል እና አዲስ ልገሳ አይቀበልም።",
+      "warningNotApproved": "ይህ ዘመቻ አልተፈቀደም። መድረኩ ለያልተፈቀዱ ዘመቻዎች ልገሳ ኃላፊነት አይወስድም።",
+      "cancel": "ይቅር",
+      "continue": "ቢሆንም ቀጥል",
+      "locationFallback": "ዓለም አቀፍ"
+    },
+    "donate": {
+      "back": "ተመለስ",
+      "title": "ልገሳዎን ያጠናቅቁ",
+      "secure": "ደህንነቱ የተጠበቀ ልገሳ",
+      "noAccount": "መለያ ያለማይኖር ልገሳ ማድረግ ይችላሉ፣ ግን ተፅዕኖዎን ለመከታተል መግባት ያስፈልጋል።",
+      "closed": "ይህ ዘመቻ ተዘግቷል እና ልገሳ አይቀበልም።",
+      "notApprovedTitle": "ይህ ዘመቻ አልተፈቀደም።",
+      "notApprovedBody": "በራስዎ ኃላፊነት ይለግሱ። መድረኩ ለያልተፈቀዱ ዘመቻዎች ኃላፊነት አይወስድም።",
+      "step1": "መጠን ይምረጡ",
+      "step1Hint": "የተረጋገጠው የክፍያ መጠን ከእዚህ የመረጡት ጋር መመሳሰል አለበት።",
+      "otherAmount": "ሌላ መጠን",
+      "step2": "ማን ነው የሚያስገባ?",
+      "firstName": "ስም",
+      "lastName": "የአባት ስም",
+      "email": "ኢሜል (አማራጭ)",
+      "emailHint": "አማራጭ ነው፣ ግን ደረሰኝ ወይም ዝማኔ ለማግኘት ይረዳል።",
+      "step3": "የልገሳ ማስረጃ (አማራጭ)",
+      "uploadProof": "ደረሰኝ ወይም ማስረጃ ይጫኑ (አማራጭ)",
+      "preview": "ቅድሚያ እይታ",
+      "uploadHint": "ማስረጃ ማካተት ከፈለጉ ምስል ይጫኑ።",
+      "acknowledge": "ይህ ዘመቻ አልተፈቀደም እና በራሴ ኃላፊነት እለግሳለሁ።",
+      "processing": "በማስኬድ ላይ...",
+      "donateAmount": "ETB {amount} አሁን ይለግሱ",
+      "supporting": "የሚደግፉት",
+      "yourImpact": "ተፅዕኖዎ",
+      "impactBody": "የETB {amount} ልገሳዎ ይህን ጉዳይ በቀጥታ ይደግፋል።",
+      "donation": "ልገሳ",
+      "totalDue": "ጠቅላላ ክፍያ",
+      "receiptPreviewAlt": "የደረሰኝ ቅድሚያ እይታ"
+    },
+    "createCampaign": {
+      "checking": {
+        "title": "ማረጋገጫን በማረጋገጥ ላይ...",
+        "body": "የካምፔይን ቦታዎን እናዘጋጃለን።"
+      },
+      "draftPrompt": {
+        "title": "ረቂቅህን ትቀጥላለህ?",
+        "body": "ለዚህ ካምፔይን የተቀመጠ ረቂቅ አግኝተናል። ሊመልሱት ወይም አዲስ ሊጀምሩ ይችላሉ።",
+        "restore": "ረቂቅን መመለስ",
+        "startFresh": "አዲስ ጀምር"
+      },
+      "exitPrompt": {
+        "title": "የካምፔይን ማቀናበርን ትተው?",
+        "body": "እድገትዎን እንደ ረቂቅ ያስቀምጡ ወይም ይጥሉት።",
+        "save": "ረቂቅ አስቀምጥ እና ውጣ",
+        "discard": "ረቂቅን ጣል",
+        "keep": "ማስተካከልን ቀጥል"
+      },
+      "steps": {
+        "title": "ርዕስ",
+        "story": "ታሪክ",
+        "goal": "ግብ",
+        "media": "ሚዲያ"
+      },
+      "stepIndicator": "ደረጃ {step} ከ4",
+      "headings": {
+        "step1": "መሠረቱን እንጀምር",
+        "step2": "ታሪክህን ተናገር",
+        "step3": "የመሰብሰብ ግብህን አዘጋጅ",
+        "step4": "ሚዲያ እና መሸፈኛ ፎቶ"
+      },
+      "basics": {
+        "titleLabel": "ለካምፔይንህ ርዕስ ስጥ",
+        "titleHelp": "ሰዎች የመጀመሪያ የሚያዩት ይህ ነው። ግልጽ እና አጭር አድርገው ይጻፉ።",
+        "titlePlaceholder": "ምሳሌ፡ የስሚት ቤተሰብን ለመገንባት እገዛ",
+        "categoryLabel": "ምድብ ይምረጡ",
+        "categoryPlaceholder": "ምድብ ይምረጡ..."
+      },
+      "categories": {
+        "education": "ትምህርት",
+        "medical": "ሕክምና",
+        "environment": "አካባቢ",
+        "emergency": "አደጋ"
+      },
+      "story": {
+        "label": "ገንዘብ ለምን ትሰብስባለህ?",
+        "help": "ስለ ጉዳዩ ዝርዝር በመጋራት ከሰዎች ጋር ይገናኙ።",
+        "placeholder": "ሰላም፣ ስሜ [ስም] ነው እና ገንዘብ ለ... እሰብስባለሁ"
+      },
+      "goal": {
+        "label": "ምን ያህል መሰብሰብ ትፈልጋለህ?",
+        "payoutLabel": "የክፍያ መለያ ቁጥር (አማራጭ)",
+        "payoutPlaceholder": "1000xxxxxxxxx",
+        "payoutHelp": "ካስፈለገ የክፍያ መለያ ቁጥር ያክሉ።",
+        "deadlineLabel": "የካምፔይን መጨረሻ ቀን (አማራጭ)",
+        "deadlineHelp": "ከተዘጋጀ በዚህ ቀን ራሱን ይዘጋል።"
+      },
+      "funding": {
+        "title": "የገንዘብ አሰባሰብ አይነት",
+        "keepTitle": "የሰበሰብከውን ተይ",
+        "keepBody": "ግብ ባትደርስም ሁሉንም ለጋሾች ትይዛለህ።",
+        "allTitle": "ሁሉ ወይም ምንም",
+        "allBody": "ግቡን ካሳካህ ብቻ ገንዘብ ትቀበላለህ።"
+      },
+      "media": {
+        "label": "የካምፔይን መሸፈኛ ፎቶ",
+        "uploadTitle": "መሸፈኛ ምስል ጫን",
+        "uploadHelp": "እንመክራለን፡ 1200 x 675px - JPG, PNG, GIF",
+        "urgentLabel": "ይህን ካምፔይን እንደ አስቸኳይ ምልክት አድርግ"
+      },
+      "actions": {
+        "back": "ወደ ኋላ",
+        "cancel": "ሰርዝ",
+        "continue": "ቀጥል",
+        "launch": "ካምፔይን አስጀምር"
+      },
+      "tips": {
+        "title": "ለስኬት ምክሮች",
+        "items": [
+          {
+            "title": "በዝርዝር ይግለጹ።",
+            "body": "ተለይተው የተጠቀሱ ርዕሶች የታማኝነት ያበረታታሉ።"
+          },
+          {
+            "title": "ታሪክህን አጋራ።",
+            "body": "ሰዎች ለሰዎች ይሰጣሉ እንጂ ለምክንያቶች ብቻ አይደለም።"
+          }
+        ]
+      },
+      "validation": {
+        "title": "የካምፔይን ርዕስ ያስፈልጋል።",
+        "category": "የካምፔይን ምድብ ይምረጡ።",
+        "story": "ተጨማሪ ዝርዝር ታሪክ ይናገሩ።",
+        "goal": "የግብ መጠን ከ0 በላይ መሆን አለበት።",
+        "account": "የመለያ ቁጥር ቢያንስ 6 ቁጥሮች መሆን አለበት።",
+        "step1": "ለመቀጠል ርዕስ ያስገቡ እና ምድብ ይምረጡ።",
+        "step2": "ከመቀጠል በፊት ትልቅ ታሪክ ያቅርቡ።",
+        "step3": "ትክክለኛ የመሰብሰብ ግብ ያስገቡ።",
+        "submitRequired": "ለመላክ ከመፈለግዎ በፊት አስፈላጊ መረጃዎችን ያሟሉ።",
+        "mediaRequired": "እባክዎን ቢያንስ አንድ የካምፔይን ምስል ያስገቡ።"
+      },
+      "errors": {
+        "verifyFailed": "የአዘጋጅ ማረጋገጫን ማረጋገጥ አልተሳካም። እባክዎ ደግመው ይሞክሩ።",
+        "createFailed": "ካምፔይኑን መፍጠር አልተሳካም። እባክዎ ደግመው ይሞክሩ።",
+        "readImage": "ምስሉን ማንበብ አልተሳካም።",
+        "submitFailed": "ካምፔይንዎን ማስገባት አልተሳካም። እባክዎ ደግመው ይሞክሩ።"
+      }
+    },
+    "verificationIntro": {
+      "loadingTitle": "ማረጋገጫ በማዘጋጀት ላይ...",
+      "loadingSubtitle": "መረጃዎን እስከምንጫን ይጠብቁ።",
+      "error": "የማረጋገጫ ሁኔታ ማግኘት አልተቻለም። እንደገና ይሞክሩ።",
+      "kicker": "የመታወቂያ ማረጋገጫ",
+      "title": "ዘመቻዎችዎን ደህንነት እና ግልፅነት ያሳስቡ።",
+      "subtitle": "ከታማኝ አካባቢ ለመጠበቅ እና ማጭበርበር ለመከላከል ፈጣን የመታወቂያ ማረጋገጫ እንፈልጋለን።",
+      "step1Title": "መታወቂያ ስካን",
+      "step1Body": "የመንግስት መታወቂያዎን ፎቶ ያክሉ (ፓስፖርት፣ DL ወይም መታወቂያ).",
+      "step2Title": "ሴልፊ ማረጋገጫ",
+      "step2Body": "እርስዎ መሆኑን ለማረጋገጥ ፈጣን ፊት ስካን። ምንም ምዝግብ አይቀመጥም።",
+      "step3Title": "ፈጣን ውጤት",
+      "step3Body": "ማረጋገጫ ብዙውን ጊዜ ከ24 ሰዓት በታች ይወስዳል።",
+      "secure": "የተመሰጠ እና ደህንነቱ የተጠበቀ",
+      "gdpr": "GDPR ተከታታይ",
+      "readyTitle": "ለመጀመር ዝግጁ ነዎት?",
+      "readyBody": "የተረጋገጠ መንግስት መታወቂያዎን ያዘጋጁ እና በብርሃን ቦታ ይቆዩ።",
+      "start": "ማረጋገጫ ጀምር",
+      "learnMore": "ሂደታችንን ተጨማሪ ይመልከቱ",
+      "privacyNote": "ውሂብዎ ከመጨረሻ እስከ መጨረሻ የተመሰጠ ነው።"
+    },
+    "verificationUpload": {
+      "loadingTitle": "ማረጋገጫ በመጫን ላይ...",
+      "loadingSubtitle": "ቅጽዎን እስከምንዘጋጅ ይጠብቁ።",
+      "error": "የማረጋገጫ ሁኔታ ማግኘት አልተቻለም። እንደገና ይሞክሩ።",
+      "step1": "የዘመቻ ዝርዝሮች",
+      "step2": "የመታወቂያ ማረጋገጫ",
+      "step3": "ዘመቻ አስጀምር",
+      "kicker": "የመታወቂያ ማረጋገጫ",
+      "title": "መታወቂያዎን ያረጋግጡ",
+      "subtitle": "የመንግስት መታወቂያዎን ግልጽ ፎቶ ያክሉ። ይህ ማህበረሰባችንን ይጠብቃል።",
+      "docType": "የሰነድ አይነት ይምረጡ",
+      "nationalId": "ብሔራዊ መታወቂያ",
+      "passport": "ፓስፖርት",
+      "driver": "የመንጃ ፈቃድ",
+      "frontLabel": "መታወቂያ ፊት",
+      "backLabel": "መታወቂያ ጀርባ",
+      "uploadTitle": "ጫን ወይም ይጎትቱ",
+      "uploadHint": "PNG, JPG ወይም PDF እስከ 10MB",
+      "back": "ተመለስ",
+      "continue": "ቀጥል",
+      "tipsTitle": "የማስገባት ምክሮች",
+      "tip1Title": "ጥሩ ብርሃን",
+      "tip1Body": "መለኪያው ግልጽ እንዲታይ ያረጋግጡ።",
+      "tip2Title": "የተሟሉ ማዕዘኖች",
+      "tip2Body": "የሰነዱ አራቱም ማዕዘኖች በቅርጽ ውስጥ እንዲታዩ ያረጋግጡ።",
+      "tip3Title": "ግልጽ እና ብሩህ",
+      "tip3Body": "መረጃው እንዲነበብ ያረጋግጡ።",
+      "dataNote": "ውሂብዎ የተመሰጠ ነው እና ለማረጋገጫ ብቻ ይጠቀማል።",
+      "bothRequired": "የመታወቂያዎን ፊትና ጀርባ እባክዎ ያክሉ።"
+    },
+    "verificationSelfie": {
+      "error": "ማረጋገጫ መላክ አልተቻለም።",
+      "missing": "መታወቂያ ፊት፣ ጀርባ እና ቀጥታ ሴልፊ ያክሉ።",
+      "cameraUnsupported": "ካሜራ ማግኘት በዚህ መሳሪያ አይቻልም።",
+      "cameraHttps": "ካሜራ መጠቀም HTTPS ወይም localhost ያስፈልጋል።",
+      "cameraDenied": "ካሜራን ማግኘት አልተቻለም።",
+      "kicker": "የመታወቂያ ማረጋገጫ",
+      "title": "ቀጥታ ሴልፊ ማረጋገጫ",
+      "step": "ደረጃ 3 ከ 3",
+      "instruction": "ፊትዎን በመስመሩ ውስጥ ያድርጉ እና ቀጥታ ካሜራን ይመልከቱ።",
+      "ready": "ለስካን ዝግጁ",
+      "startCamera": "ካሜራ ጀምር",
+      "retake": "ሴልፊ ደግመው ያንሱ",
+      "capture": "ሴልፊ ያንሱ",
+      "cancel": "ይቅር",
+      "altMethod": "ሌላ መንገድ ይጠቀሙ",
+      "tip1Title": "ጥሩ ብርሃን",
+      "tip1Body": "ፊትዎ ግልጽ እንዲታይ ያረጋግጡ።",
+      "tip2Title": "ተፈጥሯዊ ቅርጽ",
+      "tip2Body": "መነጽሮችን ወይም ኮፍያ አስወግዱ።",
+      "tip3Title": "መሃል ይቆዩ",
+      "tip3Body": "ጭንቅላትዎን በደረጃ ውስጥ ያስቀምጡ።",
+      "submit": "ማረጋገጫ ላክ",
+      "submitting": "በመላክ ላይ...",
+      "back": "ተመለስ"
+    },
+    "verificationPending": {
+      "error": "የማረጋገጫ ሁኔታ ማግኘት አልተቻለም።",
+      "approvedTitle": "ማረጋገጫ ተፈቅዷል",
+      "pendingTitle": "ማረጋገጫ በመጠባበቅ ላይ",
+      "approvedBody": "የአዘጋጅ መለያዎ ተረጋግጧል። ዘመቻዎን መጀመር ይችላሉ።",
+      "pendingBody": "ሰነዶችዎን እየገምገምን ነው።",
+      "returning": "ወደ ዳሽቦርድ በ {seconds}s ትመለሳለህ።",
+      "launch": "ዘመቻ ጀምር",
+      "back": "ወደ ዳሽቦርድ ተመለስ",
+      "viewSubmission": "ማስገባት ይመልከቱ",
+      "needHelp": "እገዛ ይፈልጋሉ?",
+      "contact": "የእምነት እና ደህንነት ቡድንን ያግኙ"
+    },
+    "organizerVerification": {
+      "loadingTitle": "የማረጋገጫ ሁኔታ በመጫን ላይ...",
+      "loadingSubtitle": "እባክዎ ይጠብቁ።",
+      "verifiedTitle": "ተረጋግጠዋል",
+      "verifiedBody": "የአዘጋጅ መለያዎ ተረጋግጧል።",
+      "launching": "በማስጀመር ላይ...",
+      "startCampaign": "ዘመቻ ጀምር",
+      "kicker": "የአዘጋጅ ማረጋገጫ",
+      "title": "መታወቂያዎን ያረጋግጡ",
+      "subtitle": "ደጋፊዎችን ለመጠበቅ መንግስታዊ መታወቂያ እና ቀጥታ ሴልፊ ያስፈልጋል።",
+      "mobileHint": "ለቀጥታ ፎቶ የፊት ካሜራ ያለው ሞባይል ይጠቀሙ።",
+      "pendingTitle": "ማረጋገጫ በግምገማ ላይ",
+      "pendingBody": "ሰነዶችዎን ተቀብለናል።",
+      "rejectedTitle": "ማረጋገጫ ተቀባይነት አልተሰጠውም",
+      "rejectedBody": "ግልጽ ፎቶዎችን በድጋሚ ያስገቡ።",
+      "docType": "የሰነድ አይነት",
+      "nationalId": "ብሔራዊ መታወቂያ",
+      "driver": "የመንጃ ፈቃድ",
+      "passport": "ፓስፖርት",
+      "passportLabel": "ፓስፖርት",
+      "idFront": "መታወቂያ ፊት",
+      "idBack": "መታወቂያ ጀርባ",
+      "livePhoto": "ቀጥታ ፎቶ",
+      "cameraPreview": "የካሜራ ቅድሚያ እይታ እዚህ ይታያል።",
+      "retake": "ሴልፊ ደግመው ያንሱ",
+      "startCamera": "ካሜራ ጀምር",
+      "capture": "ሴልፊ ያንሱ",
+      "cancel": "ይቅር",
+      "photoHint": "ፊትዎ ግልጽ እንዲታይ ጥሩ ብርሃን ይጠቀሙ።",
+      "submit": "ማረጋገጫ ላክ",
+      "submitting": "በመላክ ላይ...",
+      "backDashboard": "ወደ ዳሽቦርድ ተመለስ",
+      "statusError": "የማረጋገጫ ሁኔታ ማግኘት አልተቻለም።",
+      "submitError": "ማረጋገጫ መላክ አልተቻለም።",
+      "missing": "መታወቂያ ፊት፣ ጀርባ እና ቀጥታ ፎቶ ያክሉ።",
+      "missingPassport": "ፓስፖርት እና ቀጥታ ፎቶ ያክሉ።"
+    },
+    "helpCenter": {
+      "kicker": "የእገዛ ማዕከል",
+      "title": "እንዴት እንረዳዎት?",
+      "subtitle": "ስለ ልገሳ፣ ዘመቻ ማስኬድ፣ መለያ መግቢያ፣ ማረጋገጫ እና ደህንነት ፈጣን መልሶችን ያግኙ። የሚፈልጉትን ካላገኙ በማንኛውም ጊዜ ያግኙን።",
+      "search": {
+        "label": "የእገዛ ማዕከል ይፈልጉ",
+        "placeholder": "ሞክር፡ ደረሰኞች፣ ማረጋገጫ፣ መጨረሻ ቀን፣ ልገሳዎች",
+        "button": "ፈልግ",
+        "results": "የፍለጋ ውጤቶች",
+        "clear": "አጽዳ",
+        "empty": "ምንም ውጤት አልተገኘም። የተለያዩ ቁልፍ ቃላት ይሞክሩ ወይም {email} ላይ ያግኙን።"
+      },
+      "topics": {
+        "donations": "ልገሳዎች",
+        "receipts": "ደረሰኞች",
+        "verification": "ማረጋገጫ",
+        "campaignTips": "የዘመቻ ምክሮች",
+        "security": "ደህንነት",
+        "account": "መለያ"
+      },
+      "cards": {
+        "account": {
+          "title": "መለያ እና መግቢያ",
+          "body": "ፕሮፋይል፣ የይለፍ ቃል፣ ኢሜል ለውጦች እና መግቢያ እገዛ።"
+        },
+        "donations": {
+          "title": "የልገሳ ድጋፍ",
+          "body": "የክፍያ መንገዶች፣ ደረሰኞች፣ መመለሻ እና ክፍያ መቋረጥ።"
+        },
+        "campaigns": {
+          "title": "የዘመቻ አስተዳደር",
+          "body": "ፍጠር፣ አርም፣ አረጋግጥ እና ዘመን አድርግ።"
+        },
+        "safety": {
+          "title": "ደህንነት እና እምነት",
+          "body": "ችግኝ ሪፖርት፣ ማጭበርበር መከላከል እና የማህበረሰብ ደህንነት።"
+        }
+      },
+      "popularGuides": "ታዋቂ መመሪያዎች",
+      "faqsTitle": "ብዙ ጊዜ የሚጠየቁ ጥያቄዎች",
+      "sidebar": {
+        "personalHelpTitle": "ግል እገዛ ይፈልጋሉ?",
+        "personalHelpBody": "የድጋፍ ቡድናችን 24/7 ለመለያ መግቢያ፣ ክፍያዎች እና ደህንነት ጉዳዮች እዚህ ነው።",
+        "quickActions": "ፈጣን እርምጃዎች",
+        "reportIssue": "ችግኝ ሪፖርት ያድርጉ",
+        "identityChecking": "መታወቂያ በማረጋገጥ ላይ...",
+        "identityStatus": "የመታወቂያ ሁኔታ አረጋግጥ",
+        "securityPrivacy": "ደህንነት እና ግላዊነት",
+        "donationProtection": "የልገሳ ጥበቃ",
+        "safetyTitle": "የደህንነት ዝርዝር",
+        "safetyItems": [
+          "ግልጽ ዝማኔዎችና የተረጋገጡ አዘጋጆች ያላቸውን ዘመቻዎች ብቻ ይደግፉ።",
+          "የመግቢያ ኮዶችዎን ወይም የክፍያ ዝርዝሮችን በፍጹም አትካፍሉ።",
+          "ጥርጣሬ ያለውን እንቅስቃሴ ወዲያውኑ ለእምነት ቡድናችን ያሳውቁ።"
+        ]
+      },
+      "modal": {
+        "guideLabel": "መመሪያ",
+        "close": "ዝጋ"
+      },
+      "identity": {
+        "title": "የመታወቂያ ሁኔታ",
+        "body": [
+          "ብሔራዊ መታወቂያዎ ለማረጋገጫ ተመዝግቧል።",
+          "ሰነዶችዎን ማዘመን ከፈለጉ ወደ የአዘጋጅ ማረጋገጫ ገጽ ይሂዱ።"
+        ],
+        "statusVerified": "ተረጋግጧል",
+        "statusPending": "በግምገማ ላይ",
+        "statusSubmitted": "ተላክ",
+        "meta": {
+          "name": "ስም",
+          "fallbackName": "አዘጋጅ",
+          "nationalId": "ብሔራዊ መታወቂያ",
+          "onFile": "በመዝገብ ላይ",
+          "status": "ሁኔታ",
+          "submitted": "ተላክ",
+          "na": "የለም"
+        },
+        "error": [
+          "አሁን የማረጋገጫ ሁኔታዎን ማግኘት አልተቻለም።",
+          "በትንሽ ጊዜ ውስጥ ደግመው ይሞክሩ ወይም ችግኝ ቢቀጥል ድጋፍ ያግኙ።"
+        ]
+      },
+      "categories": {
+        "account": "መለያ",
+        "donations": "ልገሳዎች",
+        "campaigns": "ዘመቻዎች",
+        "safety": "ደህንነት",
+        "verification": "ማረጋገጫ"
+      },
+      "tags": {
+        "donations": "ልገሳ",
+        "guest": "እንግዳ",
+        "receipts": "ደረሰኝ",
+        "dashboard": "ዳሽቦርድ",
+        "verification": "ማረጋገጫ",
+        "organizer": "አዘጋጅ",
+        "nationalId": "ብሔራዊ መታወቂያ",
+        "campaigns": "ዘመቻ",
+        "draft": "ረቂቅ",
+        "deadline": "መጨረሻ ቀን",
+        "updates": "ዝማኔዎች",
+        "goalReached": "ግብ ተደርሷል",
+        "security": "ደህንነት",
+        "privacy": "ግላዊነት",
+        "trust": "እምነት",
+        "safety": "ደህንነት",
+        "support": "ድጋፍ",
+        "account": "መለያ",
+        "login": "መግቢያ"
+      },
+      "articles": {
+        "donateGuest": {
+          "title": "መግባት ሳይፈልግ እንዴት ልገሳ እደርጋለሁ",
+          "summary": "እንግዳ እንኳን ሆነው በደህንነት ልገሳ ማድረግ ይችላሉ።",
+          "content": [
+            "ዘመቻ ክፈት እና አሁን ለግስ ይጫኑ።",
+            "የETB መጠን ይምረጡ እና ስምዎን ያስገቡ። ኢሜል አማራጭ ነው ግን ለደረሰኞችና ዝማኔዎች ይረዳል።",
+            "ልገሳውን ያስገቡ። ከፈለጉ የደረሰኝ ምስል እንደ ማስረጃ ያክሉ።",
+            "በኋላ መለያ በመፍጠር ተፅዕኖዎን ከዳሽቦርድ ይከታተሉ።"
+          ]
+        },
+        "donationReceipts": {
+          "title": "ልገሳዎችን እና ደረሰኞችን እንዴት እቆጣጠራለሁ",
+          "summary": "በመግባት በኋላ ጠቅላላ መጠንና ታሪክ ከዳሽቦርድ ይመልከቱ።",
+          "content": [
+            "ይግቡ እና ዳሽቦርድዎን በመክፈት ጠቅላላ የልገሳ መጠንና እንቅስቃሴ ይመልከቱ።",
+            "ደረሰኞች በተሳካ ልገሳ ላይ ሲኖር ይጋጠማሉ።",
+            "ደረሰኝ ካልተገኘ ቀጣይ ጊዜ ልገሳዎን ከማስረጃ ምስል ጋር ያስገቡ።"
+          ]
+        },
+        "organizerVerification": {
+          "title": "የአዘጋጅ መለያ ማረጋገጫ እንዴት እደርሳለሁ",
+          "summary": "ማረጋገጫ ደጋፊዎችን ይጠብቃል እና ዘመቻዎችን ያበረታታል።",
+          "content": [
+            "ከዳሽቦርድዎ ወደ የአዘጋጅ ማረጋገጫ ይሂዱ።",
+            "ብሔራዊ መታወቂያዎን (ፊትና ጀርባ) እና ግልጽ ቀጥታ ፎቶ ያክሉ።",
+            "ቅጹን ላኩ እና ማረጋገጫ እስከሚጠበቅ ይጠብቁ። ሁኔታውን በመለያዎ ውስጥ ያያሉ።"
+          ]
+        },
+        "campaignDraft": {
+          "title": "የዘመቻ ረቂቅ እንዴት እፈጥራለሁ",
+          "summary": "ዘመቻ ጀምር እና እድገትህን እየቀመጥክ ቀጥል።",
+          "content": [
+            "ዘመቻ ጀምር ይክፈቱ እና ርዕስ፣ ታሪክ እና ግብ ያስገቡ።",
+            "የመጨረሻ ቀን ቢፈልጉ ያክሉ እንዲሁም ዘመቻው ራሱን ይዘጋል።",
+            "የሚዲያ ፋይሎችን በመጫን ዘመቻዎን የታመነ እና የሚሳተፍ አድርጉ።",
+            "ዝግጁ ሲሆኑ አስጀምሩ ወይም እስከሚረካችሁ ድረስ ቀጥሉ።"
+          ]
+        },
+        "campaignUpdates": {
+          "title": "የዘመቻ ታሪክን እንዴት አዘምናለሁ",
+          "summary": "ከግልፅ ዝማኔዎች ጋር ደጋፊዎችን አዘምኑ።",
+          "content": [
+            "ከዳሽቦርድ ዘመቻዎን በመክፈት ታሪኩን ወይም ግቡን እንዳስፈለገ ያስተካክሉ።",
+            "እድገት ለማሳየት እና እምነት ለማበረታታት አዲስ ሚዲያ ያክሉ።",
+            "ለመቋረጥ ወይም ለመሰረዝ ከዳሽቦርድ ጥያቄ ያቅርቡ።"
+          ]
+        },
+        "campaignClosure": {
+          "title": "ዘመቻ መቼ ይዘጋል?",
+          "summary": "ዘመቻ ጊዜ ሲያልፍ ወይም ግብ ሲደርስ ይዘጋል።",
+          "content": [
+            "መጨረሻ ቀን ካዘጋጁ በዚያ ቀን በራሱ ይዘጋል።",
+            "ግቡ በፊት ካሳካ ዘመቻው የስኬት ታሪክ ይሆናል እና ይዘጋል።",
+            "የተዘጉ ዘመቻዎች አዲስ ልገሳ አይቀበሉም።"
+          ]
+        },
+        "securityBasics": {
+          "title": "ልገሳዎችን እንዴት እንጠብቃለን",
+          "summary": "የተጠበቁ ሴሽኖች፣ የተጠበቁ መንገዶች እና ቁጥጥር እንጠቀማለን።",
+          "content": [
+            "ማረጋገጫ የግል መረጃ እና የልገሳ ታሪክ ይጠብቃል።",
+            "የአዘጋጅ ማረጋገጫ የማጭበርበር እድል ይቀንሳል።",
+            "እንቅስቃሴ እንከታተላለን እና ለጥርጣሬ ጉዳዮች ድጋፍ እናቀርባለን።"
+          ]
+        },
+        "reportIssue": {
+          "title": "ጥርጣሬ ያለውን እንቅስቃሴ እንዴት እሪፖርት አደርጋለሁ",
+          "summary": "ዝርዝር ጋር ድጋፍን ያግኙ እንዲያግዙ።",
+          "content": [
+            "በየእገዛ ማዕከሉ ውስጥ ያለውን የችግኝ ሪፖርት እርምጃ ይጠቀሙ።",
+            "ዘመቻውን እና ያለዎትን ማስረጃ ይግለጹ።",
+            "ቡድናችን ጉዳዩን ይገምገማል እና ይመልሳል።"
+          ]
+        },
+        "accountAccess": {
+          "title": "መለያ መግቢያ እና መመለሻ",
+          "summary": "በደህንነት ይግቡ እና ካስፈለገ መመለስ ያድርጉ።",
+          "content": [
+            "በኢሜል እና በይለፍ ቃል በመጠቀም የመግቢያ ገጹን ይጠቀሙ።",
+            "የይለፍ ቃልዎን ከረሱ የይለፍ ቃል ረስቻለሁ የሚለውን አገናኝ ይጠቀሙ።",
+            "መግባት ካልቻሉ ድጋፍን ያግኙ።"
+          ]
+        }
+      },
+      "faqs": [
+        {
+          "q": "ኢሜልን በOTP እንዴት እረጋግጣለሁ?",
+          "a": "ከምዝገባ በኋላ 6-አሃዝ ያለው OTP በኢሜል እንልካለን። አካውንትዎን ለማንቃት በማረጋገጫ ገጽ ያስገቡት።"
+        },
+        {
+          "q": "መለያ ሳይኖረኝ ልገሳ ማድረግ እችላለሁ?",
+          "a": "አዎን። እንግዳ ሆነው ልገሳ ማጠናቀቅ ይችላሉ። በኋላ መለያ በመፍጠር ደረሰኞችንና ተፅዕኖን ይከታተሉ።"
+        },
+        {
+          "q": "ጠቅላላ ልገሳዬን የት እመለከታለሁ?",
+          "a": "ይግቡ እና ዳሽቦርድዎን በመክፈት ጠቅላላ ልገሳን እና የልገሳ ዝርዝር ይመልከቱ።"
+        },
+        {
+          "q": "ዘመቻ ግቡን ሲደርስ ምን ይሆናል?",
+          "a": "ዘመቻው የስኬት ታሪክ ይሆናል እና ለአዲስ ልገሳ በራሱ ይዘጋል።"
+        },
+        {
+          "q": "የዘመቻ መጨረሻ ቀን ሲያልፍ ምን ይሆናል?",
+          "a": "ዘመቻው በራሱ ይዘጋል እና አዲስ ልገሳ አይቀበልም።"
+        },
+        {
+          "q": "ችግኝን እንዴት እሪፖርት አደርጋለሁ?",
+          "a": "በየእገዛ ማዕከሉ ውስጥ ያለውን የችግኝ ሪፖርት እርምጃ በመጠቀም ወደ ድጋፍ ኢሜል ይላኩ።"
+        }
+      ]
+    },
+    "admin": {
+      "layout": {
+        "brandName": "ImpactGive",
+        "toggleNav": "የአስተዳደር አሰሳ ቀይር",
+        "closeNav": "የአስተዳደር አሰሳ ዝጋ"
+      },
+      "nav": {
+        "dashboard": "ዳሽቦርድ",
+        "campaigns": "ዘመቻዎች",
+        "users": "ተጠቃሚዎች",
+        "reports": "ሪፖርቶች",
+        "settings": "ቅንብሮች"
+      },
+      "actions": {
+        "logout": "ውጣ"
+      },
+      "breadcrumb": {
+        "admin": "አስተዳደር"
+      },
+      "overview": {
+        "searchPlaceholder": "ዘመቻዎችን፣ ደጋፊዎችን ወይም መታወቂያ ይፈልጉ...",
+        "newCampaign": "አዲስ ዘመቻ",
+        "welcome": "እንኳን ደህና ተመለሱ",
+        "subtitle": "የቅርብ ጊዜ አፈጻጸም አጭር እይታ ነው።",
+        "cards": {
+          "totalFunds": "ጠቅላላ የተሰበሰበ ገንዘብ",
+          "approvedCampaigns": "የተፈቀዱ ዘመቻዎች",
+          "totalDonors": "ጠቅላላ ደጋፊዎች",
+          "registeredUsers": "የተመዘገቡ ተጠቃሚዎች"
+        },
+        "trends": {
+          "title": "የልገሳ አዝማሚያ",
+          "week": "ሳ",
+          "month": "ወ",
+          "year": "ዓ",
+          "empty": "የአዝማሚያ መረጃ የለም"
+        },
+        "topCampaigns": "ከፍተኛ ዘመቻዎች",
+        "noCampaigns": "እስካሁን ዘመቻ የለም።"
+      },
+      "campaigns": {
+        "breadcrumb": "የዘመቻ እይታ እና ማስተካከል",
+        "title": "የማስተካከያ ተራ",
+        "export": "CSV አውጣ",
+        "deleteAll": "ሁሉንም ሰርዝ",
+        "deleting": "በመሰረዝ ላይ...",
+        "syncing": "በማመሳሰል ላይ...",
+        "syncData": "ውሂብ አመሳስል",
+        "refresh": "አድስ",
+        "searchPlaceholder": "ዘመቻዎችን ወይም አዘጋጆችን ይፈልጉ...",
+        "viewing": "{count} ዘመቻዎች በመመልከት ላይ",
+        "table": {
+          "campaign": "ዘመቻ",
+          "category": "ምድብ",
+          "goal": "ግብ",
+          "status": "ሁኔታ",
+          "actions": "እርምጃዎች"
+        },
+        "actions": {
+          "approve": "አጽድቅ",
+          "reject": "አልተቀበልም",
+          "delete": "ሰርዝ"
+        },
+        "status": {
+          "paused": "ተቋርጧል",
+          "pendingVerification": "ማረጋገጫ በመጠባበቅ ላይ"
+        },
+        "confirm": {
+          "deleteOne": "ይህን ዘመቻ እና ሁሉንም ልገሳዎች ማጥፋት ይፈልጋሉ? ይህ ሊመለስ አይችልም።",
+          "deleteAll": "ሁሉንም ዘመቻዎችና ልገሳዎች ማጥፋት ይፈልጋሉ? ይህ ሊመለስ አይችልም።"
+        },
+        "prompt": {
+          "rejectReason": "ለመመለስ ምክንያት (አማራጭ):"
+        },
+        "empty": "ለዚህ ማጣሪያ የሚመሩ ዘመቻዎች የሉም።",
+        "requests": {
+          "title": "የዘመቻ እርምጃ ጥያቄዎች",
+          "subtitle": "ከአዘጋጆች የመቋረጥ ወይም የማጥፋት ጥያቄዎች",
+          "campaignLabel": "ዘመቻ:",
+          "campaignFallback": "ዘመቻ",
+          "userFallback": "ተጠቃሚ",
+          "requestedBy": "በ {name} ተጠይቋል · {date}",
+          "empty": "በመጠባበቅ ያሉ ጥያቄዎች የሉም።"
+        },
+        "requestActions": {
+          "pause": "ቁጥባ",
+          "delete": "ሰርዝ"
+        }
+      },
+      "reports": {
+        "title": "ሪፖርቶች እና አቤቱታዎች",
+        "subtitle": "የአዘጋጅ ማረጋገጫ ማስገባቶችን ይገምግሙ እና የእርምጃ ውሳኔዎችን ይፈቱ።",
+        "refresh": "አድስ",
+        "tag": "የማረጋገጫ ግምገማ",
+        "submitted": "ተላክ {date}።",
+        "recently": "በቅርቡ",
+        "viewIdFront": "የመታወቂያ ፊት ይመልከቱ",
+        "viewIdBack": "የመታወቂያ ጀርባ ይመልከቱ",
+        "viewLivePhoto": "ቀጥታ ፎቶ ይመልከቱ",
+        "reject": "አልተቀበልም",
+        "approve": "አጽድቅ",
+        "empty": "በመጠባበቅ ያሉ ሪፖርቶች ወይም የማረጋገጫ ጥያቄዎች የሉም።",
+        "rejectReason": "በቂ የማረጋገጫ ዝርዝር የለም።"
+      },
+      "users": {
+        "title": "የተጠቃሚ አስተዳደር",
+        "showing": "{shown} ከ {total} ተጠቃሚዎች በመመልከት ላይ",
+        "loadError": "ተጠቃሚዎችን መጫን አልተቻለም። እባክዎ ደግመው ይሞክሩ።",
+        "stats": {
+          "totalDonors": "ጠቅላላ ደጋፊዎች",
+          "organizers": "አዘጋጆች",
+          "pending": "ማረጋገጫ በመጠባበቅ ላይ",
+          "admins": "አስተዳዳሪዎች"
+        },
+        "searchPlaceholder": "በስም፣ ኢሜል ወይም መታወቂያ ይፈልጉ...",
+        "tabs": {
+          "all": "ሁሉ",
+          "approved": "ተፈቅዷል",
+          "pending": "በግምገማ ላይ"
+        },
+        "roles": {
+          "all": "ሁሉም ሚናዎች",
+          "donor": "ደጋፊዎች",
+          "organizer": "አዘጋጆች",
+          "admin": "አስተዳዳሪዎች"
+        },
+        "verification": {
+          "pending": "በግምገማ ላይ",
+          "approved": "ተፈቅዷል",
+          "rejected": "ተቀባይነት አልተሰጠውም"
+        },
+        "table": {
+          "user": "ተጠቃሚ",
+          "role": "ሚና",
+          "verification": "ማረጋገጫ",
+          "joined": "ተቀላቀለ",
+          "actions": "እርምጃዎች"
+        },
+        "actions": {
+          "delete": "ሰርዝ"
+        },
+        "deleting": "በመሰረዝ ላይ...",
+        "deleteAll": "ሁሉንም ተጠቃሚዎች ሰርዝ",
+        "empty": "ተጠቃሚዎች አልተገኙም።",
+        "confirm": {
+          "deleteOne": "ይህን ተጠቃሚ እና ተያያዥ ውሂብ ማጥፋት ይፈልጋሉ? ይህ ሊመለስ አይችልም።",
+          "deleteAll": "ከአስተዳዳሪ ውጪ ሁሉንም ተጠቃሚዎች እና ተያያዥ ውሂብ ማጥፋት ይፈልጋሉ? ይህ ሊመለስ አይችልም።"
+        }
+      },
+      "settings": {
+        "loading": "ቅንብሮችን በመጫን ላይ...",
+        "title": "የስርዓት ቅንብሮች",
+        "breadcrumb": {
+          "admin": "የአስተዳደር ዳሽቦርድ",
+          "settings": "ቅንብሮች"
+        },
+        "sections": {
+          "general": "አጠቃላይ ቅንብር",
+          "payments": "የክፍያ ገበያዎች እና ክፍያዎች",
+          "security": "ደህንነት እና ተገዢነት",
+          "notifications": "ራስ-ሰር ማስታወቂያዎች"
+        },
+        "labels": {
+          "platformName": "የመድረክ ስም",
+          "supportEmail": "የድጋፍ ኢሜል",
+          "fontFamily": "ዓለምአቀፍ ፊደል",
+          "maintenanceMode": "የጥገና ሁኔታ",
+          "platformFee": "የመድረክ ክፍያ",
+          "currency": "የክፍያ ምንዛሬ",
+          "enforce2fa": "ሁለት-ደረጃ ማረጋገጫ ግድ አድርግ",
+          "sessionTimeout": "የሴሽን ጊዜ ገደብ",
+          "auditLogging": "የኦዲት መዝገብ",
+          "emailAlerts": "የኢሜል ማስጠንቀቂያዎች"
+        },
+        "help": {
+          "maintenanceMode": "ሁሉንም የሕዝብ ገጾች አሰናክል እና የጥገና መልዕክት አሳይ።",
+          "enforce2fa": "ሁሉንም የአስተዳዳሪ መለያዎች 2FA እንዲጠቀሙ አስፈልግ።",
+          "sessionTimeout": "በተወሰነ ጊዜ ውስጥ የማይንቀሳቀሱ አስተዳዳሪዎችን በራሱ ያውጣ።",
+          "auditLogging": "የአስተዳደር እርምጃዎችን ዝርዝር መዝገብ ያቆይ።"
+        },
+        "notifications": {
+          "largeDonation": {
+            "title": "ትልቅ ልገሳ ማስጠንቀቂያ",
+            "body": "አንድ ልገሳ ETB 1,000 በላይ ሲሆን አስተዳዳሪዎችን አሳውቅ።"
+          },
+          "newCampaign": {
+            "title": "አዲስ ዘመቻ ማረጋገጫ",
+            "body": "አዲስ ዘመቻ ለግምገማ ሲላክ ቡድኑን አሳውቅ።"
+          }
+        },
+        "options": {
+          "minutes": "{minutes} ደቂቃ",
+          "hour": "{hours} ሰዓት",
+          "hours": "{hours} ሰዓት"
+        },
+        "saveReminder": "ለውጦችዎን ማስቀመጥ እንዳትረሱ።",
+        "discard": "ለውጦችን ተው",
+        "saving": "በማስቀመጥ ላይ...",
+        "save": "ለውጦችን አስቀምጥ"
+      }
+    },
+    "adminDashboard": {
+      "brandTitle": "ImpactGive አስተዳደር",
+      "brandSubtitle": "የእንቅስቃሴ መቆጣጠሪያ",
+      "nav": {
+        "overview": "አጠቃላይ",
+        "moderation": "ማስተካከያ",
+        "users": "ተጠቃሚዎች",
+        "financials": "ገንዘብ"
+      },
+      "actions": {
+        "toggleNav": "አሰሳ ቀይር",
+        "export": "CSV አውጣ"
+      },
+      "header": {
+        "title": "የመድረክ ጤና",
+        "subtitle": "የእንቅስቃሴ እና የዘመቻ ሁኔታ አጠቃላይ እይታ"
+      },
+      "cards": {
+        "totalFunds": "ጠቅላላ ገንዘብ",
+        "totalFundsDelta": "+14.2%",
+        "activeCampaigns": "ንቁ ዘመቻዎች",
+        "activeCampaignsDelta": "+5.1%",
+        "pendingVerifications": "በመጠባበቅ ላይ ያሉ ማረጋገጫዎች",
+        "needsAction": "እርምጃ ያስፈልጋል",
+        "totalDonors": "ጠቅላላ ደጋፊዎች",
+        "totalDonorsDelta": "+8.4%"
+      },
+      "charts": {
+        "donations": "የልገሳ መጠን",
+        "users": "የተጠቃሚ እድገት"
+      },
+      "queue": {
+        "title": "የዘመቻ ማረጋገጫ ተራ",
+        "searchPlaceholder": "ዘመቻዎችን ይፈልጉ",
+        "matched": "{count} ዘመቻዎች ተገኙ",
+        "filters": {
+          "all": "ሁሉም ሁኔታ"
+        }
+      },
+      "status": {
+        "pending": "በመጠባበቅ ላይ",
+        "active": "ንቁ",
+        "flagged": "ተለይቷል",
+        "completed": "ተጠናቀቀ"
+      },
+      "table": {
+        "campaign": "ዘመቻ",
+        "organizer": "አዘጋጅ",
+        "raised": "ተሰብስቧል",
+        "goal": "ግብ",
+        "status": "ሁኔታ",
+        "lastUpdate": "መጨረሻ ዝማኔ",
+        "actions": "እርምጃዎች",
+        "review": "ገምግም",
+        "open": "ክፈት"
+      },
+      "selected": {
+        "label": "የተመረጠ ዘመቻ",
+        "organizer": "አዘጋጅ: {name}",
+        "approve": "አጽድቅ",
+        "flag": "ምልክት",
+        "close": "ዝጋ"
+      }
+    },
+    "userDashboard": {
+      "welcome": "እንኳን ደህና ተመለሱ፣ {name}!",
+      "friend": "ጓደኛ",
+      "subtitle": "በእውነት ልዩነት እያደረጉ ነው። ይህ የተፅዕኖዎ አጠቃላይ እይታ ነው።",
+      "donateAgain": "እንደገና ለግስ",
+      "organizerApproved": {
+        "title": "የአዘጋጅ ማረጋገጫ ተፈቅዷል",
+        "body": "አሁን ተረጋግጠዋል። ዘመቻዎችን መፍጠር እና ማስተዳደር ይችላሉ።"
+      },
+      "organizerRejected": {
+        "title": "የአዘጋጅ ማረጋገጫ ተቀባይነት አልተሰጠውም",
+        "fallback": "ከየአዘጋጅ ማረጋገጫ ገጽ ግልጽ ሰነዶችን ደግመው ያቅርቡ።"
+      },
+      "stats": {
+        "totalDonated": "ጠቅላላ ልገሳ",
+        "livesTouched": "የተነካ ህይወቶች",
+        "projectsSupported": "የተደገፉ ፕሮጀክቶች"
+      },
+      "campaigns": {
+        "title": "ዘመቻዎችዎ",
+        "subtitle": "ታሪኮችዎ እንዴት እየሄዱ እና ድጋፍ የት እየጨመረ እንደሆነ ይከታተሉ።",
+        "create": "ዘመቻ ፍጠር",
+        "stats": {
+          "totalCampaigns": "ጠቅላላ ዘመቻዎች",
+          "activeCampaigns": "ንቁ ዘመቻዎች",
+          "totalRaised": "ጠቅላላ የተሰበሰበ",
+          "avgProgress": "አማካይ እድገት"
+        },
+        "loading": "ዘመቻዎችዎን በመጫን ላይ...",
+        "noImage": "ምስል የለም",
+        "goalReached": "ግብ ተደርሷል",
+        "celebration": "በደስታ: 100% ግብዎን አሳክተዋል!",
+        "raised": "{amount} ተሰብስቧል",
+        "goal": "{amount} ግብ",
+        "funded": "{progress}% ተሰብስቧል",
+        "requestPause": "ማቆም ጥያቄ",
+        "requestDelete": "ማጥፋት ጥያቄ",
+        "empty": "እስካሁን ምንም ዘመቻ አልፈጠሩም።"
+      },
+      "pending": {
+        "title": "በመጠባበቅ ላይ ያሉ ልገሳ ግምገማዎች",
+        "submissions": "{count} ማስገባቶች",
+        "loading": "በመጠባበቅ ላይ ልገሳዎችን በመጫን ላይ...",
+        "campaignLabel": "ዘመቻ",
+        "submitted": "{date} ተላክ",
+        "donorLabel": "ደጋፊ",
+        "anonymous": "ስም የለሽ",
+        "referenceLabel": "ማጣቀሻ",
+        "referenceFallback": "ደረሰኝ መጫን",
+        "proofLabel": "ማስረጃ",
+        "viewProof": "ምስል ይመልከቱ",
+        "noAttachment": "ተያያዥ ፋይል የለም",
+        "empty": "እስካሁን በመጠባበቅ ላይ ልገሳ ማስገባት የለም።"
+      },
+      "timeline": {
+        "title": "የተፅዕኖ ታሪክ",
+        "madeDonation": "ልገሳ አድርገዋል",
+        "campaignFallback": "ዘመቻ {id}",
+        "empty": "እስካሁን ልገሳ የለም።"
+      },
+      "trends": {
+        "title": "የልገሳ አዝማሚያ (7 ቀናት)",
+        "empty": "እስካሁን የአዝማሚያ መረጃ የለም።"
+      },
+      "badges": {
+        "title": "የተገኙ ምልክቶች",
+        "empty": "እስካሁን ምልክት የለም። ልገሳ አድርጉ እና ጀምሩ።",
+        "firstDonation": "የመጀመሪያ ልገሳ",
+        "impactBuilder": "ተፅዕኖ ገንቢ",
+        "generousGiver": "በጎ ሰጪ",
+        "consistentSupporter": "ቀጣይ ደጋፊ"
+      },
+      "status": {
+        "paused": "ተቋርጧል"
+      },
+      "request": {
+        "title": "የ{action} ጥያቄ",
+        "pause": "ማቆም",
+        "delete": "ማጥፋት",
+        "campaign": "ዘመቻ: {title}",
+        "close": "ዝጋ",
+        "messageLabel": "ለአስተዳደር መልዕክት",
+        "messagePlaceholder": "ለምን ይህን እርምጃ እንደሚፈልጉ ይገልጹ...",
+        "validation": "እባክዎ አጭር መልዕክት ያክሉ (ቢያንስ 5 ቁጥር).",
+        "submitting": "በመላክ ላይ...",
+        "send": "ጥያቄ ላክ",
+        "cancel": "ሰርዝ"
+      }
+    },
     "about": {
       "kicker": "ስለ እኛ",
       "title": "ለመስጠት እምነት እንገነባለን",
@@ -230,5 +1187,5 @@
       "explore": "ዘመቻዎችን ያስሱ",
       "signIn": "ግባ"
     }
-  }
+}
 }
