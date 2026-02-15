@@ -8,6 +8,7 @@ type NotificationSettings = {
 export interface AdminSettingsDocument extends Document {
   platformName: string;
   supportEmail: string;
+  fontFamily: 'Source Sans Pro' | 'Roboto' | 'Proxima Nova' | 'Lato';
   maintenanceMode: boolean;
   platformFeePercent: number;
   settlementCurrency: string;
@@ -23,6 +24,7 @@ const adminSettingsSchema = new Schema<AdminSettingsDocument>(
   {
     platformName: { type: String, default: 'ImpactGive' },
     supportEmail: { type: String, default: 'support@impactgive.org' },
+    fontFamily: { type: String, default: 'Source Sans Pro' },
     maintenanceMode: { type: Boolean, default: false },
     platformFeePercent: { type: Number, default: 2.5 },
     settlementCurrency: { type: String, default: 'USD' },

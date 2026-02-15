@@ -157,6 +157,17 @@ export const adminService = {
     }
     return settings;
   },
+  getPublicSettings: async () => {
+    let settings = await AdminSettingsModel.findOne().lean();
+    if (!settings) {
+      const created = await AdminSettingsModel.create({});
+      settings = await AdminSettingsModel.findById(created._id).lean();
+    }
+    return {
+      platformName: settings?.platformName ?? 'ImpactGive',
+      fontFamily: settings?.fontFamily ?? 'Source Sans Pro'
+    };
+  },
   updateSettings: async (payload: Partial<{
     platformName: string;
     supportEmail: string;

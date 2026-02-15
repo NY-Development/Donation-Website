@@ -6,6 +6,7 @@ import { getApiData } from '../../store/apiHelpers';
 type SettingsPayload = {
   platformName: string;
   supportEmail: string;
+  fontFamily: 'Source Sans Pro' | 'Roboto' | 'Proxima Nova' | 'Lato';
   maintenanceMode: boolean;
   platformFeePercent: number;
   settlementCurrency: string;
@@ -35,6 +36,17 @@ const AdminSettings: React.FC = () => {
       setFormState(data);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (!formState?.fontFamily) return;
+    const fontMap: Record<SettingsPayload['fontFamily'], string> = {
+      'Source Sans Pro': '"Source Sans Pro", sans-serif',
+      Roboto: '"Roboto", sans-serif',
+      'Proxima Nova': '"Proxima Nova", "Source Sans Pro", sans-serif',
+      Lato: '"Lato", sans-serif'
+    };
+    document.documentElement.style.setProperty('--font-sans', fontMap[formState.fontFamily]);
+  }, [formState?.fontFamily]);
 
   const update = <K extends keyof SettingsPayload>(key: K, value: SettingsPayload[K]) => {
     if (!formState) return;
@@ -105,6 +117,19 @@ const AdminSettings: React.FC = () => {
                     value={formState.supportEmail}
                     onChange={(event) => update('supportEmail', event.target.value)}
                   />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Global Font</label>
+                  <select
+                    className="w-full bg-slate-50 dark:bg-slate-800 border-primary/10 rounded-lg focus:ring-primary focus:border-primary transition-all"
+                    value={formState.fontFamily}
+                    onChange={(event) => update('fontFamily', event.target.value as SettingsPayload['fontFamily'])}
+                  >
+                    <option value="Source Sans Pro">Source Sans Pro</option>
+                    <option value="Roboto">Roboto</option>
+                    <option value="Proxima Nova">Proxima Nova</option>
+                    <option value="Lato">Lato</option>
+                  </select>
                 </div>
               </div>
               <div className="flex items-center justify-between p-4 bg-primary/5 rounded-lg border border-primary/10">

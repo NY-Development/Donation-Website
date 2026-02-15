@@ -7,6 +7,7 @@ import Footer from './src/components/Footer';
 import ProtectedRoute from './src/components/ProtectedRoute';
 import { useAuthStore } from './src/store';
 import { HelpCircle, X } from 'lucide-react';
+import adminService from './src/Services/admin';
 
 const Home = React.lazy(() => import('./src/pages/Home'));
 const Explore = React.lazy(() => import('./src/pages/Explore'));
@@ -71,6 +72,34 @@ const App: React.FC = () => {
   useEffect(() => {
     initializeAuth();
   }, [initializeAuth]);
+
+  useEffect(() => {
+    let isActive = true;
+    const loadFont = async () => {
+      try {
+        const response = await adminService.getPublicSettings();
+        const settings = response.data?.data as { fontFamily?: string } | undefined;
+        if (!isActive || !settings?.fontFamily) return;
+        const fontMap: Record<string, string> = {
+          'Source Sans Pro': '"Source Sans Pro", sans-serif',
+          Roboto: '"Roboto", sans-serif',
+          'Proxima Nova': '"Proxima Nova", "Source Sans Pro", sans-serif',
+          Lato: '"Lato", sans-serif'
+        };
+        const selected = fontMap[settings.fontFamily] ?? '"Source Sans Pro", sans-serif';
+        document.documentElement.style.setProperty('--font-sans', selected);
+      } catch {
+        if (isActive) {
+          document.documentElement.style.setProperty('--font-sans', '"Source Sans Pro", sans-serif');
+        }
+      }
+    };
+
+    loadFont();
+    return () => {
+      isActive = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (isDarkMode) {

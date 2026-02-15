@@ -67,6 +67,14 @@ export const adminController = {
       next(error);
     }
   },
+  getPublicSettings: async (_req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const data = await adminService.getPublicSettings();
+      res.json({ success: true, message: 'Public settings fetched', data });
+    } catch (error) {
+      next(error);
+    }
+  },
   updateSettings: async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const data = await adminService.updateSettings(req.body ?? {});

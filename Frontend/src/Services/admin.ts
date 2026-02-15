@@ -26,6 +26,7 @@ export const adminService = {
   rejectOrganizer: (userId: string, payload?: { reason?: string }) =>
     api.post(`/admin/organizer-verifications/${userId}/reject`, payload ?? {}),
   getSettings: () => api.get('/admin/settings'),
+  getPublicSettings: () => api.get('/admin/settings/public'),
   updateSettings: (payload: unknown) => api.put('/admin/settings', payload)
 };
 

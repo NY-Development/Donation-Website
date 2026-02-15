@@ -31,6 +31,7 @@ const requestRejectSchema = z.object({
 const settingsSchema = z.object({
   platformName: z.string().min(2).optional(),
   supportEmail: z.string().email().optional(),
+  fontFamily: z.enum(['Source Sans Pro', 'Roboto', 'Proxima Nova', 'Lato']).optional(),
   maintenanceMode: z.boolean().optional(),
   platformFeePercent: z.number().min(0).max(100).optional(),
   settlementCurrency: z.string().min(2).optional(),
@@ -69,6 +70,7 @@ router.get('/organizer-verifications', requireAuth, requireRole(['admin']), admi
 router.post('/organizer-verifications/:userId/approve', requireAuth, requireRole(['admin']), adminLimiter, validate(userIdSchema, 'params'), adminController.approveOrganizer);
 router.post('/organizer-verifications/:userId/reject', requireAuth, requireRole(['admin']), adminLimiter, validate(userIdSchema, 'params'), validate(rejectionSchema, 'body'), adminController.rejectOrganizer);
 router.get('/settings', requireAuth, requireRole(['admin']), adminLimiter, adminController.getSettings);
+router.get('/settings/public', adminController.getPublicSettings);
 router.put('/settings', requireAuth, requireRole(['admin']), adminLimiter, validate(settingsSchema, 'body'), adminController.updateSettings);
 
 export default router;

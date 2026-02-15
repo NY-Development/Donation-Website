@@ -10,6 +10,7 @@ const OrganizerVerification: React.FC = () => {
   const [status, setStatus] = useState<OrganizerVerificationStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLaunching, setIsLaunching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [idFront, setIdFront] = useState<File | null>(null);
@@ -184,12 +185,19 @@ const OrganizerVerification: React.FC = () => {
         <div className="bg-white dark:bg-surface-dark rounded-2xl border border-gray-100 dark:border-gray-800 p-8 text-center">
           <h1 className="text-2xl font-black text-gray-900 dark:text-white">You are verified</h1>
           <p className="text-gray-500 mt-3">Your organizer account is verified. You can start a campaign right away.</p>
-          <Link
-            to="/create"
-            className="inline-flex items-center justify-center mt-6 px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition"
+          <button
+            type="button"
+            onClick={() => {
+              if (isLaunching) return;
+              setIsLaunching(true);
+              navigate('/create');
+            }}
+            disabled={isLaunching}
+            className="inline-flex items-center justify-center mt-6 px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-hover transition disabled:opacity-70"
+            aria-busy={isLaunching}
           >
-            Start a campaign
-          </Link>
+            {isLaunching ? 'Launching...' : 'Start a campaign'}
+          </button>
         </div>
       </div>
     );

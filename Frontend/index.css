@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/forms";
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700;900&family=Roboto:wght@300;400;500;700;900&family=Lato:wght@300;400;700;900&display=swap");
 
 @theme {
   /* Primary Brand Colors */
@@ -23,7 +24,7 @@
   --color-surface-muted: #9CA3AF;
 
   /* Typography */
-  --font-sans: "Inter", "Poppins", sans-serif;
+  --font-sans: "Source Sans Pro", "Roboto", "Proxima Nova", "Lato", sans-serif;
 
   /* Custom Shadows & Glows */
   --shadow-glow-purple: 0 0 20px rgba(109, 40, 217, 0.3);
@@ -38,4 +39,12 @@
 
   /* Gradients - The V4 way is to define the full image variable */
   --background-image-primary-gradient: linear-gradient(to bottom right, #4C1D95, #6D28D9, #9D7BFF);
+}
+
+:root {
+  font-family: var(--font-sans);
+}
+
+body {
+  font-family: var(--font-sans);
 }
