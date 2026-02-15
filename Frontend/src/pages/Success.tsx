@@ -6,8 +6,10 @@ import { animatePageIn, animateSectionsOnScroll, ensureGsap, prefersReducedMotio
 import { CheckCircle, Heart } from 'lucide-react';
 import { FaRegSmileBeam, FaStar } from 'react-icons/fa';
 import { useAuthStore } from '../store';
+import { useTranslation } from 'react-i18next';
 
 const Success: React.FC = () => {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -95,26 +97,26 @@ const Success: React.FC = () => {
         </div>
 
         <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white leading-tight tracking-tight mb-4">
-          Your impact starts now!
+          {t('pages.success.title')}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 text-lg mb-10 max-w-sm">
-          Thank you for your generosity. We've received your transfer details for review.
+          {t('pages.success.subtitle')}
         </p>
 
         <div className="w-full bg-white dark:bg-surface-dark rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-8">
           <div className="p-8 border-b border-gray-100 dark:border-gray-800">
-            <p className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-2">Total Donation</p>
+            <p className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-2">{t('pages.success.totalLabel')}</p>
             <p className="text-5xl font-black text-primary">ETB {amount.toFixed(2)}</p>
             <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-600 text-xs font-bold uppercase">
               <CheckCircle className="size-4" aria-hidden="true" />
-              Submitted For Review
+              {t('pages.success.submitted')}
             </div>
           </div>
           <div className="p-8 bg-gray-50 dark:bg-gray-900/50">
             <div className="flex items-start gap-4 text-left">
               <div className="w-12 h-12 rounded-lg bg-cover bg-center bg-gray-200" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1541544537156-7627a7a4aa1c?q=80&w=200&auto=format&fit=crop")' }}></div>
               <div>
-                <p className="text-xs font-bold text-gray-400 uppercase">Campaign</p>
+                <p className="text-xs font-bold text-gray-400 uppercase">{t('pages.success.campaign')}</p>
                 <h3 className="text-lg font-bold">{campaignTitle}</h3>
               </div>
             </div>
@@ -123,10 +125,10 @@ const Success: React.FC = () => {
 
         <div className="flex flex-col sm:flex-row gap-4 w-full">
           <Link to={redirectTo} className="flex-1 h-12 rounded-xl bg-primary text-white font-bold flex items-center justify-center hover:bg-primary-hover transition-all">
-            {isAuthenticated ? 'Go to My Impact' : 'Back to Campaigns'}
+            {isAuthenticated ? t('pages.success.goImpact') : t('pages.success.backCampaigns')}
           </Link>
           <Link to={isAuthenticated ? '/campaigns' : '/login'} className="flex-1 h-12 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-bold flex items-center justify-center hover:border-primary transition-all">
-            {isAuthenticated ? 'Explore Campaigns' : 'Sign In'}
+            {isAuthenticated ? t('pages.success.explore') : t('pages.success.signIn')}
           </Link>
         </div>
       </div>

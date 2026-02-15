@@ -6,8 +6,10 @@ import { gsap } from 'gsap';
 import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { useAuthStore } from '../store';
 import { Eye, EyeOff, Lock, Mail, Quote } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Login: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [email, setEmail] = useState('');
@@ -74,17 +76,17 @@ const Login: React.FC = () => {
         <div className="md:w-1/2 relative min-h-[400px]" data-animate="section">
           <img 
             src="./image.png"
-            alt="Community" 
+            alt={t('pages.auth.login.communityAlt')} 
             className="absolute inset-0 w-full h-full object-cover" 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-10 text-white">
             <Quote className="size-10 mb-4" aria-hidden="true" />
-            <p className="text-2xl font-bold leading-tight mb-4">"Your contribution changes lives every single day. We are building a future where everyone thrives."</p>
+            <p className="text-2xl font-bold leading-tight mb-4">{t('pages.auth.login.quote')}</p>
             <div className="flex items-center gap-3">
               <div className="size-10 rounded-full border-2 border-white/50 bg-gray-200 bg-cover bg-center" style={{ backgroundImage: 'url("./yitbarek.jpg")' }}></div>
               <div>
-                <p className="text-sm font-bold">Yitbarek Alemu</p>
-                <p className="text-xs opacity-70">Community Leader</p>
+                <p className="text-sm font-bold">{t('pages.auth.login.quoteName')}</p>
+                <p className="text-xs opacity-70">{t('pages.auth.login.quoteRole')}</p>
               </div>
             </div>
           </div>
@@ -92,8 +94,8 @@ const Login: React.FC = () => {
 
         <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center" data-animate="section">
           <div className="max-w-md mx-auto w-full">
-            <h1 className="text-3xl font-black mb-2 text-gray-900 dark:text-white">Welcome Back</h1>
-            <p className="text-gray-500 mb-8">Please enter your details to sign in to your dashboard.</p>
+            <h1 className="text-3xl font-black mb-2 text-gray-900 dark:text-white">{t('pages.auth.login.welcome')}</h1>
+            <p className="text-gray-500 mb-8">{t('pages.auth.login.subtitle')}</p>
 
             {authError && (
               <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -103,7 +105,7 @@ const Login: React.FC = () => {
             
             <form onSubmit={handleLogin} className="space-y-6" data-animate="form">
               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Email</label>
+                <label className="text-sm font-bold text-gray-700 dark:text-gray-300">{t('pages.auth.login.email')}</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" aria-hidden="true" />
                   <input
@@ -122,8 +124,8 @@ const Login: React.FC = () => {
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Password</label>
-                  <Link to="/forgot-password" className="text-xs font-bold text-primary hover:underline">Forgot password?</Link>
+                  <label className="text-sm font-bold text-gray-700 dark:text-gray-300">{t('pages.auth.login.password')}</label>
+                  <Link to="/forgot-password" className="text-xs font-bold text-primary hover:underline">{t('pages.auth.login.forgot')}</Link>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" aria-hidden="true" />
@@ -152,7 +154,7 @@ const Login: React.FC = () => {
 
               <div className="flex items-center gap-2">
                 <input type="checkbox" className="rounded text-primary focus:ring-primary" id="remember" />
-                <label htmlFor="remember" className="text-sm text-gray-500">Remember for 30 days</label>
+                <label htmlFor="remember" className="text-sm text-gray-500">{t('pages.auth.login.remember')}</label>
               </div>
 
               <button
@@ -161,12 +163,12 @@ const Login: React.FC = () => {
                 disabled={isLoading}
                 aria-busy={isLoading}
               >
-                {isLoading ? 'Signing In...' : 'Sign In'}
+                {isLoading ? t('pages.auth.login.signingIn') : t('pages.auth.login.signIn')}
               </button>
 
               <div className="text-center">
                 <p className="text-sm text-gray-500">
-                  Don't have an account? <Link to="/signup" className="text-primary font-bold hover:underline">Sign up</Link>
+                  {t('pages.auth.login.noAccount')} <Link to="/signup" className="text-primary font-bold hover:underline">{t('pages.auth.login.signUp')}</Link>
                 </p>
               </div>
             </form>

@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import { v4 as uuidv4 } from 'uuid';
 import { connectDb } from './config/db';
 import { securityMiddlewares } from './config/security';
+import { i18nMiddleware } from './config/i18n';
 import { publicLimiter } from './middlewares/rateLimiter';
 import { errorHandler } from './middlewares/error.middleware';
 import authRoutes from './modules/auth/auth.routes';
@@ -16,15 +17,18 @@ import { campaignController } from './modules/campaigns/campaign.controller';
 export const app = express();
 app.set('trust proxy', 1);
 
+app.use(i18nMiddleware);
+
 // Database Guard Middleware
 app.use(async (req, res, next) => {
   try {
     await connectDb();
     next();
   } catch (error) {
+    const t = (req as any).t?.bind(req) ?? ((key: string) => key);
     res.status(503).json({ 
-      error: "Database unavailable", 
-      message: "The server is having trouble reaching the database." 
+      error: t('errors.dbUnavailable'), 
+      message: t('errors.dbUnavailableMessage')
     });
   }
 });
@@ -153,7 +157,10 @@ app.get('/', (_req, res) => {
 </html>`);
 });
 
-app.get('/api/health', (_req, res) => res.json({ success: true, message: 'OK' }));
+app.get('/api/health', (req, res) => {
+  const t = (req as any).t?.bind(req) ?? ((key: string) => key);
+  res.json({ success: true, message: t('health.ok') });
+});
 app.get('/api/stats/global', campaignController.getGlobalStats);
 
 app.use('/api/auth', authRoutes);

@@ -5,8 +5,10 @@ import { z } from 'zod';
 import { gsap } from 'gsap';
 import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { useAuthStore } from '../store';
+import { useTranslation } from 'react-i18next';
 
 const Signup: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [fullName, setFullName] = useState('');
@@ -90,9 +92,9 @@ const Signup: React.FC = () => {
               <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center backdrop-blur-sm mb-2">
                 <span className="material-symbols-outlined text-3xl text-white">volunteer_activism</span>
               </div>
-              <h1 className="text-4xl lg:text-5xl font-black leading-tight tracking-tight">Join the Movement</h1>
+              <h1 className="text-4xl lg:text-5xl font-black leading-tight tracking-tight">{t('pages.auth.signup.heroTitle')}</h1>
               <p className="text-lg text-white/90 font-medium leading-relaxed">
-                Become part of a community dedicated to making a real difference.
+                {t('pages.auth.signup.heroSubtitle')}
               </p>
             </div>
 
@@ -102,9 +104,9 @@ const Signup: React.FC = () => {
                   <span className="material-symbols-outlined text-white">insights</span>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold">Track Impact</h3>
+                  <h3 className="text-lg font-bold">{t('pages.auth.signup.benefit1Title')}</h3>
                   <p className="text-sm text-white/80 leading-normal">
-                    Visualize where your money goes and the lives you change in real-time.
+                    {t('pages.auth.signup.benefit1Body')}
                   </p>
                 </div>
               </div>
@@ -113,9 +115,9 @@ const Signup: React.FC = () => {
                   <span className="material-symbols-outlined text-white">receipt_long</span>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold">Instant Receipts</h3>
+                  <h3 className="text-lg font-bold">{t('pages.auth.signup.benefit2Title')}</h3>
                   <p className="text-sm text-white/80 leading-normal">
-                    Automated tax receipts for every donation, organized in one place.
+                    {t('pages.auth.signup.benefit2Body')}
                   </p>
                 </div>
               </div>
@@ -124,9 +126,9 @@ const Signup: React.FC = () => {
                   <span className="material-symbols-outlined text-white">bolt</span>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold">Quick Donate</h3>
+                  <h3 className="text-lg font-bold">{t('pages.auth.signup.benefit3Title')}</h3>
                   <p className="text-sm text-white/80 leading-normal">
-                    Support your favorite causes with a single click, anytime, anywhere.
+                    {t('pages.auth.signup.benefit3Body')}
                   </p>
                 </div>
               </div>
@@ -134,7 +136,7 @@ const Signup: React.FC = () => {
 
             <div className="mt-8 pt-8 border-t border-white/20">
               <p className="text-sm text-white/60 italic">
-                "The best platform for managing my philanthropic goals. Simple, transparent, and effective."
+                {t('pages.auth.signup.testimonial')}
               </p>
               <div className="flex items-center gap-3 mt-4">
                 <div className="w-8 h-8 rounded-full bg-white/20 overflow-hidden">
@@ -144,7 +146,7 @@ const Signup: React.FC = () => {
                     src="/yitbarek.jpg"
                   />
                 </div>
-                <span className="text-sm font-semibold">YItbarek Alemu</span>
+                <span className="text-sm font-semibold">{t('pages.auth.login.quoteName')}</span>
               </div>
             </div>
           </div>
@@ -153,8 +155,8 @@ const Signup: React.FC = () => {
         <div className="w-full lg:w-7/12 flex flex-col justify-center items-center bg-background-light dark:bg-background-dark p-6 lg:p-20 overflow-y-auto" data-animate="section">
           <div className="w-full max-w-120 flex flex-col gap-6">
             <div className="flex flex-col gap-2 mb-2">
-              <h2 className="text-[#140d1b] dark:text-white text-3xl font-bold leading-tight tracking-tight">Create your account</h2>
-              <p className="text-[#734c9a] dark:text-[#a58dc2] text-base">Start your journey of giving today.</p>
+              <h2 className="text-[#140d1b] dark:text-white text-3xl font-bold leading-tight tracking-tight">{t('pages.auth.signup.formTitle')}</h2>
+              <p className="text-[#734c9a] dark:text-[#a58dc2] text-base">{t('pages.auth.signup.formSubtitle')}</p>
             </div>
 
             {(formError || authError) && (
@@ -165,7 +167,7 @@ const Signup: React.FC = () => {
 
             <form onSubmit={handleSignup} className="flex flex-col gap-5 w-full" data-animate="form">
               <div className="flex flex-col gap-2">
-                <label className="text-[#140d1b] dark:text-white text-sm font-medium leading-normal" htmlFor="fullname">Full Name</label>
+                <label className="text-[#140d1b] dark:text-white text-sm font-medium leading-normal" htmlFor="fullname">{t('pages.auth.signup.fullName')}</label>
                 <input
                   id="fullname"
                   className="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#140d1b] dark:text-white dark:bg-[#2a1f36] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbcfe7] dark:border-[#4a3b5a] bg-white focus:border-primary h-12 placeholder:text-[#734c9a]/60 dark:placeholder:text-[#a58dc2]/60 px-4 text-base font-normal leading-normal transition-all duration-200"
@@ -183,7 +185,7 @@ const Signup: React.FC = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-[#140d1b] dark:text-white text-sm font-medium leading-normal" htmlFor="email">Email Address</label>
+                <label className="text-[#140d1b] dark:text-white text-sm font-medium leading-normal" htmlFor="email">{t('pages.auth.signup.email')}</label>
                 <input
                   id="email"
                   className="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#140d1b] dark:text-white dark:bg-[#2a1f36] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbcfe7] dark:border-[#4a3b5a] bg-white focus:border-primary h-12 placeholder:text-[#734c9a]/60 dark:placeholder:text-[#a58dc2]/60 px-4 text-base font-normal leading-normal transition-all duration-200"
@@ -201,7 +203,7 @@ const Signup: React.FC = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-[#140d1b] dark:text-white text-sm font-medium leading-normal" htmlFor="password">Password</label>
+                <label className="text-[#140d1b] dark:text-white text-sm font-medium leading-normal" htmlFor="password">{t('pages.auth.signup.password')}</label>
                 <div className="relative flex w-full items-center">
                   <input
                     id="password"
@@ -226,7 +228,7 @@ const Signup: React.FC = () => {
                     <span className="material-symbols-outlined text-[20px]">visibility</span>
                   </button>
                 </div>
-                <p className="text-xs text-[#734c9a] dark:text-[#a58dc2] mt-1">Must be at least 8 characters long.</p>
+                <p className="text-xs text-[#734c9a] dark:text-[#a58dc2] mt-1">{t('pages.auth.signup.passwordHint')}</p>
               </div>
 
               <div className="flex flex-col gap-3 mt-2">
@@ -238,19 +240,19 @@ const Signup: React.FC = () => {
                     onChange={(event) => setWantsOrganizer(event.target.checked)}
                   />
                   <span className="text-sm text-[#140d1b] dark:text-white/90 leading-normal select-none">
-                    I want to start campaigns and I am ready to verify my identity on mobile.
+                    {t('pages.auth.signup.organizerOptIn')}
                   </span>
                 </label>
                 <label className="inline-flex items-start gap-3 cursor-pointer group">
                   <input className="form-checkbox mt-1 h-4 w-4 rounded border-[#dbcfe7] dark:border-[#4a3b5a] dark:bg-[#2a1f36] text-primary focus:ring-primary/50 transition duration-150 ease-in-out" type="checkbox" />
                   <span className="text-sm text-[#140d1b] dark:text-white/90 leading-normal select-none">
-                    Subscribe to inspiring impact stories and weekly updates.
+                    {t('pages.auth.signup.newsletterOptIn')}
                   </span>
                 </label>
                 <label className="inline-flex items-start gap-3 cursor-pointer group">
                   <input className="form-checkbox mt-1 h-4 w-4 rounded border-[#dbcfe7] dark:border-[#4a3b5a] dark:bg-[#2a1f36] text-primary focus:ring-primary/50 transition duration-150 ease-in-out" type="checkbox" required />
                   <span className="text-sm text-[#140d1b] dark:text-white/90 leading-normal select-none">
-                    I agree to the <Link className="text-primary hover:underline font-medium" to="/terms">Terms of Service</Link> and <Link className="text-primary hover:underline font-medium" to="/privacy">Privacy Policy</Link>.
+                    {t('pages.auth.signup.termsAgree')} <Link className="text-primary hover:underline font-medium" to="/terms">{t('pages.auth.signup.terms')}</Link> and <Link className="text-primary hover:underline font-medium" to="/privacy">{t('pages.auth.signup.privacy')}</Link>.
                   </span>
                 </label>
               </div>
@@ -262,15 +264,15 @@ const Signup: React.FC = () => {
                 disabled={isLoading}
                 aria-busy={isLoading}
               >
-                {isLoading ? 'Creating Account...' : 'Create Account'}
+                {isLoading ? t('pages.auth.signup.creatingAccount') : t('pages.auth.signup.createAccount')}
                 <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
               </button>
             </form>
 
             <div className="text-center mt-4">
               <p className="text-sm text-[#140d1b] dark:text-white/70">
-                Already have an account?{' '}
-                <Link className="text-primary font-bold hover:underline transition-colors" to="/login">Sign In</Link>
+                {t('pages.auth.signup.haveAccount')}{' '}
+                <Link className="text-primary font-bold hover:underline transition-colors" to="/login">{t('pages.auth.signup.signIn')}</Link>
               </p>
             </div>
           </div>

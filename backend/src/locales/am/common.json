@@ -1,0 +1,9 @@
+{
+  "health": {
+    "ok": "እሺ"
+  },
+  "errors": {
+    "dbUnavailable": "ዳታቤዝ አይገኝም",
+    "dbUnavailableMessage": "ሰርቨሩ ዳታቤዝን ማግኘት እየተቸገረ ነው።"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "health": {
+    "ok": "OK"
+  },
+  "errors": {
+    "dbUnavailable": "Database unavailable",
+    "dbUnavailableMessage": "The server is having trouble reaching the database."
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "common": {
+    "brand": "Impact",
+    "back": "Back",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "close": "Close",
+    "loading": "Loading...",
+    "save": "Save",
+    "saving": "Saving...",
+    "search": "Search",
+    "email": "Email",
+    "password": "Password"
+  },
+  "language": {
+    "label": "Language",
+    "toggle": "EN/AM",
+    "en": "EN",
+    "am": "AM"
+  },
+  "navbar": {
+    "secureVerification": "Secure Verification",
+    "campaigns": "Campaigns",
+    "startCampaign": "Start Campaign",
+    "myImpact": "My Impact",
+    "logOut": "Log Out",
+    "logIn": "Log In",
+    "donate": "Donate",
+    "createAccount": "Create account",
+    "profile": {
+      "title": "Your profile",
+      "close": "Close",
+      "changePhoto": "Change photo",
+      "name": "Name",
+      "email": "Email",
+      "cancel": "Cancel",
+      "save": "Save changes",
+      "saving": "Saving...",
+      "updateError": "Unable to update profile right now."
+    }
+  },
+  "footer": {
+    "tagline": "Connecting generous hearts with causes that matter. We are building a world where everyone can make a difference.",
+    "platform": "Platform",
+    "resources": "Resources",
+    "company": "Company",
+    "howItWorks": "How it works",
+    "forNonprofits": "For Nonprofits",
+    "helpCenter": "Help Center",
+    "safetyTrust": "Safety & Trust",
+    "aboutUs": "About Us",
+    "exploreCampaigns": "Explore Campaigns",
+    "copyright": "© 2026 ImpactGive Foundation. All rights reserved.",
+    "developedBy": "Developed by NYDev Team",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "eula": "EULA"
+  },
+  "app": {
+    "pageFallback": "Loading...",
+    "help": {
+      "open": "Open help",
+      "close": "Close help",
+      "title": "Need help?",
+      "q1Title": "How do I donate securely?",
+      "q1Body": "Learn about encryption, receipts, and payment safety.",
+      "q2Title": "How do I start a campaign?",
+      "q2Body": "Step-by-step guide to create and launch your fundraiser."
+    }
+  },
+  "protected": {
+    "loadingTitle": "Processing your donation journey",
+    "loadingSubtitle": "Warming up your dashboard..."
+  },
+  "pages": {
+    "about": {
+      "kicker": "About Us",
+      "title": "Building trust in giving",
+      "subtitle": "ImpactGive connects donors with verified causes to make giving transparent, fast, and meaningful.",
+      "missionTitle": "Our Mission",
+      "missionBody": "Empower donors and nonprofits with tools that maximize impact.",
+      "valuesTitle": "Our Values",
+      "valuesBody": "Transparency, accountability, and community-driven change."
+    },
+    "howItWorks": {
+      "kicker": "ImpactGive",
+      "title": "How It Works",
+      "subtitle": "Transparent giving from start to finish. Discover causes, donate securely, and track impact in real time.",
+      "step1Title": "1. Discover",
+      "step1Body": "Explore verified campaigns curated for transparency and impact.",
+      "step2Title": "2. Donate",
+      "step2Body": "Support causes securely with quick, encrypted checkout.",
+      "step3Title": "3. See Impact",
+      "step3Body": "Receive updates and outcomes from organizers."
+    },
+    "forNonprofits": {
+      "kicker": "For Nonprofits",
+      "title": "Grow Your Impact",
+      "subtitle": "Launch campaigns, engage donors, and share progress with a trusted community of supporters.",
+      "card1Title": "Verified Onboarding",
+      "card1Body": "We verify organizations to build donor confidence and reduce fraud.",
+      "card2Title": "Campaign Tools",
+      "card2Body": "Create compelling campaigns with flexible goals, media, and updates.",
+      "card3Title": "Donor Analytics",
+      "card3Body": "Track performance and communicate outcomes to supporters."
+    },
+    "safetyTrust": {
+      "kicker": "Safety & Trust",
+      "title": "Your security is our priority",
+      "subtitle": "We use verification, secure payments, and continuous monitoring to protect donors and beneficiaries.",
+      "card1Title": "Organization Verification",
+      "card1Body": "We verify nonprofits and fundraisers before they go live.",
+      "card2Title": "Secure Payments",
+      "card2Body": "All transactions are encrypted and processed by trusted partners.",
+      "card3Title": "Fraud Monitoring",
+      "card3Body": "We monitor for suspicious activity and respond quickly.",
+      "card4Title": "Transparent Reporting",
+      "card4Body": "Campaign updates keep donors informed and confident."
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "body": "We respect your privacy and explain how data is collected and used."
+    },
+    "terms": {
+      "title": "Terms & Service",
+      "body": "These terms govern your use of ImpactGive services and features."
+    },
+    "eula": {
+      "title": "EULA",
+      "body": "This End User License Agreement outlines the terms for using the ImpactGive platform."
+    },
+    "protection": {
+      "kicker": "Donation Protection",
+      "title": "How we protect your donations",
+      "subtitle": "We keep donations safe with secure access, verified organizers, and clear tracking so you always know where your support goes.",
+      "card1Title": "Secure access",
+      "card1Body": "Accounts use secure sessions and protected routes so only authorized users can access sensitive data.",
+      "card2Title": "Verified organizers",
+      "card2Body": "Organizer verification helps reduce fraud and builds donor trust before campaigns go live.",
+      "card3Title": "Clear records",
+      "card3Body": "Donations are tracked with receipts and timelines so you can review your impact anytime.",
+      "card4Title": "Trust monitoring",
+      "card4Body": "We review reports and monitor activity so suspicious behavior can be handled quickly."
+    },
+    "auth": {
+      "login": {
+        "welcome": "Welcome Back",
+        "subtitle": "Please enter your details to sign in to your dashboard.",
+        "email": "Email",
+        "password": "Password",
+        "forgot": "Forgot password?",
+        "remember": "Remember for 30 days",
+        "signIn": "Sign In",
+        "signingIn": "Signing In...",
+        "noAccount": "Don't have an account?",
+        "signUp": "Sign up",
+        "quote": "\"Your contribution changes lives every single day. We are building a future where everyone thrives.\"",
+        "quoteName": "Yitbarek Alemu",
+        "quoteRole": "Community Leader",
+        "communityAlt": "Community"
+      },
+      "signup": {
+        "heroTitle": "Join the Movement",
+        "heroSubtitle": "Become part of a community dedicated to making a real difference.",
+        "benefit1Title": "Track Impact",
+        "benefit1Body": "Visualize where your money goes and the lives you change in real-time.",
+        "benefit2Title": "Instant Receipts",
+        "benefit2Body": "Automated tax receipts for every donation, organized in one place.",
+        "benefit3Title": "Quick Donate",
+        "benefit3Body": "Support your favorite causes with a single click, anytime, anywhere.",
+        "testimonial": "\"The best platform for managing my philanthropic goals. Simple, transparent, and effective.\"",
+        "formTitle": "Create your account",
+        "formSubtitle": "Start your journey of giving today.",
+        "fullName": "Full Name",
+        "email": "Email Address",
+        "password": "Password",
+        "passwordHint": "Must be at least 8 characters long.",
+        "organizerOptIn": "I want to start campaigns and I am ready to verify my identity on mobile.",
+        "newsletterOptIn": "Subscribe to inspiring impact stories and weekly updates.",
+        "termsAgree": "I agree to the",
+        "terms": "Terms of Service",
+        "privacy": "Privacy Policy",
+        "createAccount": "Create Account",
+        "creatingAccount": "Creating Account...",
+        "haveAccount": "Already have an account?",
+        "signIn": "Sign In"
+      },
+      "verifyOtp": {
+        "kicker": "Verify your email",
+        "title": "Enter the 6-digit code",
+        "subtitle": "We sent a verification code to your email address.",
+        "email": "Email",
+        "code": "Verification Code",
+        "verify": "Verify Email",
+        "verifying": "Verifying...",
+        "already": "Already verified?",
+        "logIn": "Log in"
+      },
+      "forgot": {
+        "title": "Reset your password",
+        "subtitle": "We'll send reset instructions to the email you used to sign up.",
+        "success": "If an account exists for {email}, we've sent a reset link.",
+        "email": "Email address",
+        "send": "Send reset link",
+        "sending": "Processing...",
+        "remembered": "Remembered your password?",
+        "backToLogin": "Back to login"
+      },
+      "reset": {
+        "title": "Set a new password",
+        "subtitle": "Enter your email and a new password to complete the reset.",
+        "success": "Your password has been updated. You can now log in.",
+        "email": "Email address",
+        "newPassword": "New password",
+        "confirm": "Confirm password",
+        "reset": "Reset password",
+        "updating": "Updating...",
+        "remembered": "Remembered your password?",
+        "backToLogin": "Back to login"
+      }
+    },
+    "success": {
+      "title": "Your impact starts now!",
+      "subtitle": "Thank you for your generosity. We've received your transfer details for review.",
+      "totalLabel": "Total Donation",
+      "submitted": "Submitted For Review",
+      "campaign": "Campaign",
+      "goImpact": "Go to My Impact",
+      "backCampaigns": "Back to Campaigns",
+      "explore": "Explore Campaigns",
+      "signIn": "Sign In"
+    }
+  }
+}

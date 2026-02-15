@@ -4,8 +4,10 @@ import { z } from 'zod';
 import { gsap } from 'gsap';
 import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import authService from '../Services/auth';
+import { useTranslation } from 'react-i18next';
 
 const VerifyOtp: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -81,9 +83,9 @@ const VerifyOtp: React.FC = () => {
     <div ref={containerRef} className="min-h-[calc(100vh-64px)] flex items-center justify-center p-4 bg-gray-50 dark:bg-background-dark">
       <div className="w-full max-w-140 bg-white dark:bg-surface-dark rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 p-8 md:p-12" data-animate="section">
         <div className="text-center mb-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Verify your email</p>
-          <h1 className="text-3xl font-black mt-3 text-gray-900 dark:text-white">Enter the 6-digit code</h1>
-          <p className="text-gray-500 mt-3">We sent a verification code to your email address.</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">{t('pages.auth.verifyOtp.kicker')}</p>
+          <h1 className="text-3xl font-black mt-3 text-gray-900 dark:text-white">{t('pages.auth.verifyOtp.title')}</h1>
+          <p className="text-gray-500 mt-3">{t('pages.auth.verifyOtp.subtitle')}</p>
         </div>
 
         {(error || success) && (
@@ -100,7 +102,7 @@ const VerifyOtp: React.FC = () => {
 
         <form onSubmit={handleVerify} className="space-y-6" data-animate="form">
           <div className="space-y-2">
-            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Email</label>
+            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">{t('pages.auth.verifyOtp.email')}</label>
             <input
               className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-primary outline-none"
               type="email"
@@ -111,7 +113,7 @@ const VerifyOtp: React.FC = () => {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Verification Code</label>
+            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">{t('pages.auth.verifyOtp.code')}</label>
             <input
               className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-primary outline-none tracking-[0.4em] text-center"
               type="text"
@@ -131,12 +133,12 @@ const VerifyOtp: React.FC = () => {
             disabled={isSubmitting}
             aria-busy={isSubmitting}
           >
-            {isSubmitting ? 'Verifying...' : 'Verify Email'}
+            {isSubmitting ? t('pages.auth.verifyOtp.verifying') : t('pages.auth.verifyOtp.verify')}
           </button>
 
           <div className="text-center">
             <p className="text-sm text-gray-500">
-              Already verified? <Link to="/login" className="text-primary font-bold hover:underline">Log in</Link>
+              {t('pages.auth.verifyOtp.already')} <Link to="/login" className="text-primary font-bold hover:underline">{t('pages.auth.verifyOtp.logIn')}</Link>
             </p>
           </div>
         </form>

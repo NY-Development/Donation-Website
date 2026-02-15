@@ -2,9 +2,10 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { addHoverScale, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
-import { HeartHandshake, Lock, Menu, Moon, Sun, X } from 'lucide-react';
+import { Globe, HeartHandshake, Lock, Menu, Moon, Sun, X } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { getErrorMessage } from '../store/apiHelpers';
+import { useTranslation } from 'react-i18next';
 
 interface NavbarProps {
   toggleDarkMode: () => void;
@@ -12,6 +13,7 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const isCheckout = location.pathname.startsWith('/donate');
   const isAdmin = location.pathname.startsWith('/admin');
@@ -57,7 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
       if (success) {
         setIsProfileOpen(false);
       } else {
-        setProfileError('Unable to update profile right now.');
+        setProfileError(t('navbar.profile.updateError'));
       }
     } catch (error) {
       setProfileError(getErrorMessage(error));
@@ -101,6 +103,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
   }, []);
 
   if (isCheckout) {
+    const nextLanguage = i18n.language.startsWith('am') ? 'en' : 'am';
     return (
       <header ref={navRef} className="sticky top-0 z-50 w-full bg-white dark:bg-surface-dark border-b border-[#ede7f3] dark:border-gray-800">
         <div className="px-4 md:px-10 py-3 flex items-center justify-between max-w-7xl mx-auto">
@@ -108,15 +111,33 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
             <div className="size-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shadow-sm">
               <HeartHandshake className="size-5" aria-hidden="true" />
             </div>
-            <h2 className="text-xl font-black leading-tight tracking-tight text-gray-900 dark:text-white">Impact</h2>
+            <h2 className="text-xl font-black leading-tight tracking-tight text-gray-900 dark:text-white">
+              {t('common.brand')}
+            </h2>
           </Link>
           <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => {
+                i18n.changeLanguage(nextLanguage);
+                localStorage.setItem('impact:lang', nextLanguage);
+              }}
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300"
+              aria-label={t('language.label')}
+              data-animate="nav-link"
+            >
+              <span className="sr-only">{t('language.label')}</span>
+              <div className="flex items-center gap-2 text-xs font-bold">
+                <Globe className="size-4" aria-hidden="true" />
+                <span>{t('language.toggle')}</span>
+              </div>
+            </button>
             <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-animate="nav-link">
               {isDarkMode ? <Sun className="size-5" aria-hidden="true" /> : <Moon className="size-5" aria-hidden="true" />}
             </button>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#ede7f3] dark:bg-gray-800 text-sm font-bold text-gray-900 dark:text-white">
               <Lock className="size-4" aria-hidden="true" />
-              <span className="hidden sm:inline">Secure Verification</span>
+              <span className="hidden sm:inline">{t('navbar.secureVerification')}</span>
             </div>
           </div>
         </div>
@@ -136,16 +157,35 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
             <div className="size-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shadow-sm transition-transform group-hover:scale-105">
               <HeartHandshake className="size-5" aria-hidden="true" />
             </div>
-            <span className="text-xl font-black tracking-tight text-gray-900 dark:text-white">Impact</span>
+            <span className="text-xl font-black tracking-tight text-gray-900 dark:text-white">
+              {t('common.brand')}
+            </span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <Link className="text-sm font-semibold text-gray-500 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" to="/explore" data-animate="nav-link">Campaigns</Link>
-            <Link className="text-sm font-semibold text-gray-500 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" to="/create" data-animate="nav-link">Start Campaign</Link>
-            <Link className="text-sm font-semibold text-gray-500 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" to="/dashboard" data-animate="nav-link">My Impact</Link>
+            <Link className="text-sm font-semibold text-gray-500 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" to="/explore" data-animate="nav-link">{t('navbar.campaigns')}</Link>
+            <Link className="text-sm font-semibold text-gray-500 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" to="/create" data-animate="nav-link">{t('navbar.startCampaign')}</Link>
+            <Link className="text-sm font-semibold text-gray-500 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" to="/dashboard" data-animate="nav-link">{t('navbar.myImpact')}</Link>
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                const nextLanguage = i18n.language.startsWith('am') ? 'en' : 'am';
+                i18n.changeLanguage(nextLanguage);
+                localStorage.setItem('impact:lang', nextLanguage);
+              }}
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300"
+              aria-label={t('language.label')}
+              data-animate="nav-link"
+            >
+              <span className="sr-only">{t('language.label')}</span>
+              <div className="flex items-center gap-2 text-xs font-bold">
+                <Globe className="size-4" aria-hidden="true" />
+                <span>{t('language.toggle')}</span>
+              </div>
+            </button>
             <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300" data-animate="nav-link">
               {isDarkMode ? <Sun className="size-5" aria-hidden="true" /> : <Moon className="size-5" aria-hidden="true" />}
             </button>
@@ -153,11 +193,11 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
               <button 
               onClick={() => {logout()}}
               className="hidden sm:flex items-center justify-center h-9 px-4 rounded-lg text-white bg-red-500 dark:bg-red-600 dark:text-white text-sm font-bold hover:bg-red-600 dark:hover:bg-gray-700 transition-colors" data-animate="nav-link">
-                Log Out
+                {t('navbar.logOut')}
               </button>
             ) : (
               <Link to="/login" className="hidden sm:flex items-center justify-center h-9 px-4 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" data-animate="nav-link">
-                Log In
+                {t('navbar.logIn')}
               </Link>
             )}
             {isAuthenticated ? (
@@ -181,13 +221,13 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                 {isProfileOpen && (
                   <div className="absolute right-0 top-full z-50 mt-3 w-80 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 shadow-2xl">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">Your profile</h3>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('navbar.profile.title')}</h3>
                       <button
                         type="button"
                         onClick={closeProfileModal}
                         className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                       >
-                        <span className="sr-only">Close</span>
+                        <span className="sr-only">{t('common.close')}</span>
                         X
                       </button>
                     </div>
@@ -213,7 +253,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                             onClick={() => fileInputRef.current?.click()}
                             className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary"
                           >
-                            Change photo
+                            {t('navbar.profile.changePhoto')}
                           </button>
                           {profileImageFile && (
                             <span className="text-xs text-gray-500">{profileImageFile.name}</span>
@@ -221,7 +261,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                         </div>
                       </div>
                       <div>
-                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Name</label>
+                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">{t('navbar.profile.name')}</label>
                         <input
                           className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3"
                           type="text"
@@ -231,7 +271,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                         />
                       </div>
                       <div>
-                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Email</label>
+                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">{t('navbar.profile.email')}</label>
                         <input
                           className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3"
                           type="email"
@@ -251,7 +291,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                           onClick={closeProfileModal}
                           className="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-primary"
                         >
-                          Cancel
+                          {t('navbar.profile.cancel')}
                         </button>
                         <button
                           type="submit"
@@ -259,7 +299,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                           disabled={profileLoading}
                           aria-busy={profileLoading}
                         >
-                          {profileLoading ? 'Saving...' : 'Save changes'}
+                          {profileLoading ? t('navbar.profile.saving') : t('navbar.profile.save')}
                         </button>
                       </div>
                     </form>
@@ -268,7 +308,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
               </div>
             ) : (
               <Link to="/explore" className="hidden md:flex items-center justify-center h-9 px-4 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary-hover transition-colors shadow-lg shadow-primary/30" data-animate="nav-link">
-                Donate
+                {t('navbar.donate')}
               </Link>
             )}
             <button
@@ -292,21 +332,21 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                   className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Campaigns
+                  {t('navbar.campaigns')}
                 </Link>
                 <Link
                   to="/create"
                   className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Start Campaign
+                  {t('navbar.startCampaign')}
                 </Link>
                 <Link
                   to="/dashboard"
                   className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  My Impact
+                  {t('navbar.myImpact')}
                 </Link>
                 <div className="h-px bg-gray-100 dark:bg-gray-800" />
                 {isAuthenticated ? (
@@ -332,10 +372,9 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                 {!isAuthenticated && (
                   <Link
                     to="/signup"
-                    className="text-sm font-semibold text-primary"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Create account
+                    {t('navbar.createAccount')}
                   </Link>
                 )}
               </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store';
 import { Heart } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 type ProtectedRouteProps = {
   children: React.ReactNode;
@@ -9,6 +10,7 @@ type ProtectedRouteProps = {
 };
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
+  const { t } = useTranslation();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const isLoading = useAuthStore((state) => state.isLoading);
   const isInitialized = useAuthStore((state) => state.isInitialized);
@@ -27,8 +29,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, roles }) => {
             <div className="absolute -right-2 -top-1 size-4 rounded-full bg-primary animate-ping" />
           </div>
           <div className="text-center">
-            <p className="text-sm font-semibold text-gray-700">Processing your donation journey</p>
-            <p className="text-xs text-gray-500">Warming up your dashboard...</p>
+            <p className="text-sm font-semibold text-gray-700">{t('protected.loadingTitle')}</p>
+            <p className="text-xs text-gray-500">{t('protected.loadingSubtitle')}</p>
           </div>
         </div>
       </div>
