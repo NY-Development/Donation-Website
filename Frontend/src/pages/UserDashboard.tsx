@@ -6,6 +6,7 @@ import { animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, pre
 import { Activity, Award, BarChart3, CheckCircle, Heart, Megaphone, RefreshCw, Repeat, Sparkles, Star, Target, Wallet } from 'lucide-react';
 import { useCampaignStore, useDonationStore, useAuthStore } from '../store';
 import userService from '../Services/users';
+import organizerService from '../Services/organizer';
 import campaignService from '../Services/campaigns';
 import { getApiData, getErrorMessage } from '../store/apiHelpers';
 import type { DonationTrendPoint, OrganizerPendingDonations } from '../../types';
@@ -26,6 +27,12 @@ const UserDashboard: React.FC = () => {
   const [pendingDonations, setPendingDonations] = useState<OrganizerPendingDonations | null>(null);
   const [pendingLoading, setPendingLoading] = useState(false);
   const [pendingError, setPendingError] = useState<string | null>(null);
+  const [organizerStatus, setOrganizerStatus] = useState<{
+    status?: 'pending' | 'approved' | 'rejected';
+    submittedAt?: string;
+    reviewedAt?: string;
+    rejectionReason?: string;
+  } | null>(null);
   const [requestModal, setRequestModal] = useState<{ id: string; title: string; action: 'pause' | 'delete' } | null>(null);
   const [requestMessage, setRequestMessage] = useState('');
   const [requestLoading, setRequestLoading] = useState(false);
@@ -125,6 +132,32 @@ const UserDashboard: React.FC = () => {
     };
 
     loadPending();
+    return () => {
+      isActive = false;
+    };
+  }, [user]);
+
+  useEffect(() => {
+    if (!user || user.role !== 'organizer') {
+      setOrganizerStatus(null);
+      return;
+    }
+
+    let isActive = true;
+    const loadStatus = async () => {
+      try {
+        const response = await organizerService.status();
+        if (isActive) {
+          setOrganizerStatus(response.data?.data ?? null);
+        }
+      } catch {
+        if (isActive) {
+          setOrganizerStatus(null);
+        }
+      }
+    };
+
+    loadStatus();
     return () => {
       isActive = false;
     };
@@ -248,6 +281,21 @@ const UserDashboard: React.FC = () => {
           Donate Again
         </button>
       </div>
+
+      {user?.role === 'organizer' && organizerStatus?.status === 'approved' && organizerStatus.reviewedAt && (
+        <div className="mb-8 rounded-2xl border border-emerald-100 bg-emerald-50 px-6 py-4 text-emerald-700" data-animate="section">
+          <p className="font-semibold">Organizer verification approved</p>
+          <p className="text-sm mt-1">You are now verified. You can create and manage campaigns.</p>
+        </div>
+      )}
+      {user?.role === 'organizer' && organizerStatus?.status === 'rejected' && organizerStatus.reviewedAt && (
+        <div className="mb-8 rounded-2xl border border-rose-100 bg-rose-50 px-6 py-4 text-rose-700" data-animate="section">
+          <p className="font-semibold">Organizer verification rejected</p>
+          <p className="text-sm mt-1">
+            {organizerStatus.rejectionReason ?? 'Please resubmit clearer documents from the organizer verification page.'}
+          </p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10" data-animate="section">
         <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-2" data-animate="card">

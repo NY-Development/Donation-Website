@@ -39,3 +39,28 @@ export const sendCampaignCreatedEmail = async (payload: {
     text: `A new campaign was created.\n\nTitle: ${payload.title}\nCategory: ${payload.category}\nGoal: ETB ${payload.goalAmount}\nOrganizer: ${payload.organizerEmail ?? 'Unknown'}\n`
   });
 };
+
+export const sendOrganizerVerificationApprovedEmail = async (payload: {
+  email: string;
+  name?: string;
+}) => {
+  await mailer.sendMail({
+    from: env.SENDER_EMAIL,
+    to: payload.email,
+    subject: 'Your organizer verification is approved',
+    text: `Hi ${payload.name ?? 'there'},\n\nGreat news! Your organizer verification has been approved. You can now create and manage campaigns.\n\nThank you for helping our community.\n`
+  });
+};
+
+export const sendOrganizerVerificationRejectedEmail = async (payload: {
+  email: string;
+  name?: string;
+  reason?: string;
+}) => {
+  await mailer.sendMail({
+    from: env.SENDER_EMAIL,
+    to: payload.email,
+    subject: 'Your organizer verification needs attention',
+    text: `Hi ${payload.name ?? 'there'},\n\nYour organizer verification was not approved.\n${payload.reason ? `Reason: ${payload.reason}\n` : ''}\nPlease resubmit clearer documents from your dashboard.\n`
+  });
+};

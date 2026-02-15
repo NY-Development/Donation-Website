@@ -88,12 +88,19 @@ const OrganizerVerification: React.FC = () => {
         setCameraError('Camera access is not supported on this device.');
         return;
       }
+      if (!window.isSecureContext) {
+        setCameraError('Camera access requires HTTPS or localhost.');
+        return;
+      }
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'user' }
       });
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        videoRef.current.muted = true;
+        videoRef.current.playsInline = true;
+        videoRef.current.autoplay = true;
         await videoRef.current.play();
       }
       setIsCameraActive(true);
@@ -277,7 +284,13 @@ const OrganizerVerification: React.FC = () => {
           <label className="block text-sm font-semibold text-gray-900 dark:text-white">Live Photo</label>
           <div className="mt-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">
             <div className="relative w-full overflow-hidden rounded-lg bg-black">
-              <video ref={videoRef} className={`w-full ${isCameraActive ? 'block' : 'hidden'}`} playsInline />
+              <video
+                ref={videoRef}
+                className={`w-full ${isCameraActive ? 'block' : 'hidden'}`}
+                playsInline
+                muted
+                autoPlay
+              />
               {!isCameraActive && selfiePreview && (
                 <img src={selfiePreview} alt="Selfie preview" className="w-full object-cover" />
               )}

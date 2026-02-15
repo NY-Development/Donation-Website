@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import organizerService from '../Services/organizer';
 import { useVerificationStore } from '../store/verificationStore';
@@ -6,12 +6,88 @@ import { Camera, CircleDashed, ShieldCheck } from 'lucide-react';
 
 const VerificationSelfie: React.FC = () => {
   const navigate = useNavigate();
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   const { idFront, idBack, livePhoto, setLivePhoto, reset } = useVerificationStore();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [selfiePreview, setSelfiePreview] = useState<string | null>(null);
 
   const isReady = useMemo(() => Boolean(idFront && idBack && livePhoto), [idFront, idBack, livePhoto]);
+
+  useEffect(() => {
+    if (!livePhoto) {
+      setSelfiePreview(null);
+      return;
+    }
+    const previewUrl = URL.createObjectURL(livePhoto);
+    setSelfiePreview(previewUrl);
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [livePhoto]);
+
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, []);
+
+  const startCamera = async () => {
+    setCameraError(null);
+    try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setCameraError('Camera access is not supported on this device.');
+        return;
+      }
+      if (!window.isSecureContext) {
+        setCameraError('Camera access requires HTTPS or localhost.');
+        return;
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user' }
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.muted = true;
+        videoRef.current.playsInline = true;
+        videoRef.current.autoplay = true;
+        await videoRef.current.play();
+      }
+      setIsCameraActive(true);
+    } catch {
+      setCameraError('Unable to access the camera. Please allow camera access and try again.');
+      setIsCameraActive(false);
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    setIsCameraActive(false);
+  };
+
+  const captureSelfie = () => {
+    if (!videoRef.current) return;
+    const video = videoRef.current;
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const file = new File([blob], `selfie-${Date.now()}.jpg`, { type: 'image/jpeg' });
+      setLivePhoto(file);
+      stopCamera();
+    }, 'image/jpeg', 0.9);
+  };
 
   const handleSubmit = async () => {
     if (!idFront || !idBack || !livePhoto) {
@@ -69,9 +145,16 @@ const VerificationSelfie: React.FC = () => {
               <div className="absolute -inset-2 bg-gradient-to-tr from-primary to-blue-400 rounded-full blur opacity-20" />
               <div className="relative w-64 h-64 rounded-full border-4 border-white dark:border-gray-800 shadow-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                 <CircleDashed className="size-32 text-primary/40" aria-hidden="true" />
-                {livePhoto && (
+                <video
+                  ref={videoRef}
+                  className={`absolute inset-0 w-full h-full object-cover ${isCameraActive ? 'block' : 'hidden'}`}
+                  playsInline
+                  muted
+                  autoPlay
+                />
+                {!isCameraActive && selfiePreview && (
                   <img
-                    src={URL.createObjectURL(livePhoto)}
+                    src={selfiePreview}
                     alt="Selfie preview"
                     className="absolute inset-0 w-full h-full object-cover"
                   />
@@ -86,21 +169,37 @@ const VerificationSelfie: React.FC = () => {
             </div>
 
             <div className="mt-10 flex flex-col items-center w-full gap-4">
-              <input
-                ref={inputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(event) => setLivePhoto(event.target.files?.[0] ?? null)}
-              />
-              <button
-                type="button"
-                onClick={() => inputRef.current?.click()}
-                className="w-full md:w-64 bg-primary hover:bg-primary-hover text-white font-semibold py-4 rounded-xl shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2"
-              >
-                <Camera className="size-5" aria-hidden="true" />
-                {livePhoto ? 'Replace Selfie' : 'Start Camera'}
-              </button>
+              {cameraError && (
+                <p className="text-sm text-red-600">{cameraError}</p>
+              )}
+              {!isCameraActive ? (
+                <button
+                  type="button"
+                  onClick={startCamera}
+                  className="w-full md:w-64 bg-primary hover:bg-primary-hover text-white font-semibold py-4 rounded-xl shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2"
+                >
+                  <Camera className="size-5" aria-hidden="true" />
+                  {livePhoto ? 'Retake selfie' : 'Start camera'}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={captureSelfie}
+                  className="w-full md:w-64 bg-primary hover:bg-primary-hover text-white font-semibold py-4 rounded-xl shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2"
+                >
+                  <Camera className="size-5" aria-hidden="true" />
+                  Capture selfie
+                </button>
+              )}
+              {isCameraActive && (
+                <button
+                  type="button"
+                  onClick={stopCamera}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-sm font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => navigate('/uploadID')}

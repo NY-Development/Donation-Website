@@ -6,6 +6,7 @@ import { UserModel } from '../users/user.model';
 import { cloudinary } from '../../config/cloudinary';
 import { AdminSettingsModel } from './adminSettings.model';
 import { campaignActionRequestRepository } from '../campaigns/campaignActionRequest.repository';
+import { sendOrganizerVerificationApprovedEmail, sendOrganizerVerificationRejectedEmail } from '../../utils/mailer';
 
 export const adminService = {
   getOverview: async () => {
@@ -189,6 +190,13 @@ export const adminService = {
     if (!user) {
       throw { status: 404, message: 'User not found' };
     }
+
+    if (user.email) {
+      await sendOrganizerVerificationApprovedEmail({
+        email: user.email,
+        name: user.name
+      });
+    }
     return user;
   },
   rejectOrganizer: async (userId: string, adminId: string, reason?: string) => {
@@ -207,6 +215,14 @@ export const adminService = {
     );
     if (!user) {
       throw { status: 404, message: 'User not found' };
+    }
+
+    if (user.email) {
+      await sendOrganizerVerificationRejectedEmail({
+        email: user.email,
+        name: user.name,
+        reason
+      });
     }
     return user;
   },
