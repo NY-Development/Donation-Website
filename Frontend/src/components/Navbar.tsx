@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { addHoverScale, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
@@ -23,12 +23,19 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
   const [profileEmail, setProfileEmail] = useState('');
   const [profileError, setProfileError] = useState<string | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const profileInitial = user?.name?.trim()?.[0]?.toUpperCase() || user?.email?.trim()?.[0]?.toUpperCase() || 'U';
+  const profileImage = user?.profileImage?.trim() || '';
+  const hasProfileImage = Boolean(profileImage);
 
   const openProfileModal = () => {
     setProfileError(null);
     setProfileName(user?.name ?? '');
     setProfileEmail(user?.email ?? '');
+    setProfileImageFile(null);
+    setProfileImagePreview(profileImage || null);
     setIsProfileOpen(true);
   };
 
@@ -44,7 +51,8 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
     try {
       const success = await updateProfile({
         name: profileName.trim(),
-        email: profileEmail.trim()
+        email: profileEmail.trim(),
+        profileImage: profileImageFile ?? undefined
       });
       if (success) {
         setIsProfileOpen(false);
@@ -57,6 +65,16 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
       setProfileLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!profileImageFile) {
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(profileImageFile);
+    setProfileImagePreview(previewUrl);
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [profileImageFile]);
 
   useLayoutEffect(() => {
     ensureGsap();
@@ -147,10 +165,18 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                 <button
                   type="button"
                   onClick={openProfileModal}
-                  className="flex items-center justify-center size-9 rounded-full bg-primary text-white text-sm font-bold shadow-lg shadow-primary/30 hover:bg-primary-hover transition-colors"
+                  className="flex items-center justify-center size-9 rounded-full bg-primary text-white text-sm font-bold shadow-lg shadow-primary/30 hover:bg-primary-hover transition-colors overflow-hidden"
                   aria-label="Open profile"
                 >
-                  {profileInitial}
+                  {hasProfileImage ? (
+                    <img
+                      src={profileImage}
+                      alt={user?.name ?? 'User'}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    profileInitial
+                  )}
                 </button>
                 {isProfileOpen && (
                   <div className="absolute right-0 top-full z-50 mt-3 w-80 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 shadow-2xl">
@@ -166,6 +192,34 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                       </button>
                     </div>
                     <form className="space-y-4" onSubmit={submitProfile}>
+                      <div className="flex items-center gap-4">
+                        <div className="h-16 w-16 rounded-full bg-primary/10 text-primary flex items-center justify-center text-lg font-bold overflow-hidden">
+                          {profileImagePreview ? (
+                            <img src={profileImagePreview} alt={profileName || 'Profile'} className="h-full w-full object-cover" />
+                          ) : (
+                            profileInitial
+                          )}
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(event) => setProfileImageFile(event.target.files?.[0] ?? null)}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary"
+                          >
+                            Change photo
+                          </button>
+                          {profileImageFile && (
+                            <span className="text-xs text-gray-500">{profileImageFile.name}</span>
+                          )}
+                        </div>
+                      </div>
                       <div>
                         <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Name</label>
                         <input

@@ -12,6 +12,7 @@ export interface UserProfile {
   _id: string;
   name: string;
   email: string;
+  profileImage?: string;
   role: UserRole;
   emailVerified?: boolean;
   totalDonated: number;
@@ -19,9 +20,19 @@ export interface UserProfile {
   createdAt: string;
 }
 
+export interface UserSummary {
+  id?: string;
+  _id?: string;
+  name?: string;
+  email?: string;
+  profileImage?: string;
+  role?: UserRole;
+}
+
 export interface OrganizerVerificationStatus {
   isOrganizerVerified: boolean;
   status: 'pending' | 'approved' | 'rejected';
+  documentType?: 'national_id' | 'driver_license' | 'passport';
   submittedAt?: string;
   reviewedAt?: string;
   rejectionReason?: string;
@@ -42,7 +53,7 @@ export interface Campaign {
   goalReachedAt?: string;
   deadline?: string;
   closedAt?: string;
-  organizer: string;
+  organizer: string | UserSummary;
   createdBy?: string;
   createdAt: string;
   location?: string;
@@ -62,7 +73,7 @@ export interface Donation {
 
 export interface CampaignDonor {
   amount: number;
-  user?: string;
+  user?: string | UserSummary;
   donorName?: string;
   donorEmail?: string;
   createdAt: string;

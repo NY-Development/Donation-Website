@@ -51,6 +51,12 @@ const CampaignDetail: React.FC = () => {
   const raised = campaign?.raisedAmount ?? 0;
   const goal = campaign?.goalAmount ?? 1;
   const percent = Math.min(100, Math.round((raised / goal) * 100));
+  const getInitial = (value: string | undefined, fallback: string) => value?.trim()?.[0]?.toUpperCase() || fallback;
+  const organizerInfo = campaign?.organizer && typeof campaign.organizer !== 'string' ? campaign.organizer : null;
+  const organizerName = organizerInfo?.name ?? 'Organizer';
+  const organizerEmail = organizerInfo?.email ?? '';
+  const organizerImage = organizerInfo?.profileImage?.trim() || '';
+  const organizerInitial = getInitial(organizerName || organizerEmail, 'O');
 
   return (
     <div ref={containerRef} className="max-w-7xl mx-auto px-4 md:px-8 py-6">
@@ -87,10 +93,16 @@ const CampaignDetail: React.FC = () => {
 
           <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-6">
             <div className="flex gap-4 items-center">
-              <div className="h-14 w-14 rounded-full bg-cover bg-center bg-gray-200" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&auto=format&fit=crop")' }}></div>
+              <div className="h-14 w-14 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center text-sm font-bold text-gray-700">
+                {organizerImage ? (
+                  <img src={organizerImage} alt={organizerName} className="h-full w-full object-cover" />
+                ) : (
+                  organizerInitial
+                )}
+              </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="text-lg font-bold text-gray-900 dark:text-white">Organizer</p>
+                  <p className="text-lg font-bold text-gray-900 dark:text-white">{organizerName}</p>
                   <BadgeCheck className="size-4 text-primary" aria-hidden="true" />
                 </div>
                 <p className="text-gray-500 text-sm">
@@ -103,12 +115,26 @@ const CampaignDetail: React.FC = () => {
                       : campaign?.status === 'draft'
                         ? 'Draft'
                         : 'Pending'}
+                  {organizerEmail ? ` • ${organizerEmail}` : ''}
                 </p>
               </div>
             </div>
-            <button className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition text-sm font-bold">
-              <Mail className="size-4" aria-hidden="true" /> Contact
-            </button>
+            {organizerEmail ? (
+              <a
+                href={`mailto:${organizerEmail}`}
+                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition text-sm font-bold"
+              >
+                <Mail className="size-4" aria-hidden="true" /> Contact
+              </a>
+            ) : (
+              <button
+                type="button"
+                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-400 cursor-not-allowed text-sm font-bold"
+                disabled
+              >
+                <Mail className="size-4" aria-hidden="true" /> Contact
+              </button>
+            )}
           </div>
 
           <article className="prose prose-lg dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
@@ -176,20 +202,34 @@ const CampaignDetail: React.FC = () => {
                   <Heart className="size-4 text-primary" aria-hidden="true" /> Hero Donors
                 </h4>
                 <div className="space-y-4">
-                  {(donors ?? []).map((donor, index) => (
-                    <div key={`${donor.createdAt}-${index}`} className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">
-                        {donor.user ? 'DN' : 'AN'}
+                  {(donors ?? []).map((donor, index) => {
+                    const donorUser = donor.user && typeof donor.user !== 'string' ? donor.user : null;
+                    const donorName = donor.donorName ?? donorUser?.name ?? (donorUser?.email ? donorUser.email.split('@')[0] : undefined);
+                    const donorEmail = donor.donorEmail ?? donorUser?.email ?? '';
+                    const isAnonymous = !donorName && !donorEmail;
+                    const displayName = donorName || (isAnonymous ? 'Anonymous' : 'Donor');
+                    const donorImage = donorUser?.profileImage?.trim() || '';
+                    const donorInitial = getInitial(displayName || donorEmail, isAnonymous ? 'A' : 'D');
+
+                    return (
+                      <div key={`${donor.createdAt}-${index}`} className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs overflow-hidden">
+                          {donorImage ? (
+                            <img src={donorImage} alt={displayName} className="h-full w-full object-cover" />
+                          ) : (
+                            donorInitial
+                          )}
+                        </div>
+                        <div className="flex flex-col flex-1">
+                          <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                            {displayName}
+                          </span>
+                          <span className="text-xs text-gray-500">Recent donation</span>
+                        </div>
+                        <span className="text-sm font-bold text-gray-900 dark:text-white">ETB {donor.amount}</span>
                       </div>
-                      <div className="flex flex-col flex-1">
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                          {donor.donorName || (donor.user ? 'Donor' : 'Anonymous')}
-                        </span>
-                        <span className="text-xs text-gray-500">Recent donation</span>
-                      </div>
-                      <span className="text-sm font-bold text-gray-900 dark:text-white">ETB {donor.amount}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>

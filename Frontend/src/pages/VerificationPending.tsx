@@ -7,6 +7,7 @@ const VerificationPending: React.FC = () => {
   const navigate = useNavigate();
   const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [secondsLeft, setSecondsLeft] = useState(10);
 
   useEffect(() => {
     let isActive = true;
@@ -40,6 +41,25 @@ const VerificationPending: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (isVerified) {
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setSecondsLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          navigate('/dashboard', { replace: true });
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isVerified, navigate]);
+
   return (
     <div className="min-h-[70vh] bg-linear-to-br from-gray-50 via-white to-primary/5 dark:from-surface-dark dark:via-slate-950 dark:to-primary/10 flex items-center justify-center">
       <div className="max-w-3xl w-full px-6 py-12">
@@ -56,8 +76,13 @@ const VerificationPending: React.FC = () => {
           <p className="text-gray-600 dark:text-gray-400 mt-3 max-w-lg mx-auto">
             {isVerified
               ? 'Your organizer account is verified. You can now launch your campaign.'
-              : 'We are reviewing your documents to ensure the safety of our community. This usually takes less than 24 hours.'}
+              : 'We are reviewing your documents. You will receive an email confirmation once the admin team validates your submission.'}
           </p>
+          {!isVerified && (
+            <p className="mt-4 text-sm text-gray-500">
+              Returning to your dashboard in {secondsLeft}s.
+            </p>
+          )}
 
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <button
@@ -65,7 +90,7 @@ const VerificationPending: React.FC = () => {
               onClick={() => navigate(isVerified ? '/create' : '/dashboard')}
               className="px-8 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-hover shadow-lg shadow-primary/20"
             >
-              {isVerified ? 'Launch campaign' : 'Go to dashboard'}
+              {isVerified ? 'Launch campaign' : 'Back to dashboard'}
             </button>
             <button
               type="button"

@@ -13,7 +13,11 @@ export const userController = {
   },
   updateMe: async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
-      const user = await userService.updateProfile(req.user?.id ?? '', req.body);
+      const user = await userService.updateProfile(req.user?.id ?? '', {
+        name: req.body?.name,
+        email: req.body?.email,
+        profileImageFile: req.file
+      });
       res.json({ success: true, message: 'Profile updated', data: user });
     } catch (error) {
       next(error);

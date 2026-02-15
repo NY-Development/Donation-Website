@@ -15,6 +15,7 @@ type OrganizerVerification = {
   idFront?: VerificationAsset;
   idBack?: VerificationAsset;
   livePhoto?: VerificationAsset;
+  documentType?: 'national_id' | 'driver_license' | 'passport';
   submittedAt?: Date;
   reviewedAt?: Date;
   reviewedBy?: mongoose.Types.ObjectId;
@@ -30,6 +31,8 @@ export interface UserDocument extends Document {
   emailVerificationOtpHash?: string;
   emailVerificationOtpExpires?: Date;
   role: UserRole;
+  profileImage?: string;
+  profileImagePublicId?: string;
   totalDonated: number;
   isOrganizerVerified: boolean;
   organizerVerification: OrganizerVerification;
@@ -47,6 +50,8 @@ const userSchema = new Schema<UserDocument>(
     emailVerificationOtpHash: { type: String, select: false },
     emailVerificationOtpExpires: { type: Date, select: false },
     role: { type: String, enum: Object.values(UserRole), default: UserRole.DONOR },
+    profileImage: { type: String },
+    profileImagePublicId: { type: String },
     totalDonated: { type: Number, default: 0 },
     isOrganizerVerified: { type: Boolean, default: false },
     organizerVerification: {
@@ -62,6 +67,7 @@ const userSchema = new Schema<UserDocument>(
         publicId: { type: String },
         format: { type: String }
       },
+      documentType: { type: String, enum: ['national_id', 'driver_license', 'passport'] },
       submittedAt: { type: Date },
       reviewedAt: { type: Date },
       reviewedBy: { type: Schema.Types.ObjectId, ref: 'User' },

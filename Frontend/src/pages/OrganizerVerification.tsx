@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import organizerService from '../Services/organizer';
 import type { OrganizerVerificationStatus } from '../../types';
@@ -15,6 +15,12 @@ const OrganizerVerification: React.FC = () => {
   const [idFront, setIdFront] = useState<File | null>(null);
   const [idBack, setIdBack] = useState<File | null>(null);
   const [livePhoto, setLivePhoto] = useState<File | null>(null);
+  const [documentType, setDocumentType] = useState<'national_id' | 'driver_license' | 'passport'>('national_id');
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [selfiePreview, setSelfiePreview] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   useEffect(() => {
     let isActive = true;
@@ -55,13 +61,82 @@ const OrganizerVerification: React.FC = () => {
     return true;
   }, [status]);
 
+  const requiresBack = documentType !== 'passport';
+
+  useEffect(() => {
+    if (!livePhoto) {
+      setSelfiePreview(null);
+      return;
+    }
+    const previewUrl = URL.createObjectURL(livePhoto);
+    setSelfiePreview(previewUrl);
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [livePhoto]);
+
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, []);
+
+  const startCamera = async () => {
+    setCameraError(null);
+    try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setCameraError('Camera access is not supported on this device.');
+        return;
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user' }
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
+      setIsCameraActive(true);
+    } catch {
+      setCameraError('Unable to access the camera. Please allow camera access and try again.');
+      setIsCameraActive(false);
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    setIsCameraActive(false);
+  };
+
+  const captureSelfie = () => {
+    if (!videoRef.current) return;
+    const video = videoRef.current;
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const file = new File([blob], `selfie-${Date.now()}.jpg`, { type: 'image/jpeg' });
+      setLivePhoto(file);
+      stopCamera();
+    }, 'image/jpeg', 0.9);
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
     setSuccess(null);
 
-    if (!idFront || !idBack || !livePhoto) {
-      setError('Please upload your ID front, ID back, and a live photo.');
+    if (!idFront || (requiresBack && !idBack) || !livePhoto) {
+      setError(requiresBack
+        ? 'Please upload your ID front, ID back, and a live photo.'
+        : 'Please upload your passport and a live photo.');
       return;
     }
 
@@ -69,14 +144,15 @@ const OrganizerVerification: React.FC = () => {
     try {
       const formData = new FormData();
       formData.append('idFront', idFront);
-      formData.append('idBack', idBack);
+      if (idBack) {
+        formData.append('idBack', idBack);
+      }
       formData.append('livePhoto', livePhoto);
+      formData.append('documentType', documentType);
 
       await organizerService.verify(formData);
       setSuccess('Verification submitted. We will review your documents shortly.');
-
-      const refreshed = await organizerService.status();
-      setStatus(refreshed.data?.data ?? null);
+      navigate('/verPending', { replace: true });
     } catch (err) {
       setError('Unable to submit verification. Please try again.');
     } finally {
@@ -118,7 +194,7 @@ const OrganizerVerification: React.FC = () => {
         <p className="text-sm uppercase tracking-widest text-primary font-semibold">Organizer verification</p>
         <h1 className="text-3xl font-black text-gray-900 dark:text-white mt-2">Verify your identity</h1>
         <p className="text-gray-500 mt-3 max-w-2xl">
-          To protect donors and beneficiaries, we require a national ID and a live photo before you can launch campaigns.
+          To protect donors and beneficiaries, we require a government-issued ID and a live selfie before you can launch campaigns.
         </p>
         <p className="text-sm text-gray-500 mt-2">
           For the live photo, please use a mobile device with a front camera.
@@ -152,7 +228,29 @@ const OrganizerVerification: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="bg-white dark:bg-surface-dark rounded-2xl border border-gray-100 dark:border-gray-800 p-8 space-y-6">
         <div>
-          <label className="block text-sm font-semibold text-gray-900 dark:text-white">National ID - Front</label>
+          <label className="block text-sm font-semibold text-gray-900 dark:text-white">Document type</label>
+          <select
+            className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 text-sm"
+            value={documentType}
+            onChange={(event) => {
+              const nextType = event.target.value as typeof documentType;
+              setDocumentType(nextType);
+              if (nextType === 'passport') {
+                setIdBack(null);
+              }
+            }}
+            disabled={!canSubmit || isSubmitting}
+          >
+            <option value="national_id">National ID</option>
+            <option value="driver_license">Driver License</option>
+            <option value="passport">Passport</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-gray-900 dark:text-white">
+            {documentType === 'passport' ? 'Passport' : 'ID Front'}
+          </label>
           <input
             type="file"
             accept="image/*"
@@ -162,26 +260,66 @@ const OrganizerVerification: React.FC = () => {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold text-gray-900 dark:text-white">National ID - Back</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(event) => setIdBack(event.target.files?.[0] ?? null)}
-            className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 text-sm"
-            disabled={!canSubmit || isSubmitting}
-          />
-        </div>
+        {requiresBack && (
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white">ID Back</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(event) => setIdBack(event.target.files?.[0] ?? null)}
+              className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 text-sm"
+              disabled={!canSubmit || isSubmitting}
+            />
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-semibold text-gray-900 dark:text-white">Live Photo</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(event) => setLivePhoto(event.target.files?.[0] ?? null)}
-            className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 text-sm"
-            disabled={!canSubmit || isSubmitting}
-          />
+          <div className="mt-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">
+            <div className="relative w-full overflow-hidden rounded-lg bg-black">
+              <video ref={videoRef} className={`w-full ${isCameraActive ? 'block' : 'hidden'}`} playsInline />
+              {!isCameraActive && selfiePreview && (
+                <img src={selfiePreview} alt="Selfie preview" className="w-full object-cover" />
+              )}
+              {!isCameraActive && !selfiePreview && (
+                <div className="flex items-center justify-center py-12 text-sm text-gray-500">
+                  Camera preview will appear here.
+                </div>
+              )}
+            </div>
+            {cameraError && (
+              <p className="mt-2 text-sm text-red-600">{cameraError}</p>
+            )}
+            <div className="mt-4 flex flex-wrap gap-3">
+              {!isCameraActive ? (
+                <button
+                  type="button"
+                  onClick={startCamera}
+                  className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-hover"
+                  disabled={!canSubmit || isSubmitting}
+                >
+                  {livePhoto ? 'Retake selfie' : 'Start camera'}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={captureSelfie}
+                  className="px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-hover"
+                >
+                  Capture selfie
+                </button>
+              )}
+              {isCameraActive && (
+                <button
+                  type="button"
+                  onClick={stopCamera}
+                  className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-semibold text-gray-700 dark:text-gray-200"
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
+          </div>
           <p className="text-xs text-gray-500 mt-2">Use a well-lit selfie that clearly shows your face.</p>
         </div>
 

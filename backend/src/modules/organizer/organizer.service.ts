@@ -34,16 +34,24 @@ export const organizerService = {
     idFront?: Express.Multer.File;
     idBack?: Express.Multer.File;
     livePhoto?: Express.Multer.File;
-  }) => {
-    if (!files.idFront || !files.idBack || !files.livePhoto) {
-      throw { status: 400, message: 'All verification images are required' };
+  }, payload?: { documentType?: 'national_id' | 'driver_license' | 'passport' }) => {
+    if (!files.idFront || !files.livePhoto) {
+      throw { status: 400, message: 'ID front and live photo are required' };
     }
 
-    const [idFront, idBack, livePhoto] = await Promise.all([
+    const documentType = payload?.documentType ?? 'national_id';
+    const requiresBack = documentType !== 'passport';
+    if (requiresBack && !files.idBack) {
+      throw { status: 400, message: 'ID back is required for this document type' };
+    }
+
+    const uploads = await Promise.all([
       uploadImage(files.idFront, 'id-front'),
-      uploadImage(files.idBack, 'id-back'),
+      files.idBack ? uploadImage(files.idBack, 'id-back') : Promise.resolve(undefined),
       uploadImage(files.livePhoto, 'live-photo')
     ]);
+
+    const [idFront, idBack, livePhoto] = uploads;
 
     const user = await UserModel.findByIdAndUpdate(
       userId,
@@ -53,6 +61,7 @@ export const organizerService = {
           idFront,
           idBack,
           livePhoto,
+          documentType,
           status: 'pending',
           submittedAt: new Date(),
           reviewedAt: undefined,

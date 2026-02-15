@@ -19,7 +19,9 @@ export const organizerController = {
         idBack: files?.idBack?.[0],
         livePhoto: files?.livePhoto?.[0]
       };
-      const data = await organizerService.submitVerification(req.user?.id ?? '', payload);
+      const data = await organizerService.submitVerification(req.user?.id ?? '', payload, {
+        documentType: req.body?.documentType
+      });
       res.status(201).json({ success: true, message: 'Verification submitted', data });
     } catch (error) {
       next(error);

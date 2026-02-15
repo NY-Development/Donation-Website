@@ -150,7 +150,12 @@ const UserDashboard: React.FC = () => {
 
   const userId = user?.id ?? user?._id ?? '';
   const myCampaigns = useMemo(
-    () => campaigns.filter((campaign) => campaign.organizer === userId || campaign.createdBy === userId),
+    () => campaigns.filter((campaign) => {
+      const organizerId = typeof campaign.organizer === 'string'
+        ? campaign.organizer
+        : campaign.organizer?.id || campaign.organizer?._id || '';
+      return organizerId === userId || campaign.createdBy === userId;
+    }),
     [campaigns, userId]
   );
 

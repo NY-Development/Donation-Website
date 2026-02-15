@@ -1,8 +1,14 @@
 import { Router } from 'express';
+import multer from 'multer';
 import { requireAuth } from '../../middlewares/auth.middleware';
 import { userController } from './user.controller';
 import { validate } from '../../utils/validate';
 import { z } from 'zod';
+
+const upload = multer({
+	storage: multer.memoryStorage(),
+	limits: { fileSize: 5 * 1024 * 1024 }
+});
 
 const router = Router();
 const dashboardQuerySchema = z.object({
@@ -28,7 +34,7 @@ const updateProfileSchema = z.object({
 });
 
 router.get('/me', requireAuth, userController.getMe);
-router.patch('/me', requireAuth, validate(updateProfileSchema, 'body'), userController.updateMe);
+router.patch('/me', requireAuth, upload.single('profileImage'), validate(updateProfileSchema, 'body'), userController.updateMe);
 
 router.get('/me/dashboard', requireAuth, validate(dashboardQuerySchema, 'query'), userController.getDashboard);
 router.get('/me/trends', requireAuth, validate(trendsQuerySchema, 'query'), userController.getTrends);

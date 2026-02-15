@@ -74,15 +74,17 @@ const AdminDashboard: React.FC = () => {
 
       const response = await campaignService.getAll({
         status: statusFilter === 'all' ? undefined : statusMap[statusFilter],
-        limit: 25,
-        sort: 'desc'
-      });
-      return getApiData<{ data: Campaign[]; nextCursor: string | null }>(response);
-    }
-  });
-
-  useEffect(() => {
     const mapped = (moderationData?.data ?? []).map((campaign) => ({
+      id: campaign._id,
+      title: campaign.title,
+      organizer: typeof campaign.organizer === 'string'
+        ? campaign.organizer
+        : campaign.organizer?.name || campaign.organizer?.email || campaign.organizer?._id || 'Organizer',
+      goal: campaign.goalAmount,
+      raised: campaign.raisedAmount,
+      status: mapStatus(campaign.status),
+      updatedAt: campaign.createdAt
+    }));
       id: campaign._id,
       title: campaign.title,
       organizer: campaign.organizer,

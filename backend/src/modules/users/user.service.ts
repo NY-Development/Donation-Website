@@ -1,4 +1,5 @@
 import { donationRepository } from '../donations/donation.repository';
+import { cloudinary } from '../../config/cloudinary';
 import { userRepository } from './user.repository';
 import { makeCursor } from '../../utils/pagination';
 import { campaignRepository } from '../campaigns/campaign.repository';
@@ -11,7 +12,7 @@ export const userService = {
     }
     return user;
   },
-  updateProfile: async (userId: string, payload: { name?: string; email?: string }) => {
+  updateProfile: async (userId: string, payload: { name?: string; email?: string; profileImageFile?: Express.Multer.File }) => {
     const user = await userRepository.findById(userId);
     if (!user) {
       throw { status: 404, message: 'User not found' };
@@ -24,9 +25,21 @@ export const userService = {
       }
     }
 
+    let profileImage = user.profileImage;
+    let profileImagePublicId = user.profileImagePublicId;
+
+    if (payload.profileImageFile) {
+      const dataUri = `data:${payload.profileImageFile.mimetype};base64,${payload.profileImageFile.buffer.toString('base64')}`;
+      const upload = await cloudinary.uploader.upload(dataUri, { folder: 'profiles' });
+      profileImage = upload.secure_url;
+      profileImagePublicId = upload.public_id;
+    }
+
     const updated = await userRepository.updateById(userId, {
       name: payload.name ?? user.name,
-      email: payload.email ?? user.email
+      email: payload.email ?? user.email,
+      profileImage,
+      profileImagePublicId
     });
 
     if (!updated) {

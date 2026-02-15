@@ -32,7 +32,7 @@ type AuthState = {
   logout: () => Promise<void>;
   loadUser: () => Promise<boolean>;
   initialize: () => Promise<void>;
-  updateProfile: (payload: { name?: string; email?: string }) => Promise<boolean>;
+  updateProfile: (payload: { name?: string; email?: string; profileImage?: File | null }) => Promise<boolean>;
   clearError: () => void;
 };
 
@@ -175,7 +175,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   updateProfile: async (payload) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await userService.updateMe(payload);
+      const hasProfileImage = Boolean(payload.profileImage);
+      const requestPayload = hasProfileImage ? (() => {
+        const formData = new FormData();
+        if (payload.name) {
+          formData.append('name', payload.name);
+        }
+        if (payload.email) {
+          formData.append('email', payload.email);
+        }
+        if (payload.profileImage) {
+          formData.append('profileImage', payload.profileImage);
+        }
+        return formData;
+      })() : payload;
+
+      const response = await userService.updateMe(requestPayload);
       const user = getApiData(response) as AuthUser | null;
       set({ user: user ?? null, isLoading: false });
       return Boolean(user);
