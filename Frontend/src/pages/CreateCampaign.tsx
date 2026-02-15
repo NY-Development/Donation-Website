@@ -20,15 +20,7 @@ import {
   CheckCircle,
   Flag,
   Image,
-                <span>
-                  {s === 1
-                    ? t('pages.createCampaign.steps.title')
-                    : s === 2
-                      ? t('pages.createCampaign.steps.story')
-                      : s === 3
-                        ? t('pages.createCampaign.steps.goal')
-                        : t('pages.createCampaign.steps.media')}
-                </span>
+  Italic,
   Lightbulb,
   Link as LinkIcon,
   Wallet
@@ -37,14 +29,8 @@ import { useTranslation } from 'react-i18next';
 
 const CreateCampaign: React.FC = () => {
   const { t } = useTranslation();
-        <p className="text-primary text-sm font-bold uppercase tracking-wider mb-2">
-          {t('pages.createCampaign.stepIndicator', { step })}
-        </p>
+  const [step, setStep] = useState(1);
   const [title, setTitle] = useState('');
-          {step === 1 && t('pages.createCampaign.headings.step1')}
-          {step === 2 && t('pages.createCampaign.headings.step2')}
-          {step === 3 && t('pages.createCampaign.headings.step3')}
-          {step === 4 && t('pages.createCampaign.headings.step4')}
   const [deadline, setDeadline] = useState('');
   const [fundingStyle, setFundingStyle] = useState<'keep' | 'all_or_nothing'>('keep');
   const [urgent, setUrgent] = useState(false);
@@ -417,7 +403,15 @@ const CreateCampaign: React.FC = () => {
                     {s}
                   </span>
                 )}
-                <span>{s === 1 ? 'Title' : s === 2 ? 'Story' : s === 3 ? 'Goal' : 'Media'}</span>
+                <span>
+                  {s === 1
+                    ? t('pages.createCampaign.steps.title')
+                    : s === 2
+                      ? t('pages.createCampaign.steps.story')
+                      : s === 3
+                        ? t('pages.createCampaign.steps.goal')
+                        : t('pages.createCampaign.steps.media')}
+                </span>
               </div>
               {s < 4 && <span className="text-gray-300 dark:text-gray-700">/</span>}
             </React.Fragment>
@@ -426,12 +420,14 @@ const CreateCampaign: React.FC = () => {
       </div>
 
       <div className="mb-8 text-center md:text-left" data-animate="section">
-        <p className="text-primary text-sm font-bold uppercase tracking-wider mb-2">Step {step} of 4</p>
+        <p className="text-primary text-sm font-bold uppercase tracking-wider mb-2">
+          {t('pages.createCampaign.stepIndicator', { step })}
+        </p>
         <h1 className="text-3xl sm:text-4xl font-black leading-tight tracking-tight text-gray-900 dark:text-white">
-          {step === 1 && "Let's start with the basics"}
-          {step === 2 && 'Tell your story'}
-          {step === 3 && 'Set your fundraising goal'}
-          {step === 4 && 'Media & Cover Photo'}
+          {step === 1 && t('pages.createCampaign.headings.step1')}
+          {step === 2 && t('pages.createCampaign.headings.step2')}
+          {step === 3 && t('pages.createCampaign.headings.step3')}
+          {step === 4 && t('pages.createCampaign.headings.step4')}
         </h1>
       </div>
 

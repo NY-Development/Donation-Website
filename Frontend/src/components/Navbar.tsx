@@ -2,10 +2,11 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { gsap } from 'gsap';
 import { addHoverScale, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
-import { Globe, HeartHandshake, Lock, Menu, Moon, Sun, X } from 'lucide-react';
+import { Compass, Globe, HeartHandshake, Home, LayoutDashboard, Lock, Moon, Sun, Menu, X, LogOut } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { getErrorMessage } from '../store/apiHelpers';
 import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface NavbarProps {
   toggleDarkMode: () => void;
@@ -18,7 +19,8 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
   const isCheckout = location.pathname.startsWith('/donate');
   const isAdmin = location.pathname.startsWith('/admin');
   const navRef = useRef<HTMLElement | null>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isAuthenticated, logout, user, updateProfile } = useAuthStore();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [profileName, setProfileName] = useState('');
@@ -28,6 +30,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  
   const profileInitial = user?.name?.trim()?.[0]?.toUpperCase() || user?.email?.trim()?.[0]?.toUpperCase() || 'U';
   const profileImage = user?.profileImage?.trim() || '';
   const hasProfileImage = Boolean(profileImage);
@@ -39,6 +42,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
     setProfileImageFile(null);
     setProfileImagePreview(profileImage || null);
     setIsProfileOpen(true);
+    setIsMobileMenuOpen(false);
   };
 
   const closeProfileModal = () => {
@@ -69,10 +73,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
   };
 
   useEffect(() => {
-    if (!profileImageFile) {
-      return;
-    }
-
+    if (!profileImageFile) return;
     const previewUrl = URL.createObjectURL(profileImageFile);
     setProfileImagePreview(previewUrl);
     return () => URL.revokeObjectURL(previewUrl);
@@ -124,19 +125,14 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
               }}
               className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300"
               aria-label={t('language.label')}
-              data-animate="nav-link"
             >
-              <span className="sr-only">{t('language.label')}</span>
-              <div className="flex items-center gap-2 text-xs font-bold">
-                <Globe className="size-4" aria-hidden="true" />
-                <span>{t('language.toggle')}</span>
-              </div>
+              <Globe className="size-4" />
             </button>
-            <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-animate="nav-link">
-              {isDarkMode ? <Sun className="size-5" aria-hidden="true" /> : <Moon className="size-5" aria-hidden="true" />}
+            <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+              {isDarkMode ? <Sun className="size-5" /> : <Moon className="size-5" />}
             </button>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#ede7f3] dark:bg-gray-800 text-sm font-bold text-gray-900 dark:text-white">
-              <Lock className="size-4" aria-hidden="true" />
+              <Lock className="size-4" />
               <span className="hidden sm:inline">{t('navbar.secureVerification')}</span>
             </div>
           </div>
@@ -145,245 +141,221 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
     );
   }
 
-  if (isAdmin) {
-    return null;
-  }
+  if (isAdmin) return null;
+
+  const navItems = [
+    { to: '/', label: t('navbar.home'), icon: Home, match: (path: string) => path === '/' },
+    { to: '/explore', label: t('navbar.explore'), icon: Compass, match: (path: string) => path.startsWith('/explore') },
+    { to: '/donate', label: t('navbar.donate'), icon: HeartHandshake, match: (path: string) => path.startsWith('/donate') },
+    { to: '/dashboard', label: t('navbar.dashboard'), icon: LayoutDashboard, match: (path: string) => path.startsWith('/dashboard') }
+  ];
 
   return (
-    <nav ref={navRef} className="sticky top-0 z-50 w-full bg-white dark:bg-surface-dark border-b border-gray-200 dark:border-gray-800">
-      <div className="max-w-300 mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2 group" data-animate="nav-link">
-            <div className="size-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shadow-sm transition-transform group-hover:scale-105">
-              <HeartHandshake className="size-5" aria-hidden="true" />
+    <>
+      <motion.nav
+        ref={navRef}
+        layout
+        transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
+        className={`fixed z-50 transition-all duration-300 ${
+          isMobileMenuOpen 
+            ? 'top-6 right-6 left-6 rounded-[2rem]' 
+            : 'top-6 right-6 md:left-1/2 md:-translate-x-1/2 md:w-[90%] md:max-w-6xl rounded-full'
+        } border border-white/20 bg-white/80 dark:bg-gray-900/80 px-2 py-2 shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-[16px]`}
+      >
+        <div className="flex items-center justify-between w-full px-2">
+          {/* Logo - Desktop only or Mobile expanded */}
+          <Link to="/" className={`flex items-center gap-3 ${!isMobileMenuOpen && 'hidden md:flex'}`}>
+            <div className="size-8 rounded-lg bg-violet-700 text-white flex items-center justify-center">
+              <HeartHandshake className="size-4" />
             </div>
-            <span className="text-xl font-black tracking-tight text-gray-900 dark:text-white">
+            <span className="font-black text-lg tracking-tight text-gray-900 dark:text-white">
               {t('common.brand')}
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-8">
-            <Link className="text-sm font-semibold text-gray-500 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" to="/explore" data-animate="nav-link">{t('navbar.campaigns')}</Link>
-            <Link className="text-sm font-semibold text-gray-500 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" to="/create" data-animate="nav-link">{t('navbar.startCampaign')}</Link>
-            <Link className="text-sm font-semibold text-gray-500 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors" to="/dashboard" data-animate="nav-link">{t('navbar.myImpact')}</Link>
+          {/* Desktop Central Navigation */}
+          <div 
+            className="hidden md:flex items-center gap-1 bg-gray-100/50 dark:bg-white/5 p-1 rounded-full"
+            onMouseEnter={() => setIsExpanded(true)}
+            onMouseLeave={() => setIsExpanded(false)}
+          >
+            {navItems.map((item) => {
+              const isActive = item.match(location.pathname);
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition-all duration-300 ${
+                    isActive ? 'bg-violet-700 text-white shadow-md' : 'text-gray-600 dark:text-gray-300 hover:text-violet-700 dark:hover:text-white'
+                  }`}
+                >
+                  <Icon className="size-4" />
+                  <motion.span
+                    initial={false}
+                    animate={{ width: isExpanded ? 'auto' : 0, opacity: isExpanded ? 1 : 0 }}
+                    className="overflow-hidden whitespace-nowrap"
+                  >
+                    {item.label}
+                  </motion.span>
+                </Link>
+              );
+            })}
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Desktop Right Actions */}
+          <div className="hidden md:flex items-center gap-2">
             <button
-              type="button"
               onClick={() => {
-                const nextLanguage = i18n.language.startsWith('am') ? 'en' : 'am';
-                i18n.changeLanguage(nextLanguage);
-                localStorage.setItem('impact:lang', nextLanguage);
+                const nextLang = i18n.language.startsWith('am') ? 'en' : 'am';
+                i18n.changeLanguage(nextLang);
+                localStorage.setItem('impact:lang', nextLang);
               }}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300"
-              aria-label={t('language.label')}
-              data-animate="nav-link"
+              className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-800 transition-colors"
             >
-              <span className="sr-only">{t('language.label')}</span>
-              <div className="flex items-center gap-2 text-xs font-bold">
-                <Globe className="size-4" aria-hidden="true" />
-                <span>{t('language.toggle')}</span>
-              </div>
+              <Globe className="size-4" />
             </button>
-            <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300" data-animate="nav-link">
-              {isDarkMode ? <Sun className="size-5" aria-hidden="true" /> : <Moon className="size-5" aria-hidden="true" />}
+            <button onClick={toggleDarkMode} className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-800 transition-colors">
+              {isDarkMode ? <Sun className="size-4" /> : <Moon className="size-4" />}
             </button>
+            <div className="h-6 w-px bg-gray-200 dark:bg-gray-700 mx-1" />
             {isAuthenticated ? (
-              <button 
-              onClick={() => {logout()}}
-              className="hidden sm:flex items-center justify-center h-9 px-4 rounded-lg text-white bg-red-500 dark:bg-red-600 dark:text-white text-sm font-bold hover:bg-red-600 dark:hover:bg-gray-700 transition-colors" data-animate="nav-link">
-                {t('navbar.logOut')}
+              <button onClick={openProfileModal} className="size-9 rounded-full bg-violet-700 text-white font-bold text-sm overflow-hidden shadow-sm">
+                {hasProfileImage ? <img src={profileImage} className="h-full w-full object-cover" /> : profileInitial}
               </button>
             ) : (
-              <Link to="/login" className="hidden sm:flex items-center justify-center h-9 px-4 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" data-animate="nav-link">
+              <Link to="/login" className="px-5 py-2 rounded-full bg-violet-700 text-white text-sm font-bold hover:bg-violet-800 transition-all">
                 {t('navbar.logIn')}
               </Link>
             )}
-            {isAuthenticated ? (
-              <div className="relative hidden md:flex items-center" data-animate="nav-link">
-                <button
-                  type="button"
-                  onClick={openProfileModal}
-                  className="flex items-center justify-center size-9 rounded-full bg-primary text-white text-sm font-bold shadow-lg shadow-primary/30 hover:bg-primary-hover transition-colors overflow-hidden"
-                  aria-label="Open profile"
-                >
-                  {hasProfileImage ? (
-                    <img
-                      src={profileImage}
-                      alt={user?.name ?? 'User'}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    profileInitial
-                  )}
-                </button>
-                {isProfileOpen && (
-                  <div className="absolute right-0 top-full z-50 mt-3 w-80 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-6 shadow-2xl">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('navbar.profile.title')}</h3>
-                      <button
-                        type="button"
-                        onClick={closeProfileModal}
-                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-                      >
-                        <span className="sr-only">{t('common.close')}</span>
-                        X
-                      </button>
-                    </div>
-                    <form className="space-y-4" onSubmit={submitProfile}>
-                      <div className="flex items-center gap-4">
-                        <div className="h-16 w-16 rounded-full bg-primary/10 text-primary flex items-center justify-center text-lg font-bold overflow-hidden">
-                          {profileImagePreview ? (
-                            <img src={profileImagePreview} alt={profileName || 'Profile'} className="h-full w-full object-cover" />
-                          ) : (
-                            profileInitial
-                          )}
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(event) => setProfileImageFile(event.target.files?.[0] ?? null)}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => fileInputRef.current?.click()}
-                            className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary"
-                          >
-                            {t('navbar.profile.changePhoto')}
-                          </button>
-                          {profileImageFile && (
-                            <span className="text-xs text-gray-500">{profileImageFile.name}</span>
-                          )}
-                        </div>
+          </div>
+
+          {/* Mobile Toggle Button (The "Only Icon" entry point) */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className={`p-3 md:hidden rounded-full transition-colors ${isMobileMenuOpen ? 'bg-gray-100 dark:bg-gray-800' : 'text-gray-900 dark:text-white'}`}
+          >
+            {isMobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+          </button>
+        </div>
+
+        {/* Mobile Expanded Menu Content */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="md:hidden px-4 pb-6 pt-2 overflow-hidden"
+            >
+              <div className="grid grid-cols-1 gap-2 mb-6">
+                {navItems.map((item) => {
+                  const isActive = item.match(location.pathname);
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`flex items-center gap-4 p-4 rounded-2xl transition-all ${
+                        isActive ? 'bg-violet-700 text-white' : 'bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300'
+                      }`}
+                    >
+                      <Icon className="size-5" />
+                      <span className="font-bold">{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+
+              <div className="flex flex-col gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-3xl">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold text-gray-500">{t('common.toggleTheme')}</span>
+                  <button onClick={toggleDarkMode} className="p-3 rounded-full bg-white dark:bg-gray-800 shadow-sm">
+                    {isDarkMode ? <Sun className="size-5 text-yellow-500" /> : <Moon className="size-5 text-violet-700" />}
+                  </button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold text-gray-500">{t('language.label')}</span>
+                  <button
+                    onClick={() => {
+                      const nextLang = i18n.language.startsWith('am') ? 'en' : 'am';
+                      i18n.changeLanguage(nextLang);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-gray-800 shadow-sm text-sm font-bold"
+                  >
+                    <Globe className="size-4" />
+                    {i18n.language.toUpperCase()}
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-6 flex flex-col gap-2">
+                {isAuthenticated ? (
+                  <>
+                    <button onClick={openProfileModal} className="flex items-center gap-3 p-4 rounded-2xl bg-violet-700 text-white font-bold">
+                      <div className="size-8 rounded-full bg-white/20 overflow-hidden flex items-center justify-center">
+                        {hasProfileImage ? <img src={profileImage} className="h-full w-full object-cover" /> : profileInitial}
                       </div>
-                      <div>
-                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">{t('navbar.profile.name')}</label>
-                        <input
-                          className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3"
-                          type="text"
-                          value={profileName}
-                          onChange={(event) => setProfileName(event.target.value)}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">{t('navbar.profile.email')}</label>
-                        <input
-                          className="mt-2 w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3"
-                          type="email"
-                          value={profileEmail}
-                          onChange={(event) => setProfileEmail(event.target.value)}
-                          required
-                        />
-                      </div>
-                      {profileError && (
-                        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
-                          {profileError}
-                        </div>
-                      )}
-                      <div className="flex items-center justify-end gap-3">
-                        <button
-                          type="button"
-                          onClick={closeProfileModal}
-                          className="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-primary"
-                        >
-                          {t('navbar.profile.cancel')}
-                        </button>
-                        <button
-                          type="submit"
-                          className="px-5 py-2 rounded-lg bg-primary text-white text-sm font-bold"
-                          disabled={profileLoading}
-                          aria-busy={profileLoading}
-                        >
-                          {profileLoading ? t('navbar.profile.saving') : t('navbar.profile.save')}
-                        </button>
-                      </div>
-                    </form>
+                      {t('navbar.profile.title')}
+                    </button>
+                    <button onClick={() => logout()} className="flex items-center gap-3 p-4 rounded-2xl text-red-500 font-bold bg-red-50 dark:bg-red-500/10">
+                      <LogOut className="size-5" />
+                      {t('navbar.logOut')}
+                    </button>
+                  </>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="p-4 rounded-2xl bg-gray-100 dark:bg-white/5 text-center font-bold">
+                      {t('navbar.logIn')}
+                    </Link>
+                    <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)} className="p-4 rounded-2xl bg-violet-700 text-white text-center font-bold">
+                      {t('navbar.createAccount')}
+                    </Link>
                   </div>
                 )}
               </div>
-            ) : (
-              <Link to="/explore" className="hidden md:flex items-center justify-center h-9 px-4 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary-hover transition-colors shadow-lg shadow-primary/30" data-animate="nav-link">
-                {t('navbar.donate')}
-              </Link>
-            )}
-            <button
-              type="button"
-              onClick={() => setIsMenuOpen((prev) => !prev)}
-              className="md:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300"
-              aria-label="Toggle navigation"
-              aria-expanded={isMenuOpen}
-            >
-              {isMenuOpen ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
-            </button>
-          </div>
-        </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.nav>
 
-        {isMenuOpen && (
-          <div className="md:hidden pb-4">
-            <div className="mt-2 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-surface-dark p-4 shadow-lg">
-              <div className="flex flex-col gap-3">
-                <Link
-                  to="/explore"
-                  className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('navbar.campaigns')}
-                </Link>
-                <Link
-                  to="/create"
-                  className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('navbar.startCampaign')}
-                </Link>
-                <Link
-                  to="/dashboard"
-                  className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t('navbar.myImpact')}
-                </Link>
-                <div className="h-px bg-gray-100 dark:bg-gray-800" />
-                {isAuthenticated ? (
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      await logout();
-                      setIsMenuOpen(false);
-                    }}
-                    className="w-full text-left text-sm font-semibold text-red-500 hover:text-red-600"
-                  >
-                    Log Out
-                  </button>
-                ) : (
-                  <Link
-                    to="/login"
-                    className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-primary"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Log In
-                  </Link>
-                )}
-                {!isAuthenticated && (
-                  <Link
-                    to="/signup"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {t('navbar.createAccount')}
-                  </Link>
-                )}
-              </div>
-            </div>
+      {/* Profile Modal */}
+      <AnimatePresence>
+        {isProfileOpen && (
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeProfileModal} className="absolute inset-0 bg-black/40 backdrop-blur-md" />
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative w-full max-w-md rounded-[2.5rem] bg-white dark:bg-gray-900 p-8 shadow-2xl overflow-hidden">
+               {/* Modal Content - Kept the same but applied rounded style */}
+               <div className="flex items-center justify-between mb-8">
+                  <h3 className="text-2xl font-black text-gray-900 dark:text-white">{t('navbar.profile.title')}</h3>
+                  <button onClick={closeProfileModal} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><X /></button>
+               </div>
+               <form className="space-y-6" onSubmit={submitProfile}>
+                  <div className="flex items-center gap-6">
+                    <div className="size-20 rounded-3xl bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center overflow-hidden">
+                      {profileImagePreview ? <img src={profileImagePreview} className="h-full w-full object-cover" /> : <span className="text-2xl font-bold text-violet-700">{profileInitial}</span>}
+                    </div>
+                    <button type="button" onClick={() => fileInputRef.current?.click()} className="text-sm font-bold text-violet-700 underline">
+                      {t('navbar.profile.changePhoto')}
+                    </button>
+                    <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => setProfileImageFile(e.target.files?.[0] ?? null)} />
+                  </div>
+                  <div className="space-y-4">
+                    <input className="w-full rounded-2xl border-none bg-gray-100 dark:bg-gray-800 px-6 py-4 font-medium dark:text-white" type="text" value={profileName} onChange={(e) => setProfileName(e.target.value)} placeholder={t('navbar.profile.name')} />
+                    <input className="w-full rounded-2xl border-none bg-gray-100 dark:bg-gray-800 px-6 py-4 font-medium dark:text-white" type="email" value={profileEmail} onChange={(e) => setProfileEmail(e.target.value)} placeholder={t('navbar.profile.email')} />
+                  </div>
+                  {profileError && <div className="p-4 rounded-xl bg-red-50 text-red-600 text-sm font-bold">{profileError}</div>}
+                  <div className="flex gap-3">
+                    <button type="button" onClick={closeProfileModal} className="flex-1 py-4 font-bold text-gray-500">{t('navbar.profile.cancel')}</button>
+                    <button type="submit" className="flex-1 py-4 rounded-2xl bg-violet-700 text-white font-bold" disabled={profileLoading}>{profileLoading ? t('navbar.profile.saving') : t('navbar.profile.save')}</button>
+                  </div>
+               </form>
+            </motion.div>
           </div>
         )}
-      </div>
-
-    </nav>
+      </AnimatePresence>
+    </>
   );
 };
 
