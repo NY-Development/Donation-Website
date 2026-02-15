@@ -170,7 +170,7 @@ const AdminUserManagement: React.FC = () => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full min-w-[720px] text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50/50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                   <th className="px-6 py-4 border-b border-slate-200 dark:border-slate-800">User</th>

@@ -65,7 +65,7 @@ const userSchema = new Schema<UserDocument>(
       submittedAt: { type: Date },
       reviewedAt: { type: Date },
       reviewedBy: { type: Schema.Types.ObjectId, ref: 'User' },
-      status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+      status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'approved' },
       rejectionReason: { type: String }
     },
     refreshTokens: { type: [String], default: [] }
