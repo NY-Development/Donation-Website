@@ -159,7 +159,7 @@ const AdminCampaignModeration: React.FC = () => {
             </div>
           </div>
 
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse scroll-auto">
             <thead>
               <tr className="bg-slate-50/50 dark:bg-zinc-800/50">
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Campaign</th>

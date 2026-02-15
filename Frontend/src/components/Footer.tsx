@@ -65,7 +65,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
         <div className="border-t border-gray-200 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500 dark:text-gray-500">
-          <p>© 2024 ImpactGive Foundation. All rights reserved.</p>
+          <p>© 2026 ImpactGive Foundation. All rights reserved.</p>
           <a
             href="https://nydevelopment.vercel.app"
             target="_blank"
