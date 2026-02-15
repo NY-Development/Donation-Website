@@ -79,5 +79,18 @@
     "campaignActionRequestsFetched": "የዘመቻ እርምጃ ጥያቄዎች ተመልሰዋል",
     "requestApproved": "ጥያቄ ተፈቅዷል",
     "requestRejected": "ጥያቄ ተቀባይነት አላገኘም"
+  },
+  "root": {
+    "title": "ImpactGive API",
+    "badge": "ImpactGive API",
+    "heading": "ባክእንድ በስራ ላይ ነው።",
+    "body": "የImpactGive ሰርቨርን ደርሰዋል። ዘመቻዎች፣ ተጠቃሚዎች እና ልገሳዎችን ለማግኘት የAPI መንገዶችን ይጠቀሙ።",
+    "statusLabel": "ሁኔታ",
+    "statusValue": "በመስመር ላይ",
+    "healthLabel": "ጤና",
+    "docsLabel": "ሰነዶች",
+    "docsValue": "በቅርቡ",
+    "verifyPrompt": "ማረጋገጥ ይፈልጋሉ? ይሞክሩ",
+    "verifyLinkText": "/api/health"
   }
 }

@@ -198,7 +198,7 @@ export const adminService = {
       { new: true }
     );
     if (!user) {
-      throw { status: 404, message: 'User not found' };
+      throw { status: 404, message: 'errors.userNotFound' };
     }
 
     if (user.email) {
@@ -224,7 +224,7 @@ export const adminService = {
       { new: true }
     );
     if (!user) {
-      throw { status: 404, message: 'User not found' };
+      throw { status: 404, message: 'errors.userNotFound' };
     }
 
     if (user.email) {

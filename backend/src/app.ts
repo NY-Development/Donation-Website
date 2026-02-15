@@ -54,13 +54,14 @@ app.use((req, res, next) => {
 });
 
 // FULL HTML ROOT ROUTE PRESERVED
-app.get('/', (_req, res) => {
+app.get('/', (req, res) => {
+  const t = (req as any).t?.bind(req) ?? ((key: string) => key);
   res.status(200).type('html').send(`<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ImpactGive API</title>
+    <title>${t('root.title')}</title>
     <style>
       :root {
         color-scheme: light dark;
@@ -142,15 +143,15 @@ app.get('/', (_req, res) => {
   <body>
     <div class="wrap">
       <div class="card">
-        <div class="badge">ImpactGive API</div>
-        <h1>Backend is live and ready.</h1>
-        <p>You have reached the ImpactGive server. Use the API routes to access campaigns, users, and donations.</p>
+        <div class="badge">${t('root.badge')}</div>
+        <h1>${t('root.heading')}</h1>
+        <p>${t('root.body')}</p>
         <div class="grid">
-          <div class="tile"><span>Status</span><strong>Online</strong></div>
-          <div class="tile"><span>Health</span><strong>/api/health</strong></div>
-          <div class="tile"><span>Docs</span><strong>Coming soon</strong></div>
+          <div class="tile"><span>${t('root.statusLabel')}</span><strong>${t('root.statusValue')}</strong></div>
+          <div class="tile"><span>${t('root.healthLabel')}</span><strong>/api/health</strong></div>
+          <div class="tile"><span>${t('root.docsLabel')}</span><strong>${t('root.docsValue')}</strong></div>
         </div>
-        <p style="margin-top: 18px;">Need to verify? Try <a href="/api/health">/api/health</a>.</p>
+        <p style="margin-top: 18px;">${t('root.verifyPrompt')} <a href="/api/health">${t('root.verifyLinkText')}</a>.</p>
       </div>
     </div>
   </body>

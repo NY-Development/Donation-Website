@@ -79,5 +79,18 @@
     "campaignActionRequestsFetched": "Campaign action requests fetched",
     "requestApproved": "Request approved",
     "requestRejected": "Request rejected"
+  },
+  "root": {
+    "title": "ImpactGive API",
+    "badge": "ImpactGive API",
+    "heading": "Backend is live and ready.",
+    "body": "You have reached the ImpactGive server. Use the API routes to access campaigns, users, and donations.",
+    "statusLabel": "Status",
+    "statusValue": "Online",
+    "healthLabel": "Health",
+    "docsLabel": "Docs",
+    "docsValue": "Coming soon",
+    "verifyPrompt": "Need to verify? Try",
+    "verifyLinkText": "/api/health"
   }
 }
