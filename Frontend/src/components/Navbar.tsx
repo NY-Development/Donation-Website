@@ -177,15 +177,15 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
         layout
         animate={{ opacity: isNavVisible ? 1 : 0, y: isNavVisible ? 0 : -12 }}
         transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
-        className={`fixed right-3 top-3 z-50 transition-all duration-300 ${
+        className={`fixed right-3 top-3 md:right-6 md:top-1/2 md:-translate-y-1/2 z-50 transition-all duration-300 ${
           isMobileMenuOpen 
             ? ('top-3 right-3 left-3 rounded-[2rem] absolute') 
-            : ('top-3 right-3 md:left-1/2 md:-translate-x-1/2 md:w-[90%] md:max-w-6xl rounded-full')
+            : ('md:left-auto md:translate-x-0 md:w-auto md:max-w-none rounded-3xl')
         } ${isNavVisible ? 'pointer-events-auto' : 'pointer-events-none'} border border-white/20 bg-white/80 dark:bg-gray-900/80 px-2 py-2 shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-[16px]`}
       >
-        <div className="flex items-center justify-between w-full px-2">
+        <div className="flex items-center justify-between w-full px-2 md:flex-col md:items-end md:gap-4 md:px-3">
           {/* Logo - Desktop only or Mobile expanded */}
-          <Link to="/" className={`flex items-center gap-3 ${!isMobileMenuOpen && 'hidden md:flex'}`}>
+          <Link to="/" className={`flex items-center gap-3 md:hidden ${!isMobileMenuOpen ? 'hidden' : 'flex'}`}>
             <div className="size-8 rounded-lg bg-violet-700 text-white flex items-center justify-center">
               <HeartHandshake className="size-4" />
             </div>
@@ -196,7 +196,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
 
           {/* Desktop Central Navigation */}
           <div 
-            className="hidden md:flex items-center gap-1 bg-gray-100/50 dark:bg-white/5 p-1 rounded-full"
+            className="hidden md:flex md:flex-col md:items-end gap-1 bg-gray-100/50 dark:bg-white/5 p-2 rounded-2xl"
             onMouseEnter={() => setIsExpanded(true)}
             onMouseLeave={() => setIsExpanded(false)}
           >
@@ -225,7 +225,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
           </div>
 
           {/* Desktop Right Actions */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden md:flex md:flex-col md:items-end gap-2">
             <button
               onClick={() => {
                 const nextLang = i18n.language.startsWith('am') ? 'en' : 'am';
