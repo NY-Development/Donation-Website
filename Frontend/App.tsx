@@ -123,7 +123,7 @@ const App: React.FC = () => {
         <ScrollToTop />
         <div className="min-h-screen flex flex-col">
         {/* Hide default navbar on checkout or admin pages if needed, but for simplicity we show it or a variant */}
-        <Navbar toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
+        <Navbar toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode}/>
         
         <main className="grow">
           <Suspense fallback={<PageFallback />}>

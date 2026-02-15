@@ -19,6 +19,8 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
   const isCheckout = location.pathname.startsWith('/donate');
   const isAdmin = location.pathname.startsWith('/admin');
   const navRef = useRef<HTMLElement | null>(null);
+  const lastScrollY = useRef(0);
+  const [isNavVisible, setIsNavVisible] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isAuthenticated, logout, user, updateProfile } = useAuthStore();
@@ -78,6 +80,25 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
     setProfileImagePreview(previewUrl);
     return () => URL.revokeObjectURL(previewUrl);
   }, [profileImageFile]);
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+    const handleScroll = () => {
+      const currentY = window.scrollY || 0;
+      const delta = currentY - lastScrollY.current;
+      if (currentY < 20) {
+        setIsNavVisible(true);
+      } else if (delta > 8) {
+        setIsNavVisible(false);
+      } else if (delta < -8) {
+        setIsNavVisible(true);
+      }
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useLayoutEffect(() => {
     ensureGsap();
@@ -146,7 +167,6 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
   const navItems = [
     { to: '/', label: t('navbar.home'), icon: Home, match: (path: string) => path === '/' },
     { to: '/explore', label: t('navbar.explore'), icon: Compass, match: (path: string) => path.startsWith('/explore') },
-    { to: '/donate', label: t('navbar.donate'), icon: HeartHandshake, match: (path: string) => path.startsWith('/donate') },
     { to: '/dashboard', label: t('navbar.dashboard'), icon: LayoutDashboard, match: (path: string) => path.startsWith('/dashboard') }
   ];
 
@@ -155,12 +175,13 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
       <motion.nav
         ref={navRef}
         layout
+        animate={{ opacity: isNavVisible ? 1 : 0, y: isNavVisible ? 0 : -12 }}
         transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
         className={`fixed right-3 top-3 z-50 transition-all duration-300 ${
           isMobileMenuOpen 
             ? ('top-3 right-3 left-3 rounded-[2rem] absolute') 
             : ('top-3 right-3 md:left-1/2 md:-translate-x-1/2 md:w-[90%] md:max-w-6xl rounded-full')
-        } border border-white/20 bg-white/80 dark:bg-gray-900/80 px-2 py-2 shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-[16px]`}
+        } ${isNavVisible ? 'pointer-events-auto' : 'pointer-events-none'} border border-white/20 bg-white/80 dark:bg-gray-900/80 px-2 py-2 shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-[16px]`}
       >
         <div className="flex items-center justify-between w-full px-2">
           {/* Logo - Desktop only or Mobile expanded */}
