@@ -11,7 +11,8 @@
     "saving": "Saving...",
     "search": "Search",
     "email": "Email",
-    "password": "Password"
+    "password": "Password",
+    "toggleTheme": "Toggle theme"
   },
   "language": {
     "label": "Language",
@@ -30,6 +31,9 @@
   },
   "navbar": {
     "secureVerification": "Secure Verification",
+    "home": "Home",
+    "explore": "Explore",
+    "dashboard": "Dashboard",
     "campaigns": "Campaigns",
     "startCampaign": "Start Campaign",
     "myImpact": "My Impact",
