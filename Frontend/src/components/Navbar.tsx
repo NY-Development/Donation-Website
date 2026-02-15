@@ -156,10 +156,10 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
         ref={navRef}
         layout
         transition={{ type: 'spring', duration: 0.5, bounce: 0.2 }}
-        className={`fixed z-50 transition-all duration-300 ${
+        className={`fixed right-3 top-3 z-50 transition-all duration-300 ${
           isMobileMenuOpen 
-            ? 'top-6 right-6 left-6 rounded-[2rem]' 
-            : 'top-6 right-6 md:left-1/2 md:-translate-x-1/2 md:w-[90%] md:max-w-6xl rounded-full'
+            ? ('top-3 right-3 left-3 rounded-[2rem] absolute') 
+            : ('top-3 right-3 md:left-1/2 md:-translate-x-1/2 md:w-[90%] md:max-w-6xl rounded-full')
         } border border-white/20 bg-white/80 dark:bg-gray-900/80 px-2 py-2 shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-[16px]`}
       >
         <div className="flex items-center justify-between w-full px-2">
