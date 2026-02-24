@@ -1,4 +1,3 @@
-
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
@@ -112,11 +111,11 @@ const Home: React.FC = () => {
   });
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className="font-sans bg-background-light dark:bg-background-dark text-gray-900 dark:text-gray-100 antialiased overflow-x-hidden transition-colors duration-200">
       {showOnboarding && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="relative w-full max-w-xl rounded-3xl bg-white dark:bg-surface-dark border border-white/10 shadow-2xl overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-yellow-50 dark:from-emerald-950/40 dark:via-slate-900 dark:to-yellow-900/20" />
+            <div className="absolute inset-0 bg-linear-to-br from-emerald-50 via-white to-yellow-50 dark:from-emerald-950/40 dark:via-slate-900 dark:to-yellow-900/20" />
             <div className="relative p-8">
               <button
                 type="button"
@@ -176,117 +175,112 @@ const Home: React.FC = () => {
           </div>
         </div>
       )}
+
+
       {/* Hero Section */}
-      <section className="relative w-full min-h-[600px] flex items-center justify-center overflow-hidden" data-animate="section">
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          <div ref={heroTrackRef} className="absolute inset-0 flex w-[400%]">
-            {[...heroImages, heroImages[0]].map((image, index) => (
-              <div
-                key={`${image}-${index}`}
-                data-animate="hero-panel"
-                className="w-1/4 h-full bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: `url("${image}")` }}
-              />
-            ))}
+      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-350 mx-auto overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
+          <div className="lg:col-span-7">
+            <h1 className="text-6xl md:text-8xl font-serif leading-[0.95] text-gray-900 dark:text-white mb-8 tracking-tight text-balance">
+              {t('pages.home.heroTitle', 'Empowering communities through ')}
+              <span className="italic text-primary">{t('pages.home.heroHighlight', 'transparent')}</span> {t('pages.home.heroTitle2', 'giving')}
+            </h1>
+          </div>
+          <div className="lg:col-span-5 relative h-75 lg:h-100 flex items-center justify-center">
+            <div className="absolute w-64 h-80 rounded-[4rem] overflow-hidden transform -rotate-6 translate-x-[-20%] shadow-2xl z-10 border-4 border-white dark:border-surface-dark">
+              <img alt="Community" className="w-full h-full object-cover" src={heroImages[0]} />
+            </div>
+            <div className="absolute w-56 h-72 rounded-[3.5rem] overflow-hidden transform rotate-[8deg] translate-x-[40%] translate-y-[10%] shadow-xl z-0 opacity-80 filter grayscale-[0.5]">
+              <img alt="Impact" className="w-full h-full object-cover" src={heroImages[1]} />
+            </div>
           </div>
         </div>
-        <div className="absolute inset-0 z-10 bg-gradient-to-b from-gray-900/60 via-gray-900/50 to-background-light dark:to-background-dark"></div>
-        <div className="relative z-20 container mx-auto px-4 flex flex-col items-center text-center pt-10">
-          <span className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-xs font-semibold uppercase tracking-wider mb-6">
-            <BadgeCheck className="size-3.5" aria-hidden="true" />
-            {t('pages.home.trustedBy')}
-          </span>
-          <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tight max-w-4xl mb-6 drop-shadow-sm">
-            {t('pages.home.heroTitle')}
-          </h1>
-          <h2 className="text-lg md:text-xl text-gray-200 font-medium leading-relaxed max-w-2xl mb-10 drop-shadow-sm">
-            {t('pages.home.heroSubtitle')}
-          </h2>
-          <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-            <Link to="/explore" className="h-12 px-8 rounded-lg bg-primary text-white text-base font-bold hover:bg-primary-hover transition-all transform hover:scale-105 shadow-xl shadow-primary/40 flex items-center justify-center gap-2">
-              <span>{t('pages.home.donateNow')}</span>
-              <ArrowRight className="size-4" aria-hidden="true" />
-            </Link>
-            <Link to="/explore" className="h-12 px-8 rounded-lg bg-white/10 backdrop-blur-md border border-white/30 text-white text-base font-bold hover:bg-white/20 transition-all flex items-center justify-center">
-              {t('pages.home.exploreCampaigns')}
-            </Link>
+        <div className="relative group">
+          <div className="relative aspect-21/9 w-full rounded-2xl md:rounded-[3rem] overflow-hidden shadow-2xl">
+            <img alt="Main Action" className="w-full h-full object-cover scale-105" src={heroImages[2]} />
+            <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent"></div>
+            <div className="absolute bottom-6 left-6 md:bottom-12 md:left-12 flex flex-wrap gap-2 md:gap-3">
+              <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-full flex items-center gap-2 text-xs md:text-sm font-bold text-gray-900 border border-white/50">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> Verified ★
+              </div>
+              <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-xs md:text-sm font-bold text-white border border-white/30">
+                Global Impact
+              </div>
+              <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-xs md:text-sm font-bold text-white border border-white/30">
+                Direct Giving
+              </div>
+              <div className="bg-primary px-4 py-2 rounded-full text-xs md:text-sm font-bold text-white shadow-lg">
+                Real-time Tracking ★
+              </div>
+            </div>
+            <div className="absolute bottom-6 right-6 md:bottom-12 md:right-12 hidden md:block max-w-70">
+              <p className="text-white text-lg font-medium leading-tight">
+                <span className="opacity-70 text-2xl leading-none">✻</span> {t('pages.home.heroNote', 'We are professional non-profit agency working with heart from 2020.')}
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="relative z-30 -mt-16 pb-16 px-4" data-animate="section">
-        <div className="max-w-[1000px] mx-auto">
-          <div className="bg-white dark:bg-surface-dark rounded-xl shadow-xl shadow-gray-200/50 dark:shadow-black/50 p-8 grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-800 border border-gray-100 dark:border-gray-800">
+      <section className="py-12 px-4">
+        <div className="max-w-300 mx-auto">
+          <div className="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-xl shadow-gray-200/20 dark:shadow-black/20 p-8 grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-gray-800 border border-gray-100 dark:border-gray-800">
             <div className="flex flex-col items-center text-center p-2">
-              <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-3 text-primary">
-                <Wallet className="size-7" aria-hidden="true" />
-              </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">
-                ETB {stats?.totalDonated?.toLocaleString() ?? '0'}
-              </p>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">{t('pages.home.totalRaised')}</p>
+              <p className="text-4xl font-bold text-gray-900 dark:text-white tracking-tighter mb-1">{stats?.totalDonated ? `ETB ${stats.totalDonated.toLocaleString()}` : '0'}</p>
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('pages.home.totalRaised', 'Total Raised')}</p>
             </div>
             <div className="flex flex-col items-center text-center p-2">
-              <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-3 text-primary">
-                <Megaphone className="size-7" aria-hidden="true" />
-              </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">
-                {stats?.livesImpacted?.toLocaleString() ?? '0'}
-              </p>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">{t('pages.home.activeCampaigns')}</p>
+              <p className="text-4xl font-bold text-gray-900 dark:text-white tracking-tighter mb-1">{stats?.livesImpacted?.toLocaleString() ?? '500+'}</p>
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('pages.home.activeCampaigns', 'Active Campaigns')}</p>
             </div>
             <div className="flex flex-col items-center text-center p-2">
-              <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-full mb-3 text-primary">
-                <Heart className="size-7" aria-hidden="true" />
-              </div>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-1">
-                {stats?.donorsCount?.toLocaleString() ?? '0'}
-              </p>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">{t('pages.home.livesChanged')}</p>
+              <p className="text-4xl font-bold text-gray-900 dark:text-white tracking-tighter mb-1">{stats?.donorsCount?.toLocaleString() ?? '10k+'}</p>
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('pages.home.livesChanged', 'Lives Changed')}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Featured Section placeholder */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-[1200px] mx-auto" data-animate="section">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('pages.home.featuredTitle')}</h2>
-            <p className="text-gray-600 dark:text-gray-400">{t('pages.home.featuredSubtitle')}</p>
+      {/* Featured Campaigns Section */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-300 mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+          <div className="max-w-xl">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">{t('pages.home.featuredTitle', 'Featured Campaigns')}</h2>
+            <p className="text-gray-500 dark:text-gray-400 text-lg">{t('pages.home.featuredSubtitle', 'Support urgent causes that need your help right now with full transparency.')}</p>
           </div>
-          <Link className="inline-flex items-center text-primary font-bold hover:underline gap-1" to="/explore">
-            {t('pages.home.viewAll')} <ArrowRight className="size-4" aria-hidden="true" />
+          <Link className="inline-flex items-center text-primary font-bold hover:gap-2 transition-all gap-1 group" to="/explore">
+            {t('pages.home.viewAll', 'View all campaigns')} <span className="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
           </Link>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {(featured ?? []).map((campaign) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {(featured ?? []).slice(0, 3).map((campaign, idx) => {
             const raised = campaign.raisedAmount ?? 0;
             const goal = campaign.goalAmount ?? 1;
             const percent = Math.round((raised / goal) * 100);
-            const image = campaign.media?.[0] ?? 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=2000&auto=format&fit=crop';
-
+            const image = campaign.media?.[0] ?? heroImages[idx % heroImages.length];
             return (
-              <div key={campaign._id} className="group flex flex-col bg-white dark:bg-surface-dark rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all border border-gray-100 dark:border-gray-800">
-                <div className="relative h-48 w-full overflow-hidden">
-                  <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{ backgroundImage: `url("${image}")` }}></div>
-                  <div className="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur text-xs font-bold px-2 py-1 rounded text-primary">{campaign.category}</div>
+              <div key={campaign._id} className="group bg-surface-light dark:bg-surface-dark rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all border border-gray-100 dark:border-gray-800 flex flex-col">
+                <div className="relative h-64 w-full overflow-hidden">
+                  <div className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-700" style={{ backgroundImage: `url('${image}')` }}></div>
+                  <div className="absolute top-4 left-4 bg-white/95 backdrop-blur text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full text-primary">
+                    {campaign.category || 'Category'}
+                  </div>
                 </div>
-                <div className="flex flex-col flex-1 p-5">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{campaign.title}</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 flex-1 line-clamp-2">{campaign.story}</p>
-                  <div className="mb-4">
-                    <div className="flex justify-between text-xs font-semibold mb-1.5">
-                      <span className="text-primary">ETB {raised.toLocaleString()} {t('pages.home.raised')}</span>
-                      <span className="text-gray-500">{percent}%</span>
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{campaign.title}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-1 line-clamp-2">{campaign.story}</p>
+                  <div className="mb-6">
+                    <div className="flex justify-between text-xs font-bold mb-2">
+                      <span className="text-primary">ETB {raised.toLocaleString()} {t('pages.home.raised', 'raised')}</span>
+                      <span className="text-gray-400">{percent}%</span>
                     </div>
-                    <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2">
-                      <div className="bg-primary h-2 rounded-full" style={{ width: `${percent}%` }}></div>
+                    <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5">
+                      <div className="bg-primary h-1.5 rounded-full" style={{ width: `${percent}%` }}></div>
                     </div>
                   </div>
-                  <Link to={`/donate/${campaign._id}`} className="w-full h-10 rounded-lg bg-primary/10 hover:bg-primary hover:text-white text-primary text-sm font-bold transition-colors flex items-center justify-center gap-2">
-                    {t('pages.home.donateNow')}
+                  <Link to={`/donate/${campaign._id}`} className="w-full py-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 hover:bg-primary hover:text-white text-gray-900 dark:text-white font-bold transition-all">
+                    {t('pages.home.donateNow', 'Donate Now')}
                   </Link>
                 </div>
               </div>
@@ -295,131 +289,65 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Success Stories */}
-      {(successStories ?? []).length > 0 && (
-        <section className="relative py-20 px-4 sm:px-6 lg:px-8" data-animate="section">
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute -top-10 left-10 h-40 w-40 rounded-full bg-emerald-400/20 blur-3xl" />
-            <div className="absolute bottom-0 right-10 h-52 w-52 rounded-full bg-yellow-400/20 blur-3xl" />
-          </div>
-          <div className="relative max-w-[1200px] mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('pages.home.successTitle')}</h2>
-                <p className="text-gray-600 dark:text-gray-400">{t('pages.home.successSubtitle')}</p>
-              </div>
-              <Link className="inline-flex items-center text-primary font-bold hover:underline gap-1" to="/explore">
-                {t('pages.home.discoverMore')} <ArrowRight className="size-4" aria-hidden="true" />
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {(successStories ?? []).map((campaign) => {
-                const raised = campaign.raisedAmount ?? 0;
-                const goal = campaign.goalAmount ?? 1;
-                const percent = Math.round((raised / goal) * 100);
-                const image = campaign.media?.[0] ?? 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2070&auto=format&fit=crop';
-                return (
-                  <div
-                    key={campaign._id}
-                    className="group relative overflow-hidden rounded-2xl border border-emerald-100 dark:border-emerald-900/40 bg-white dark:bg-surface-dark shadow-xl shadow-emerald-200/30"
-                    data-animate="impact-step"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/80 via-transparent to-yellow-50/60 opacity-0 group-hover:opacity-100 transition" />
-                    <div className="relative h-48 w-full overflow-hidden">
-                      <img src={image} alt={campaign.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                      <span className="absolute top-3 left-3 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full">{t('pages.home.goalReached')}</span>
-                    </div>
-                    <div className="relative p-5">
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{campaign.title}</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{campaign.story}</p>
-                      <div className="mt-4 flex items-center justify-between text-sm font-semibold text-emerald-600">
-                        <span>ETB {campaign.raisedAmount.toLocaleString()} {t('pages.home.raised')}</span>
-                        <span>{percent}%</span>
-                      </div>
-                    </div>
+      {/* Transparent Giving Section */}
+      <section className="py-32 bg-gray-50 dark:bg-surface-dark/30">
+        <div className="max-w-300 mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
+            <div>
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">{t('pages.home.transparentTitle', 'Transparent giving.')}<br />{t('pages.home.visibleImpact', 'Visible impact.')}</h2>
+              <p className="text-gray-600 dark:text-gray-400 text-lg mb-10 leading-relaxed">
+                {t('pages.home.transparentDesc', 'We make it easy to support the causes you care about. Every cent is tracked and verified, ensuring your contribution reaches those in need.')}
+              </p>
+              <div className="space-y-8">
+                <div className="flex gap-6">
+                  <div className="shrink-0 w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                    <span className="material-symbols-outlined">search</span>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* How it Works */}
-      <section className="py-20 bg-white dark:bg-[#1f1528]" data-animate="section">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('pages.home.howTitle')}</h2>
-            <p className="text-gray-600 dark:text-gray-400">{t('pages.home.howSubtitle')}</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <div className="flex flex-col items-center" data-animate="impact-step">
-              <div className="size-16 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-primary mb-6">
-                <Search className="size-7" aria-hidden="true" />
+                  <div>
+                    <h3 className="text-lg font-bold mb-1">{t('pages.home.discoverCause', 'Discover a Cause')}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('pages.home.discoverDesc', 'Browse through hundreds of verified campaigns from trusted non-profits.')}</p>
+                  </div>
+                </div>
+                <div className="flex gap-6">
+                  <div className="shrink-0 w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                    <span className="material-symbols-outlined">volunteer_activism</span>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold mb-1">{t('pages.home.donateSecurely', 'Donate Securely')}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('pages.home.donateSecurelyDesc', 'Our secure platform ensures your money reaches its intended destination safely.')}</p>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{t('pages.home.howStep1Title')}</h3>
-              <p className="text-gray-600 dark:text-gray-400">{t('pages.home.howStep1Body')}</p>
             </div>
-            <div className="flex flex-col items-center" data-animate="impact-step">
-              <div className="size-16 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-primary mb-6">
-                <Heart className="size-7" aria-hidden="true" />
+            <div className="relative h-125 rounded-3xl overflow-hidden shadow-2xl">
+              <img alt="Impact process" className="w-full h-full object-cover" src={heroImages[0]} />
+              <div className="absolute top-8 right-8 bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-xl max-w-50">
+                <div className="text-primary font-black text-2xl mb-1">100%</div>
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-tight">{t('pages.home.proceeds', 'Proceeds go to the field directly')}</div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{t('pages.home.howStep2Title')}</h3>
-              <p className="text-gray-600 dark:text-gray-400">{t('pages.home.howStep2Body')}</p>
-            </div>
-            <div className="flex flex-col items-center" data-animate="impact-step">
-              <div className="size-16 rounded-full bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-primary mb-6">
-                <MailCheck className="size-7" aria-hidden="true" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{t('pages.home.howStep3Title')}</h3>
-              <p className="text-gray-600 dark:text-gray-400">{t('pages.home.howStep3Body')}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Community Section */}
-      <section className="relative py-24 px-6 bg-primary overflow-hidden" data-animate="section">
-        {/* Optional: Decorative background elements for depth */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none" aria-hidden="true">
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-purple-900/20 rounded-full blur-3xl" />
-        </div>
-
-        <div className="relative max-w-4xl mx-auto text-center">
-          {/* Icon Wrapper */}
-          <div className="inline-flex items-center justify-center w-20 h-20 mb-8 rounded-3xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-xl">
-            <Mail className="size-10 text-white opacity-90" strokeWidth={1.5} aria-hidden="true" />
+      {/* Join Community Section */}
+      <section className="py-24 px-4">
+        <div className="max-w-250 mx-auto bg-primary rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+          <div className="relative z-10">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">{t('pages.home.communityTitle', 'Join our community')}</h2>
+            <p className="text-purple-100 text-lg mb-10 max-w-lg mx-auto">{t('pages.home.communitySubtitle', 'Get inspiring stories and impact reports delivered straight to your inbox.')}</p>
+            <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <input className="flex-1 px-6 h-14 rounded-full bg-white/20 border-white/30 text-white placeholder-purple-200 focus:ring-2 focus:ring-white/50 focus:border-transparent outline-none backdrop-blur-md" placeholder={t('pages.home.emailPlaceholder', 'Your email address')} type="email" />
+              <button className="px-8 h-14 bg-white text-primary font-bold rounded-full hover:bg-gray-100 transition-all shadow-xl" type="button">
+                {t('pages.home.subscribe', 'Subscribe')}
+              </button>
+            </form>
           </div>
-
-          <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">
-            {t('pages.home.communityTitle')}
-          </h2>
-          
-          <p className="text-lg text-purple-100/80 mb-10 max-w-xl mx-auto leading-relaxed">
-            {t('pages.home.communitySubtitle')}
-          </p>
-
-          <form 
-            className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto p-2 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl" 
-            onSubmit={(e) => e.preventDefault()}
-          >
-            <input 
-              className="flex-1 px-5 h-14 rounded-xl bg-white text-gray-900 border-0 focus:ring-2 focus:ring-purple-400 placeholder-gray-400 transition-all" 
-              placeholder={t('pages.home.emailPlaceholder')} 
-              type="email" 
-              required
-            />
-            <button className="px-8 h-14 bg-white text-primary font-bold rounded-xl hover:bg-purple-50 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md">
-              {t('pages.home.subscribe')}
-            </button>
-          </form>
-          
-          <p className="mt-6 text-sm text-purple-200/60">
-            {t('pages.home.joinCount')}
-          </p>
         </div>
       </section>
+
+
     </div>
   );
 };
