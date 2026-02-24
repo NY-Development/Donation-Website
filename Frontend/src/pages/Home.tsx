@@ -13,6 +13,9 @@ const Home: React.FC = () => {
   const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const heroTrackRef = useRef<HTMLDivElement | null>(null);
+  const heroImg1Ref = useRef<HTMLDivElement | null>(null);
+  const heroImg2Ref = useRef<HTMLDivElement | null>(null);
+  const [heroImagesHorizontal, setHeroImagesHorizontal] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(0);
 
@@ -43,6 +46,20 @@ const Home: React.FC = () => {
             toggleActions: 'play none none none',
           },
         });
+      }
+
+      // Animate hero images from opposite sides
+      if (heroImg1Ref.current) {
+        gsap.fromTo(heroImg1Ref.current,
+          { opacity: 0, x: -60, y: 40, scale: 0.96 },
+          { opacity: 1, x: 0, y: 0, scale: 1, duration: 1, ease: 'power3.out', delay: 0.2 }
+        );
+      }
+      if (heroImg2Ref.current) {
+        gsap.fromTo(heroImg2Ref.current,
+          { opacity: 0, x: 60, y: 40, scale: 0.96 },
+          { opacity: 1, x: 0, y: 0, scale: 1, duration: 1, ease: 'power3.out', delay: 0.5 }
+        );
       }
 
       if (heroTrackRef.current) {
@@ -186,13 +203,35 @@ const Home: React.FC = () => {
               <span className="italic text-primary">{t('pages.home.heroHighlight', 'transparent')}</span> {t('pages.home.heroTitle2', 'giving')}
             </h1>
           </div>
-          <div className="lg:col-span-5 relative h-75 lg:h-100 flex items-center justify-center">
-            <div className="absolute w-64 h-80 rounded-[4rem] overflow-hidden transform -rotate-6 translate-x-[-20%] shadow-2xl z-10 border-4 border-white dark:border-surface-dark">
-              <img alt="Community" className="w-full h-full object-cover" src={heroImages[0]} />
-            </div>
-            <div className="absolute w-56 h-72 rounded-[3.5rem] overflow-hidden transform rotate-[8deg] translate-x-[40%] translate-y-[10%] shadow-xl z-0 opacity-80 filter grayscale-[0.5]">
-              <img alt="Impact" className="w-full h-full object-cover" src={heroImages[1]} />
-            </div>
+          <div
+            className={
+              heroImagesHorizontal
+                ? 'lg:col-span-5 flex flex-col lg:flex-row gap-4 items-center justify-center cursor-pointer'
+                : 'lg:col-span-5 relative h-75 lg:h-100 flex items-center justify-center cursor-pointer'
+            }
+            onClick={() => setHeroImagesHorizontal((prev) => !prev)}
+            title="Click to toggle layout"
+          >
+            {/* Horizontal layout: side by side on mobile, stacked on second row on large screens */}
+            {heroImagesHorizontal ? (
+              <>
+                <div ref={heroImg1Ref} className="w-40 h-52 rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white dark:border-surface-dark">
+                  <img alt="Community" className="w-full h-full object-cover" src={heroImages[0]} />
+                </div>
+                <div ref={heroImg2Ref} className="w-40 h-52 rounded-[2.5rem] overflow-hidden shadow-xl opacity-80 filter grayscale-[0.5] border-4 border-white dark:border-surface-dark">
+                  <img alt="Impact" className="w-full h-full object-cover" src={heroImages[1]} />
+                </div>
+              </>
+            ) : (
+              <>
+                <div ref={heroImg1Ref} className="absolute w-64 h-80 rounded-[4rem] overflow-hidden transform -rotate-6 translate-x-[-20%] shadow-2xl z-10 border-4 border-white dark:border-surface-dark">
+                  <img alt="Community" className="w-full h-full object-cover" src={heroImages[0]} />
+                </div>
+                <div ref={heroImg2Ref} className="absolute w-56 h-72 rounded-[3.5rem] overflow-hidden transform rotate-[8deg] translate-x-[40%] translate-y-[10%] shadow-xl z-0 opacity-80 filter grayscale-[0.5]">
+                  <img alt="Impact" className="w-full h-full object-cover" src={heroImages[1]} />
+                </div>
+              </>
+            )}
           </div>
         </div>
         <div className="relative group">

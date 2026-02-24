@@ -58,14 +58,14 @@ const Footer: React.FC = () => {
             <h4 className="font-bold text-gray-900 dark:text-white mb-6">{t('footer.platform', 'Platform')}</h4>
             <ul className="space-y-4 text-sm text-gray-500 dark:text-gray-400">
               <li><Link className="hover:text-primary transition-colors" to="/how-it-works">{t('footer.howItWorks', 'How it works')}</Link></li>
-              <li><Link className="hover:text-primary transition-colors" to="/pricing">{t('footer.pricing', 'Pricing')}</Link></li>
+              {/* <li><Link className="hover:text-primary transition-colors" to="/pricing">{t('footer.pricing', 'Pricing')}</Link></li> */}
               <li><Link className="hover:text-primary transition-colors" to="/success-stories">{t('footer.successStories', 'Success Stories')}</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-bold text-gray-900 dark:text-white mb-6">{t('footer.resources', 'Resources')}</h4>
             <ul className="space-y-4 text-sm text-gray-500 dark:text-gray-400">
-              <li><Link className="hover:text-primary transition-colors" to="/help">{t('footer.helpCenter', 'Help Center')}</Link></li>
+              <li><Link className="hover:text-primary transition-colors" to="/help-center">{t('footer.helpCenter', 'Help Center')}</Link></li>
               <li><Link className="hover:text-primary transition-colors" to="/safety">{t('footer.safetyTrust', 'Safety & Trust')}</Link></li>
               <li><Link className="hover:text-primary transition-colors" to="/guidelines">{t('footer.guidelines', 'Guidelines')}</Link></li>
             </ul>
