@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import organizerService from '../Services/organizer';
-import { Check, Fingerprint, ShieldCheck } from 'lucide-react';
+import { Check, CircleUser, ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const VerificationIntro: React.FC = () => {
@@ -90,7 +90,7 @@ const VerificationIntro: React.FC = () => {
               </div>
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                  <Fingerprint className="size-5" aria-hidden="true" />
+                  <CircleUser className="size-5" aria-hidden="true" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white">{t('pages.verificationIntro.step2Title')}</h3>
@@ -126,7 +126,7 @@ const VerificationIntro: React.FC = () => {
               <div className="absolute inset-0 rounded-full bg-primary/10" />
               <div className="absolute inset-4 rounded-full bg-primary/20" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <Fingerprint className="size-20 text-primary" aria-hidden="true" />
+                <CircleUser className="size-20 text-primary" aria-hidden="true" />
               </div>
             </div>
             <h2 className="text-2xl font-bold mt-6">{t('pages.verificationIntro.readyTitle')}</h2>
@@ -144,7 +144,7 @@ const VerificationIntro: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate('/help-center')}
-                className="w-full py-3 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                className="w-full py-3 rounded-lg bg-white border-2 border-primary dark:bg-surface-dark text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               >
                 {t('pages.verificationIntro.learnMore')}
               </button>

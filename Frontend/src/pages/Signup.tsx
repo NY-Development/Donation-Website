@@ -6,6 +6,7 @@ import { gsap } from 'gsap';
 import { addHoverScale, animatePageIn, animateSectionsOnScroll, animateStagger, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
 import { useAuthStore } from '../store';
 import { useTranslation } from 'react-i18next';
+import { Eye, EyeOff } from 'lucide-react';
 
 const Signup: React.FC = () => {
   const { t } = useTranslation();
@@ -192,6 +193,7 @@ const Signup: React.FC = () => {
                   placeholder="e.g. jane@example.com"
                   type="email"
                   required
+                  auto-Complete="email"
                   data-animate="input"
                   value={email}
                   onChange={(event) => {
@@ -207,10 +209,11 @@ const Signup: React.FC = () => {
                 <div className="relative flex w-full items-center">
                   <input
                     id="password"
-                    className="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-[#140d1b] dark:text-white dark:bg-[#2a1f36] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbcfe7] dark:border-[#4a3b5a] bg-white focus:border-primary h-12 placeholder:text-[#734c9a]/60 dark:placeholder:text-[#a58dc2]/60 pl-4 pr-12 text-base font-normal leading-normal transition-all duration-200"
+                    className="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-white dark:text-white dark:bg-[#2a1f36] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbcfe7] dark:border-[#4a3b5a] bg-white focus:border-primary h-12 placeholder:text-[#734c9a] dark:placeholder:text-[#a58dc2] pl-4 pr-12 text-base font-normal leading-normal transition-all duration-200"
                     placeholder="Enter your password"
                     type={showPassword ? 'text' : 'password'}
                     required
+                    auto-Complete="new-password"
                     data-animate="input"
                     value={password}
                     onChange={(event) => {
@@ -225,7 +228,7 @@ const Signup: React.FC = () => {
                     className="absolute right-0 top-0 h-full px-3 text-[#734c9a] dark:text-[#a58dc2] hover:text-primary transition-colors flex items-center justify-center"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
-                    <span className="material-symbols-outlined text-[20px]">visibility</span>
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
                 <p className="text-xs text-[#734c9a] dark:text-[#a58dc2] mt-1">{t('pages.auth.signup.passwordHint')}</p>
@@ -243,12 +246,12 @@ const Signup: React.FC = () => {
                     {t('pages.auth.signup.organizerOptIn')}
                   </span>
                 </label>
-                <label className="inline-flex items-start gap-3 cursor-pointer group">
+                {/* <label className="inline-flex items-start gap-3 cursor-pointer group">
                   <input className="form-checkbox mt-1 h-4 w-4 rounded border-[#dbcfe7] dark:border-[#4a3b5a] dark:bg-[#2a1f36] text-primary focus:ring-primary/50 transition duration-150 ease-in-out" type="checkbox" />
                   <span className="text-sm text-[#140d1b] dark:text-white/90 leading-normal select-none">
                     {t('pages.auth.signup.newsletterOptIn')}
                   </span>
-                </label>
+                </label> */}
                 <label className="inline-flex items-start gap-3 cursor-pointer group">
                   <input className="form-checkbox mt-1 h-4 w-4 rounded border-[#dbcfe7] dark:border-[#4a3b5a] dark:bg-[#2a1f36] text-primary focus:ring-primary/50 transition duration-150 ease-in-out" type="checkbox" required />
                   <span className="text-sm text-[#140d1b] dark:text-white/90 leading-normal select-none">
@@ -258,7 +261,7 @@ const Signup: React.FC = () => {
               </div>
 
               <button
-                className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-12 px-6 rounded-lg transition-colors duration-200 shadow-lg shadow-primary/20 mt-4 flex items-center justify-center gap-2"
+                className={`cursor-pointer ${isLoading && 'cursor-not-allowed'} w-full bg-primary hover:bg-primary/90 text-white font-bold h-12 px-6 rounded-lg transition-colors duration-200 shadow-lg shadow-primary/20 mt-4 flex items-center justify-center gap-2`}
                 type="submit"
                 data-animate="button"
                 disabled={isLoading}

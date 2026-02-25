@@ -21,8 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface NavbarProps {
-  toggleDarkMode: () => void;
-  isDarkMode: boolean;
+  // Remove props, handle theme locally
 }
 
 const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
@@ -30,6 +29,19 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
   const location = useLocation();
   const isCheckout = location.pathname.startsWith('/donate');
   const isAdmin = location.pathname.startsWith('/admin');
+    const [theme, setTheme] = useState(() => {
+      if (typeof window !== 'undefined') {
+        return localStorage.getItem('theme') || 'light';
+      }
+      return 'light';
+    });
+
+    useEffect(() => {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('theme', theme);
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      }
+    }, [theme]);
 
   const navRef = useRef<HTMLElement | null>(null);
   const lastScrollY = useRef(0);
@@ -161,12 +173,12 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
       MAIN NAVBAR
   =================================================== */
   return (
-    <>
+    <div className="relative flex justify-center">
       <motion.nav
         ref={navRef}
         animate={{ opacity: isNavVisible ? 1 : 0, y: isNavVisible ? 0 : -12 }}
         transition={{ duration: 0.4 }}
-        className="flex mt-6 left-4 right-4 -translate-x-1/2 z-50s max- mx-auto"
+        className="flex mt-6 z-50s mx-auto z-999 fixed"
       >
         <div className="rounded-3xl border border-white/20 bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] px-6 py-3 justify-center items-center">
           <div className="flex items-center justify-center gap-6">
@@ -220,10 +232,11 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
 
               {/* Theme */}
               <button
-                onClick={toggleDarkMode}
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                 className="p-2 rounded-full hover:bg-white/50 dark:hover:bg-gray-800"
+                aria-label="Toggle theme"
               >
-                {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
               </button>
 
               {/* Auth */}
@@ -372,7 +385,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
           </div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 };
 

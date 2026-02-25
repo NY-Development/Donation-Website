@@ -43,7 +43,33 @@
 
 :root {
   font-family: var(--font-sans);
+  /* Light theme variables */
+  --color-background: #FFFFFF;
+  --color-background-light: #F9FAFB;
+  --color-surface-heading: #111827;
+  --color-surface-body: #4B5563;
+  --color-primary: #6D28D9;
+  --color-primary-dark: #4C1D95;
+  --color-primary-light: #9D7BFF;
+  --color-accent-success: #10B981;
+  --color-accent-gold: #F59E0B;
+  --color-accent-glow: #A78BFA;
 }
+
+.dark {
+  /* Dark theme variables */
+  --color-background: #181028;
+  --color-background-light: #1E1B2E;
+  --color-surface-heading: #F3F4F6;
+  --color-surface-body: #D1D5DB;
+  --color-primary: #9D7BFF;
+  --color-primary-dark: #6D28D9;
+  --color-primary-light: #4C1D95;
+  --color-accent-success: #10B981;
+  --color-accent-gold: #F59E0B;
+  --color-accent-glow: #A78BFA;
+}
+
 
 body {
   font-family: var(--font-sans);

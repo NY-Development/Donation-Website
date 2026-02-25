@@ -46,7 +46,12 @@ export const authController = {
     try {
       const t = (req as Request & { t?: (key: string) => string }).t ?? ((key: string) => key);
       const result = await authService.login(req.body);
-      res.cookie('accessToken', result.accessToken, { httpOnly: true, secure: env.COOKIE_SECURE });
+      // Set cookie expiration
+      let cookieOptions: any = { httpOnly: true, secure: env.COOKIE_SECURE };
+      if (req.body.rememberMeDays && req.body.rememberMeDays > 0) {
+        cookieOptions.maxAge = 1000 * 60 * 60 * 24 * req.body.rememberMeDays;
+      }
+      res.cookie('accessToken', result.accessToken, cookieOptions);
       res.json({
         success: true,
         message: t('messages.loginSuccess'),
@@ -59,7 +64,9 @@ export const authController = {
             emailVerified: result.user.emailVerified
           },
           accessToken: result.accessToken,
-          refreshToken: result.refreshToken
+          refreshToken: result.refreshToken,
+          expiresIn: result.expiresIn,
+          refreshExpiresIn: result.refreshExpiresIn
         }
       });
     } catch (error) {

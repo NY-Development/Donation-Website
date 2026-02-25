@@ -9,7 +9,8 @@ export const signupSchema = z.object({
 
 export const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8)
+  password: z.string().min(8),
+  rememberMeDays: z.number().int().min(0).max(30).optional()
 });
 
 export const refreshSchema = z.object({

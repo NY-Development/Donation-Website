@@ -1,20 +1,21 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { WebcamModal } from '../components/WebcamModal';
 import { useNavigate } from 'react-router-dom';
 import organizerService from '../Services/organizer';
 import { useVerificationStore } from '../store/verificationStore';
 import { Camera, CircleDashed, ShieldCheck } from 'lucide-react';
+import { VerificationSteps } from '../components/VerificationSteps';
 import { useTranslation } from 'react-i18next';
 
 const VerificationSelfie: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
+  // Remove videoRef/streamRef, use react-webcam
   const { idFront, idBack, livePhoto, setLivePhoto, reset } = useVerificationStore();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [isCameraModalOpen, setIsCameraModalOpen] = useState(false);
   const [selfiePreview, setSelfiePreview] = useState<string | null>(null);
 
   const isReady = useMemo(() => Boolean(idFront && idBack && livePhoto), [idFront, idBack, livePhoto]);
@@ -37,58 +38,16 @@ const VerificationSelfie: React.FC = () => {
     };
   }, []);
 
-  const startCamera = async () => {
-    setCameraError(null);
-    try {
-      if (!navigator.mediaDevices?.getUserMedia) {
-        setCameraError(t('pages.verificationSelfie.cameraUnsupported'));
-        return;
-      }
-      if (!window.isSecureContext) {
-        setCameraError(t('pages.verificationSelfie.cameraHttps'));
-        return;
-      }
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user' }
+  // react-webcam modal capture handler
+  const handleWebcamCapture = (imgBase64: string) => {
+    // Convert base64 to File
+    fetch(imgBase64)
+      .then(res => res.arrayBuffer())
+      .then(buf => {
+        const file = new File([buf], `selfie-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        setLivePhoto(file);
+        setIsCameraModalOpen(false);
       });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.muted = true;
-        videoRef.current.playsInline = true;
-        videoRef.current.autoplay = true;
-        await videoRef.current.play();
-      }
-      setIsCameraActive(true);
-    } catch {
-      setCameraError(t('pages.verificationSelfie.cameraDenied'));
-      setIsCameraActive(false);
-    }
-  };
-
-  const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
-      streamRef.current = null;
-    }
-    setIsCameraActive(false);
-  };
-
-  const captureSelfie = () => {
-    if (!videoRef.current) return;
-    const video = videoRef.current;
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    canvas.toBlob((blob) => {
-      if (!blob) return;
-      const file = new File([blob], `selfie-${Date.now()}.jpg`, { type: 'image/jpeg' });
-      setLivePhoto(file);
-      stopCamera();
-    }, 'image/jpeg', 0.9);
   };
 
   const handleSubmit = async () => {
@@ -117,7 +76,9 @@ const VerificationSelfie: React.FC = () => {
 
   return (
     <div className="min-h-[70vh] bg-gradient-to-br from-gray-50 via-white to-primary/5 dark:from-surface-dark dark:via-slate-950 dark:to-primary/10">
-      <div className="max-w-3xl mx-auto px-6 py-12">
+      <div className="max-w-5xl mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          <div className="lg:col-span-8 order-2 lg:order-1">
         <div className="mb-10">
           <div className="flex justify-between items-end">
             <div>
@@ -174,34 +135,20 @@ const VerificationSelfie: React.FC = () => {
               {cameraError && (
                 <p className="text-sm text-red-600">{cameraError}</p>
               )}
-              {!isCameraActive ? (
-                <button
-                  type="button"
-                  onClick={startCamera}
-                  className="w-full md:w-64 bg-primary hover:bg-primary-hover text-white font-semibold py-4 rounded-xl shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2"
-                >
-                  <Camera className="size-5" aria-hidden="true" />
-                  {livePhoto ? t('pages.verificationSelfie.retake') : t('pages.verificationSelfie.startCamera')}
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={captureSelfie}
-                  className="w-full md:w-64 bg-primary hover:bg-primary-hover text-white font-semibold py-4 rounded-xl shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2"
-                >
-                  <Camera className="size-5" aria-hidden="true" />
-                  {t('pages.verificationSelfie.capture')}
-                </button>
-              )}
-              {isCameraActive && (
-                <button
-                  type="button"
-                  onClick={stopCamera}
-                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-sm font-medium transition-colors"
-                >
-                  {t('pages.verificationSelfie.cancel')}
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => setIsCameraModalOpen(true)}
+                className="w-full md:w-64 bg-primary hover:bg-primary-hover text-white font-semibold py-4 rounded-xl shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2"
+              >
+                <Camera className="size-5" aria-hidden="true" />
+                {livePhoto ? t('pages.verificationSelfie.retake') : t('pages.verificationSelfie.startCamera')}
+              </button>
+              <WebcamModal
+                open={isCameraModalOpen}
+                onClose={() => setIsCameraModalOpen(false)}
+                onCapture={handleWebcamCapture}
+                info={t('pages.verificationSelfie.mobileRecommended')}
+              />
               <button
                 type="button"
                 onClick={() => navigate('/uploadID')}
@@ -238,6 +185,10 @@ const VerificationSelfie: React.FC = () => {
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+          {/* Steps below buttons on mobile */}
+          <div className="block lg:hidden mt-8">
+            <VerificationSteps />
+          </div>
           <button
             type="button"
             onClick={handleSubmit}
@@ -255,6 +206,16 @@ const VerificationSelfie: React.FC = () => {
           >
             {t('pages.verificationSelfie.back')}
           </button>
+        </div>
+          </div>
+          <div className="lg:col-span-4 order-1 lg:order-2">
+            <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 sticky top-24 flex flex-col gap-8">
+              {/* Steps sidebar on large screens */}
+              <div className="hidden lg:block mb-6">
+                <VerificationSteps />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -10,6 +10,7 @@ type AuthUser = UserProfile;
 type LoginPayload = {
   email: string;
   password: string;
+  rememberMeDays?: number;
 };
 
 type RegisterPayload = {
@@ -123,7 +124,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   logout: async () => {
     set({ isLoading: true, error: null });
     try {
+      // Optionally, call backend logout endpoint if exists
       await Promise.resolve();
+      // Remove cookie if possible (for client-side tokens)
+      document.cookie = 'accessToken=; Max-Age=0; path=/;';
     } finally {
       clearStoredToken();
       set({ user: null, token: null, refreshToken: null, isAuthenticated: false, isLoading: false });

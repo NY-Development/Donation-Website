@@ -1,4 +1,3 @@
-
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { SidebarComponent } from '@syncfusion/ej2-react-navigations';

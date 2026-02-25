@@ -66,10 +66,20 @@ export const authService = {
     const tokenId = uuidv4();
     await userRepository.addRefreshToken(user._id.toString(), tokenId);
 
+    // Calculate expiration
+    let expiresIn = env.JWT_EXPIRES_IN;
+    let refreshExpiresIn = env.JWT_REFRESH_EXPIRES_IN;
+    if (typeof payload.rememberMeDays === 'number' && payload.rememberMeDays > 0) {
+      expiresIn = `${payload.rememberMeDays}d`;
+      refreshExpiresIn = `${payload.rememberMeDays * 4}d`;
+    }
+
     return {
       user,
-      accessToken: signAccessToken({ userId: user._id.toString(), role: user.role }),
-      refreshToken: signRefreshToken({ userId: user._id.toString(), role: user.role, tokenId })
+      accessToken: signAccessToken({ userId: user._id.toString(), role: user.role }, expiresIn),
+      refreshToken: signRefreshToken({ userId: user._id.toString(), role: user.role, tokenId }, refreshExpiresIn),
+      expiresIn,
+      refreshExpiresIn
     };
   },
   forgotPassword: async (email: string) => {

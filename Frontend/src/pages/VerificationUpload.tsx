@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import organizerService from '../Services/organizer';
 import { useVerificationStore } from '../store/verificationStore';
 import { CheckCircle, FileText, IdCard, Lightbulb } from 'lucide-react';
+import { VerificationSteps } from '../components/VerificationSteps';
 import { useTranslation } from 'react-i18next';
 
 const VerificationUpload: React.FC = () => {
@@ -71,7 +72,7 @@ const VerificationUpload: React.FC = () => {
   return (
     <div className="min-h-[70vh] bg-linear-to-br from-gray-50 via-white to-primary/5 dark:from-surface-dark dark:via-slate-950 dark:to-primary/10">
       <div className="max-w-5xl mx-auto px-6 py-12">
-        <div className="flex items-center justify-center gap-4 mb-10 text-sm">
+        <div className="flex items-center justify-center gap-4 mb-10 text-sm mt-15">
           <div className="flex items-center gap-2">
             <span className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold">1</span>
             <span className="text-gray-500">{t('pages.verificationUpload.step1')}</span>
@@ -89,7 +90,7 @@ const VerificationUpload: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-8 order-2 lg:order-1">
             <header className="mb-8">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">{t('pages.verificationUpload.kicker')}</p>
               <h1 className="text-3xl font-black mt-3">{t('pages.verificationUpload.title')}</h1>
@@ -106,7 +107,7 @@ const VerificationUpload: React.FC = () => {
 
             <div className="mb-10">
               <label className="block text-sm font-semibold mb-4">{t('pages.verificationUpload.docType')}</label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <button
                   type="button"
                   onClick={() => setDocumentType('national')}
@@ -119,7 +120,7 @@ const VerificationUpload: React.FC = () => {
                   <IdCard className="mb-2" aria-hidden="true" />
                   <span className="text-sm font-medium">{t('pages.verificationUpload.nationalId')}</span>
                 </button>
-                <button
+                {/* <button
                   type="button"
                   onClick={() => setDocumentType('passport')}
                   className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition ${
@@ -130,7 +131,7 @@ const VerificationUpload: React.FC = () => {
                 >
                   <FileText className="mb-2" aria-hidden="true" />
                   <span className="text-sm font-medium">{t('pages.verificationUpload.passport')}</span>
-                </button>
+                </button> */}
                 <button
                   type="button"
                   onClick={() => setDocumentType('driver')}
@@ -202,10 +203,18 @@ const VerificationUpload: React.FC = () => {
                 {t('pages.verificationUpload.continue')}
               </button>
             </div>
+            {/* Steps below buttons on mobile */}
+            <div className="block lg:hidden mt-8">
+              <VerificationSteps />
+            </div>
           </div>
 
-          <div className="lg:col-span-4">
-            <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 sticky top-24">
+          <div className="lg:col-span-4 order-1 lg:order-2">
+            <div className="bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 sticky top-24 flex flex-col gap-8">
+              {/* Steps sidebar on large screens */}
+              <div className="hidden lg:block mb-6">
+                <VerificationSteps />
+              </div>
               <h3 className="font-bold text-lg mb-4 flex items-center">
                 <Lightbulb className="text-primary mr-2" aria-hidden="true" />
                 {t('pages.verificationUpload.tipsTitle')}

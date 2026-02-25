@@ -15,6 +15,7 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMeDays, setRememberMeDays] = useState(0);
   const login = useAuthStore((state) => state.login);
   const isLoading = useAuthStore((state) => state.isLoading);
   const authError = useAuthStore((state) => state.error);
@@ -25,9 +26,10 @@ const Login: React.FC = () => {
     e.preventDefault();
     const schema = z.object({
       email: z.string().email(t('pages.auth.login.validation.email')),
-      password: z.string().min(8, t('pages.auth.login.validation.password'))
+      password: z.string().min(8, t('pages.auth.login.validation.password')),
+      rememberMeDays: z.number().int().min(0).max(30).optional()
     });
-    const parsed = schema.safeParse({ email, password });
+    const parsed = schema.safeParse({ email, password, rememberMeDays: rememberMeDays > 0 ? rememberMeDays : undefined });
     if (!parsed.success) {
       return;
     }
@@ -113,6 +115,7 @@ const Login: React.FC = () => {
                     placeholder="name@example.com"
                     type="email"
                     required
+                    auto-Complete="email"
                     data-animate="input"
                     value={email}
                     onChange={(event) => {
@@ -131,10 +134,11 @@ const Login: React.FC = () => {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" aria-hidden="true" />
                   <input
                     className="w-full pl-10 pr-10 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-primary outline-none"
-                    placeholder="••••••••"
+                    placeholder="Enter your password"
                     type={showPassword ? 'text' : 'password'}
                     required
                     data-animate="input"
+                    auto-Complete="current-password"
                     value={password}
                     onChange={(event) => {
                       setPassword(event.target.value);
@@ -153,12 +157,29 @@ const Login: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-2">
-                <input type="checkbox" className="rounded text-primary focus:ring-primary" id="remember" />
+                <input
+                  type="checkbox"
+                  className="rounded text-primary focus:ring-primary"
+                  id="remember"
+                  checked={rememberMeDays > 0}
+                  onChange={e => setRememberMeDays(e.target.checked ? 30 : 0)}
+                />
                 <label htmlFor="remember" className="text-sm text-gray-500">{t('pages.auth.login.remember')}</label>
+                {/* {rememberMeDays > 0 && (
+                  <input
+                    type="number"
+                    min={1}
+                    max={30}
+                    value={rememberMeDays}
+                    onChange={e => setRememberMeDays(Number(e.target.value))}
+                    className="ml-2 w-16 border rounded px-2 py-1 text-sm text-black focus:ring-2 focus:ring-primary outline-none"
+                    placeholder="Days"
+                  />
+                )} */}
               </div>
 
               <button
-                className="w-full py-4 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg transition-all transform active:scale-[0.98] disabled:opacity-70"
+                className={`${isLoading && 'cursor-not-allowed'} cursor-pointer w-full py-4 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg transition-all transform active:scale-[0.98] disabled:opacity-70`}
                 data-animate="button"
                 disabled={isLoading}
                 aria-busy={isLoading}

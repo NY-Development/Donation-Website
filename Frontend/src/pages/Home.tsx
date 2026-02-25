@@ -243,7 +243,7 @@ const Home: React.FC = () => {
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> Verified ★
               </div>
               <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-xs md:text-sm font-bold text-white border border-white/30">
-                Global Impact
+                National Impact
               </div>
               <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-xs md:text-sm font-bold text-white border border-white/30">
                 Direct Giving

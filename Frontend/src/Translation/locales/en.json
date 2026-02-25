@@ -946,7 +946,7 @@
       }
     },
     "userDashboard": {
-      "welcome": "Welcome back, {name}!",
+      "welcome": "Welcome back, !",
       "friend": "friend",
       "subtitle": "You're making a real difference. Here's your impact overview.",
       "donateAgain": "Donate Again",

@@ -28,6 +28,10 @@ import {
 import { useTranslation } from 'react-i18next';
 
 const CreateCampaign: React.FC = () => {
+  const [category, setCategory] = useState('');
+  const [story, setStory] = useState('');
+  const [goalAmount, setGoalAmount] = useState('');
+  const [cbeAccountNumber, setCbeAccountNumber] = useState('');
   const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const [title, setTitle] = useState('');
@@ -325,7 +329,7 @@ const CreateCampaign: React.FC = () => {
   }
 
   return (
-    <div ref={containerRef} className="max-w-[1120px] mx-auto py-8 md:py-12 px-4 sm:px-6 lg:px-8">
+    <div ref={containerRef} className="max-w-280 mx-auto py-8 md:py-12 px-4 sm:px-6 lg:px-8">
       {showDraftPrompt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
           <div className="w-full max-w-md rounded-2xl bg-white dark:bg-surface-dark p-6 shadow-xl border border-gray-100 dark:border-gray-800">
@@ -483,7 +487,7 @@ const CreateCampaign: React.FC = () => {
                       <LinkIcon className="size-4 p-1 rounded hover:bg-gray-200 cursor-pointer" aria-hidden="true" />
                     </div>
                     <textarea
-                      className="w-full min-h-[300px] p-4 bg-white dark:bg-gray-800 border-none outline-none focus:ring-0 resize-none"
+                      className="w-full min-h-75 p-4 bg-white dark:bg-gray-800 border-none outline-none focus:ring-0 resize-none"
                       placeholder={t('pages.createCampaign.story.placeholder')}
                       data-animate="input"
                       value={story}
@@ -684,7 +688,7 @@ const CreateCampaign: React.FC = () => {
         </div>
 
         <aside className="lg:col-span-4 w-full" data-animate="section">
-          <div className="bg-gradient-to-br from-white to-gray-50 dark:from-surface-dark dark:to-gray-900 p-6 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm sticky top-24">
+          <div className="bg-linear-to-br from-white to-gray-50 dark:from-surface-dark dark:to-gray-900 p-6 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm sticky top-24">
             <div className="flex items-center gap-3 mb-6">
               <Lightbulb className="size-4 text-primary" aria-hidden="true" />
               <h3 className="font-bold text-lg">{t('pages.createCampaign.tips.title')}</h3>

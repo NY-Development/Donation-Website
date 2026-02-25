@@ -283,10 +283,10 @@ const UserDashboard: React.FC = () => {
 
   return (
     <div ref={containerRef} className="max-w-6xl mx-auto px-4 py-10">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4" data-animate="section">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4 mt-15" data-animate="section">
         <div>
           <h1 className="text-3xl font-black text-gray-900 dark:text-white">
-            {t('pages.userDashboard.welcome', { name: user?.name ?? t('pages.userDashboard.friend') })}
+            {t('pages.userDashboard.welcome')} {user?.name}
           </h1>
           <p className="text-gray-500">{t('pages.userDashboard.subtitle')}</p>
         </div>

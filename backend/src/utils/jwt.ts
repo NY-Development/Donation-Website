@@ -7,11 +7,11 @@ export type JwtPayload = {
   tokenId?: string;
 };
 
-export const signAccessToken = (payload: JwtPayload): string =>
-  jwt.sign(payload, env.JWT_SECRET, { expiresIn: env.JWT_EXPIRES_IN as jwt.SignOptions['expiresIn'] });
+export const signAccessToken = (payload: JwtPayload, expiresIn?: string): string =>
+  jwt.sign(payload, env.JWT_SECRET, { expiresIn: expiresIn || env.JWT_EXPIRES_IN });
 
-export const signRefreshToken = (payload: JwtPayload): string =>
-  jwt.sign(payload, env.JWT_REFRESH_SECRET, { expiresIn: env.JWT_REFRESH_EXPIRES_IN as jwt.SignOptions['expiresIn'] });
+export const signRefreshToken = (payload: JwtPayload, expiresIn?: string): string =>
+  jwt.sign(payload, env.JWT_REFRESH_SECRET, { expiresIn: expiresIn || env.JWT_REFRESH_EXPIRES_IN });
 
 export const verifyAccessToken = (token: string): JwtPayload =>
   jwt.verify(token, env.JWT_SECRET) as JwtPayload;
