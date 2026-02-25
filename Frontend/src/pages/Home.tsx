@@ -200,7 +200,7 @@ const Home: React.FC = () => {
           <div className="lg:col-span-7">
             <h1 className="text-6xl md:text-8xl font-serif leading-[0.95] text-gray-900 dark:text-white mb-8 tracking-tight text-balance">
               {t('pages.home.heroTitle', 'Empowering communities through ')}
-              <span className="italic text-primary">{t('pages.home.heroHighlight', 'transparent')}</span> {t('pages.home.heroTitle2', 'giving')}
+              <span className="italic text-primary flex flex-wrap">{t('pages.home.heroHighlight', 'transparent')}</span> {t('pages.home.heroTitle2', 'giving')}
             </h1>
           </div>
           <div
