@@ -139,6 +139,7 @@ export const campaignService = {
     urgent?: boolean;
     fundingStyle?: 'keep' | 'all_or_nothing';
     deadline?: Date;
+    verificationFiles?: string[];
   }) => {
     const campaign = await campaignRepository.create({
       title: payload.title,
@@ -152,7 +153,8 @@ export const campaignService = {
       deadline: payload.deadline,
       organizer: new Types.ObjectId(payload.organizerId),
       createdBy: new Types.ObjectId(payload.organizerId),
-      status: 'draft'
+      status: 'draft',
+      verificationFiles: payload.verificationFiles || []
     });
     const organizer = await userRepository.findByIdLean(payload.organizerId);
     await sendCampaignCreatedEmail({

@@ -15,6 +15,7 @@ export interface CampaignDocument extends Document {
   cbeAccountNumber: string;
   status: CampaignStatus;
   media: string[];
+  verificationFiles?: string[];
   isSuccessStory?: boolean;
   goalReachedAt?: Date;
   deadline?: Date;
@@ -43,6 +44,7 @@ const campaignSchema = new Schema<CampaignDocument>(
       index: true
     },
     media: { type: [String], default: [] },
+    verificationFiles: { type: [String], default: [] },
     isSuccessStory: { type: Boolean, default: false, index: true },
     goalReachedAt: { type: Date },
     deadline: { type: Date },

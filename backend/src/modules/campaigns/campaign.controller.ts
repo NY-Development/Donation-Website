@@ -41,9 +41,16 @@ export const campaignController = {
   },
   create: async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
+      // Require verification file for medical/emergency
+      const category = req.body.category;
+      const verificationFiles = req.body.verificationFiles || [];
+      if ((category === 'medical' || category === 'emergency') && verificationFiles.length === 0) {
+        return res.status(400).json({ success: false, message: 'Verification file required for medical/emergency campaigns.' });
+      }
       const campaign = await campaignService.createDraft({
         ...req.body,
-        organizerId: req.user?.id ?? ''
+        organizerId: req.user?.id ?? '',
+        verificationFiles
       });
       const t = req.t ?? ((key: string) => key);
       res.status(201).json({ success: true, message: t('messages.campaignDraftCreated'), data: campaign });

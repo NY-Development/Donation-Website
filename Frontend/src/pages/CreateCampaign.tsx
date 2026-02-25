@@ -23,7 +23,8 @@ import {
   Italic,
   Lightbulb,
   Link as LinkIcon,
-  Wallet
+  Wallet, 
+  TimerReset
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -39,6 +40,7 @@ const CreateCampaign: React.FC = () => {
   const [fundingStyle, setFundingStyle] = useState<'keep' | 'all_or_nothing'>('keep');
   const [urgent, setUrgent] = useState(false);
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
+  const [verificationFiles, setVerificationFiles] = useState<File[]>([]);
   const [formError, setFormError] = useState<string | null>(null);
   const [isCheckingVerification, setIsCheckingVerification] = useState(true);
   const [showDraftPrompt, setShowDraftPrompt] = useState(false);
@@ -71,10 +73,23 @@ const CreateCampaign: React.FC = () => {
       })),
     [mediaFiles]
   );
+  const verificationPreview = useMemo(
+    () =>
+      verificationFiles.map((file) => ({
+        name: file.name,
+        url: file.type.startsWith('image') ? URL.createObjectURL(file) : undefined
+      })),
+    [verificationFiles]
+  );
 
   const nextStep = () => {
     if (step === 1 && (!title.trim() || !category)) {
       setFormError(t('pages.createCampaign.validation.step1'));
+      return;
+    }
+    // Require verification file for medical/emergency
+    if ((category === t('pages.createCampaign.categories.medical') || category === t('pages.createCampaign.categories.emergency')) && verificationFiles.length === 0) {
+      setFormError('Please upload a verification file (PDF or image) for medical/emergency campaigns.');
       return;
     }
     if (step === 2 && story.trim().length < 10) {
@@ -463,6 +478,7 @@ const CreateCampaign: React.FC = () => {
                     onChange={(event) => {
                       setCategory(event.target.value);
                       if (formError) setFormError(null);
+                      setVerificationFiles([]); // Reset verification files if category changes
                     }}
                   >
                     <option value="">{t('pages.createCampaign.basics.categoryPlaceholder')}</option>
@@ -472,6 +488,38 @@ const CreateCampaign: React.FC = () => {
                     <option>{t('pages.createCampaign.categories.emergency')}</option>
                   </select>
                 </div>
+                {/* Verification file for medical/emergency */}
+                {(category === t('pages.createCampaign.categories.medical') || category === t('pages.createCampaign.categories.emergency')) && (
+                  <div>
+                    <label className="block text-xl font-bold mb-2">Verification File (PDF or Image) <span className="text-red-500">*</span></label>
+                    <input
+                      type="file"
+                      accept="application/pdf,image/*"
+                      onChange={(event) => {
+                        const files = Array.from(event.target.files ?? []);
+                        setVerificationFiles(files);
+                        if (formError) setFormError(null);
+                      }}
+                      className="w-full max-w-xs text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-primary-hover"
+                      data-animate="input"
+                    />
+                    {verificationPreview.length > 0 && (
+                      <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {verificationPreview.map((item) => (
+                          item.url ? (
+                            <div key={item.url} className="relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
+                              <img src={item.url} alt={item.name} className="h-32 w-full object-cover" />
+                            </div>
+                          ) : (
+                            <div key={item.name} className="relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center h-32">
+                              <span className="text-xs">PDF: {item.name}</span>
+                            </div>
+                          )
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -632,6 +680,38 @@ const CreateCampaign: React.FC = () => {
                     </div>
                   )}
                 </div>
+                {/* Verification file for medical/emergency */}
+                {(category === t('pages.createCampaign.categories.medical') || category === t('pages.createCampaign.categories.emergency')) && (
+                  <div>
+                    <label className="block text-xl font-bold mb-2">Verification File (PDF or Image) <span className="text-red-500">*</span></label>
+                    <input
+                      type="file"
+                      accept="application/pdf,image/*"
+                      onChange={(event) => {
+                        const files = Array.from(event.target.files ?? []);
+                        setVerificationFiles(files);
+                        if (formError) setFormError(null);
+                      }}
+                      className="w-full max-w-xs text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-primary-hover"
+                      data-animate="input"
+                    />
+                    {verificationPreview.length > 0 && (
+                      <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {verificationPreview.map((item) => (
+                          item.url ? (
+                            <div key={item.url} className="relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
+                              <img src={item.url} alt={item.name} className="h-32 w-full object-cover" />
+                            </div>
+                          ) : (
+                            <div key={item.name} className="relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center h-32">
+                              <span className="text-xs">PDF: {item.name}</span>
+                            </div>
+                          )
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
                 <div className="flex items-center gap-3">
                   <input
                     id="urgent"
@@ -676,7 +756,7 @@ const CreateCampaign: React.FC = () => {
               data-animate="button"
               disabled={loading}
             >
-              {step === 4 ? t('pages.createCampaign.actions.launch') : t('pages.createCampaign.actions.continue')}
+              {step === 4 ? ( loading ? <TimerReset className="size-4" aria-hidden="true" /> : t('pages.createCampaign.actions.launch')) : (t('pages.createCampaign.actions.continue'))}
               <ArrowRight className="size-4" aria-hidden="true" />
             </button>
           </div>
