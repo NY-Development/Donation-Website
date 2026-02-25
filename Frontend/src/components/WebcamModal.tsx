@@ -1,5 +1,5 @@
 import React from 'react';
-import Webcam from 'react-webcam';
+import Webcam, {WebcamProps} from 'react-webcam';
 
 interface WebcamModalProps {
   open: boolean;
@@ -9,7 +9,7 @@ interface WebcamModalProps {
 }
 
 export const WebcamModal: React.FC<WebcamModalProps> = ({ open, onClose, onCapture, info }) => {
-  const webcamRef = React.useRef<Webcam>(null);
+  const webcamRef = React.useRef<Webcam | null>(null);
 
   if (!open) return null;
 
@@ -19,11 +19,20 @@ export const WebcamModal: React.FC<WebcamModalProps> = ({ open, onClose, onCaptu
         <h2 className="text-xl font-bold mb-2">Take a Selfie</h2>
         <p className="text-sm text-gray-500 mb-4 text-center">{info || 'For best results, use your mobile device.'}</p>
         <Webcam
-          ref={webcamRef}
+          ref={webcamRef as any}
           audio={false}
           screenshotFormat="image/jpeg"
           className="rounded-xl border border-gray-200 dark:border-gray-700 mb-4 w-full h-64 object-cover"
           videoConstraints={{ facingMode: 'user' }}
+          disablePictureInPicture={false}
+          forceScreenshotSourceSize={false}
+          imageSmoothing={true}
+          mirrored={false}
+          minScreenshotHeight={0}
+          minScreenshotWidth={0}
+          screenshotQuality={1}
+          onUserMedia={() => {}}
+          onUserMediaError={() => {}}
         />
         <div className="flex gap-3 w-full">
           <button
