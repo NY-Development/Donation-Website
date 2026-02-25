@@ -1,3 +1,4 @@
+
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../../utils/jwt';
@@ -5,6 +6,7 @@ import { userRepository } from '../users/user.repository';
 import { UserRole } from '../users/user.model';
 import { sendOtpEmail } from '../../utils/mailer';
 import { UserModel } from '../users/user.model';
+import { env } from '../../config/env';
 
 const SUPER_ADMIN_EMAIL = 'yamlaknegash96@gmail.com';
 
@@ -48,7 +50,7 @@ export const authService = {
       requiresOtp: true
     };
   },
-  login: async (payload: { email: string; password: string }) => {
+  login: async (payload: { email: string; password: string; rememberMeDays?: number }) => {
     const user = await userRepository.findByEmail(payload.email);
     if (!user) {
       throw { status: 401, message: 'errors.invalidCredentials' };

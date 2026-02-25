@@ -281,7 +281,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-md"
+            className="fixed inset-0 z-60 flex items-center justify-center bg-black/40 backdrop-blur-md"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -340,7 +340,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
       {/* PROFILE MODAL (UNCHANGED) */}
       <AnimatePresence>
         {isProfileOpen && (
-          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-70 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -364,22 +364,55 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
               </div>
 
               <form onSubmit={submitProfile} className="space-y-4">
+                {/* Profile Image Preview */}
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                    {profileImagePreview ? (
+                      <img src={profileImagePreview} alt="Profile preview" className="object-cover w-full h-full" />
+                    ) : (
+                      <span className="text-3xl font-bold text-gray-400">{profileInitial}</span>
+                    )}
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    className="hidden"
+                    onChange={e => {
+                      const file = e.target.files?.[0] || null;
+                      setProfileImageFile(file);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="px-3 py-1 rounded bg-gray-100 dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {t('navbar.profile.changePicture', 'Change Picture')}
+                  </button>
+                </div>
                 <input
                   className="w-full rounded-xl bg-gray-100 dark:bg-gray-800 px-4 py-3"
                   value={profileName}
                   onChange={(e) => setProfileName(e.target.value)}
+                  placeholder={t('navbar.profile.name', 'Name')}
                 />
                 <input
                   className="w-full rounded-xl bg-gray-100 dark:bg-gray-800 px-4 py-3"
                   value={profileEmail}
                   onChange={(e) => setProfileEmail(e.target.value)}
+                  placeholder={t('navbar.profile.email', 'Email')}
                 />
                 <button
                   type="submit"
                   className="w-full py-3 rounded-xl bg-primary text-white font-bold"
+                  disabled={profileLoading}
                 >
-                  {t('navbar.profile.save')}
+                  {profileLoading ? t('navbar.profile.saving', 'Saving...') : t('navbar.profile.save')}
                 </button>
+                {profileError && (
+                  <div className="text-red-500 text-sm text-center mt-2">{profileError}</div>
+                )}
               </form>
             </motion.div>
           </div>

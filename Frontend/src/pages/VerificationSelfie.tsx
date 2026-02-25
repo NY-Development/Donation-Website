@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { WebcamModal } from '../components/WebcamModal';
 import { useNavigate } from 'react-router-dom';
 import organizerService from '../Services/organizer';
@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 const VerificationSelfie: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  // Remove videoRef/streamRef, use react-webcam
   const { idFront, idBack, livePhoto, setLivePhoto, reset } = useVerificationStore();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,13 +29,7 @@ const VerificationSelfie: React.FC = () => {
     return () => URL.revokeObjectURL(previewUrl);
   }, [livePhoto]);
 
-  useEffect(() => {
-    return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, []);
+
 
   // react-webcam modal capture handler
   const handleWebcamCapture = (imgBase64: string) => {
@@ -75,7 +68,7 @@ const VerificationSelfie: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[70vh] bg-gradient-to-br from-gray-50 via-white to-primary/5 dark:from-surface-dark dark:via-slate-950 dark:to-primary/10">
+    <div className="min-h-[70vh] bg-linear-to-br from-gray-50 via-white to-primary/5 dark:from-surface-dark dark:via-slate-950 dark:to-primary/10">
       <div className="max-w-5xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           <div className="lg:col-span-8 order-2 lg:order-1">
@@ -105,17 +98,10 @@ const VerificationSelfie: React.FC = () => {
             </p>
 
             <div className="relative">
-              <div className="absolute -inset-2 bg-gradient-to-tr from-primary to-blue-400 rounded-full blur opacity-20" />
+              <div className="absolute -inset-2 bg-linear-to-tr from-primary to-blue-400 rounded-full blur opacity-20" />
               <div className="relative w-64 h-64 rounded-full border-4 border-white dark:border-gray-800 shadow-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                 <CircleDashed className="size-32 text-primary/40" aria-hidden="true" />
-                <video
-                  ref={videoRef}
-                  className={`absolute inset-0 w-full h-full object-cover ${isCameraActive ? 'block' : 'hidden'}`}
-                  playsInline
-                  muted
-                  autoPlay
-                />
-                {!isCameraActive && selfiePreview && (
+                {selfiePreview && (
                   <img
                     src={selfiePreview}
                     alt={t('pages.verificationSelfie.selfiePreviewAlt')}
@@ -149,13 +135,13 @@ const VerificationSelfie: React.FC = () => {
                 onCapture={handleWebcamCapture}
                 info={t('pages.verificationSelfie.mobileRecommended')}
               />
-              <button
+              {/* <button
                 type="button"
                 onClick={() => navigate('/uploadID')}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-sm font-medium transition-colors"
-              >
+              > Another method (upload existing photo) or fingerprint login coming soon!
                 {t('pages.verificationSelfie.altMethod')}
-              </button>
+              </button> */}
             </div>
 
             <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-gray-100 dark:border-gray-800 pt-8 w-full text-center">
