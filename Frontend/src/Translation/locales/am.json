@@ -174,7 +174,7 @@
       "pending": "በግምገማ ላይ",
       "quote": "\"እያንዳንዱ ልገሳ ይህን ተልእኮ ወደ እውነት ያቀርባል።\"",
       "everyBirr": "እያንዳንዱ ብር ይቆጠራል። ETB 5 ወይም ETB 500 ሲሆን ልገሳዎ ለሚበረታታ ወደፊት ትልቅ ተፅዕኖ ያሳድራል።",
-      "raisedOf": "ከETB {goal} ዓላማ ውስጥ ተሰብስቧል",
+      "raisedOf": "ከETB {{goal}} ዓላማ ውስጥ ተሰብስቧል",
       "donations": "ልገሳዎች",
       "today": "ዛሬ",
       "donateNow": "አሁን ለግስ",
@@ -211,10 +211,10 @@
       "uploadHint": "ማስረጃ ማካተት ከፈለጉ ምስል ይጫኑ።",
       "acknowledge": "ይህ ዘመቻ አልተፈቀደም እና በራሴ ኃላፊነት እለግሳለሁ።",
       "processing": "በማስኬድ ላይ...",
-      "donateAmount": "ETB {amount} አሁን ይለግሱ",
+      "donateAmount": "ETB {{amount}} አሁን ይለግሱ",
       "supporting": "የሚደግፉት",
       "yourImpact": "ተፅዕኖዎ",
-      "impactBody": "የETB {amount} ልገሳዎ ይህን ጉዳይ በቀጥታ ይደግፋል።",
+      "impactBody": "የETB {{amount}} ልገሳዎ ይህን ጉዳይ በቀጥታ ይደግፋል።",
       "donation": "ልገሳ",
       "totalDue": "ጠቅላላ ክፍያ",
       "receiptPreviewAlt": "የደረሰኝ ቅድሚያ እይታ"
@@ -243,7 +243,7 @@
         "goal": "ግብ",
         "media": "ሚዲያ"
       },
-      "stepIndicator": "ደረጃ {step} ከ4",
+      "stepIndicator": "ደረጃ {{step}} ከ4",
       "headings": {
         "step1": "መሠረቱን እንጀምር",
         "home": "መነሻ",
@@ -413,7 +413,7 @@
       "pendingTitle": "ማረጋገጫ በመጠባበቅ ላይ",
       "approvedBody": "የአዘጋጅ መለያዎ ተረጋግጧል። ዘመቻዎን መጀመር ይችላሉ።",
       "pendingBody": "ሰነዶችዎን እየገምገምን ነው።",
-      "returning": "ወደ ዳሽቦርድ በ {seconds}s ትመለሳለህ።",
+      "returning": "ወደ ዳሽቦርድ በ {{seconds}}s ትመለሳለህ።",
       "launch": "ዘመቻ ጀምር",
       "back": "ወደ ዳሽቦርድ ተመለስ",
       "viewSubmission": "ማስገባት ይመልከቱ",
@@ -467,7 +467,7 @@
         "button": "ፈልግ",
         "results": "የፍለጋ ውጤቶች",
         "clear": "አጽዳ",
-        "empty": "ምንም ውጤት አልተገኘም። የተለያዩ ቁልፍ ቃላት ይሞክሩ ወይም {email} ላይ ያግኙን።"
+        "empty": "ምንም ውጤት አልተገኘም። የተለያዩ ቁልፍ ቃላት ይሞክሩ ወይም {{email}} ላይ ያግኙን።"
       },
       "topics": {
         "donations": "ልገሳዎች",
@@ -730,7 +730,7 @@
         "syncData": "ውሂብ አመሳስል",
         "refresh": "አድስ",
         "searchPlaceholder": "ዘመቻዎችን ወይም አዘጋጆችን ይፈልጉ...",
-        "viewing": "{count} ዘመቻዎች በመመልከት ላይ",
+        "viewing": "{{count}} ዘመቻዎች በመመልከት ላይ",
         "table": {
           "campaign": "ዘመቻ",
           "category": "ምድብ",
@@ -761,7 +761,7 @@
           "campaignLabel": "ዘመቻ:",
           "campaignFallback": "ዘመቻ",
           "userFallback": "ተጠቃሚ",
-          "requestedBy": "በ {name} ተጠይቋል · {date}",
+          "requestedBy": "በ {{name}} ተጠይቋል · {{date}}",
           "empty": "በመጠባበቅ ያሉ ጥያቄዎች የሉም።"
         },
         "requestActions": {
@@ -774,7 +774,7 @@
         "subtitle": "የአዘጋጅ ማረጋገጫ ማስገባቶችን ይገምግሙ እና የእርምጃ ውሳኔዎችን ይፈቱ።",
         "refresh": "አድስ",
         "tag": "የማረጋገጫ ግምገማ",
-        "submitted": "ተላክ {date}።",
+        "submitted": "ተላክ {{date}}።",
         "recently": "በቅርቡ",
         "viewIdFront": "የመታወቂያ ፊት ይመልከቱ",
         "viewIdBack": "የመታወቂያ ጀርባ ይመልከቱ",
@@ -786,7 +786,7 @@
       },
       "users": {
         "title": "የተጠቃሚ አስተዳደር",
-        "showing": "{shown} ከ {total} ተጠቃሚዎች በመመልከት ላይ",
+        "showing": "{{shown}} ከ {{total}} ተጠቃሚዎች በመመልከት ላይ",
         "loadError": "ተጠቃሚዎችን መጫን አልተቻለም። እባክዎ ደግመው ይሞክሩ።",
         "stats": {
           "totalDonors": "ጠቅላላ ደጋፊዎች",
@@ -871,9 +871,9 @@
           }
         },
         "options": {
-          "minutes": "{minutes} ደቂቃ",
-          "hour": "{hours} ሰዓት",
-          "hours": "{hours} ሰዓት"
+          "minutes": "{{minutes}} ደቂቃ",
+          "hour": "{{hours}} ሰዓት",
+          "hours": "{{hours}} ሰዓት"
         },
         "saveReminder": "ለውጦችዎን ማስቀመጥ እንዳትረሱ።",
         "discard": "ለውጦችን ተው",
@@ -939,14 +939,14 @@
       },
       "selected": {
         "label": "የተመረጠ ዘመቻ",
-        "organizer": "አዘጋጅ: {name}",
+        "organizer": "አዘጋጅ: {{name}}",
         "approve": "አጽድቅ",
         "flag": "ምልክት",
         "close": "ዝጋ"
       }
     },
     "userDashboard": {
-      "welcome": "እንኳን ደህና ተመለሱ፣ {name}!",
+      "welcome": "እንኳን ደህና ተመለሱ፣ {{name}}!",
       "friend": "ጓደኛ",
       "subtitle": "በእውነት ልዩነት እያደረጉ ነው። ይህ የተፅዕኖዎ አጠቃላይ እይታ ነው።",
       "donateAgain": "እንደገና ለግስ",
@@ -977,19 +977,19 @@
         "noImage": "ምስል የለም",
         "goalReached": "ግብ ተደርሷል",
         "celebration": "በደስታ: 100% ግብዎን አሳክተዋል!",
-        "raised": "{amount} ተሰብስቧል",
-        "goal": "{amount} ግብ",
-        "funded": "{progress}% ተሰብስቧል",
+        "raised": "{{amount}} ተሰብስቧል",
+        "goal": "{{amount}} ግብ",
+        "funded": "{{progress}}% ተሰብስቧል",
         "requestPause": "ማቆም ጥያቄ",
         "requestDelete": "ማጥፋት ጥያቄ",
         "empty": "እስካሁን ምንም ዘመቻ አልፈጠሩም።"
       },
       "pending": {
         "title": "በመጠባበቅ ላይ ያሉ ልገሳ ግምገማዎች",
-        "submissions": "{count} ማስገባቶች",
+        "submissions": "{{count}} ማስገባቶች",
         "loading": "በመጠባበቅ ላይ ልገሳዎችን በመጫን ላይ...",
         "campaignLabel": "ዘመቻ",
-        "submitted": "{date} ተላክ",
+        "submitted": "{{date}} ተላክ",
         "donorLabel": "ደጋፊ",
         "anonymous": "ስም የለሽ",
         "referenceLabel": "ማጣቀሻ",
@@ -1002,7 +1002,7 @@
       "timeline": {
         "title": "የተፅዕኖ ታሪክ",
         "madeDonation": "ልገሳ አድርገዋል",
-        "campaignFallback": "ዘመቻ {id}",
+        "campaignFallback": "ዘመቻ {{id}}",
         "empty": "እስካሁን ልገሳ የለም።"
       },
       "trends": {
@@ -1021,10 +1021,10 @@
         "paused": "ተቋርጧል"
       },
       "request": {
-        "title": "የ{action} ጥያቄ",
+        "title": "የ{{action}} ጥያቄ",
         "pause": "ማቆም",
         "delete": "ማጥፋት",
-        "campaign": "ዘመቻ: {title}",
+        "campaign": "ዘመቻ: {{title}}",
         "close": "ዝጋ",
         "messageLabel": "ለአስተዳደር መልዕክት",
         "messagePlaceholder": "ለምን ይህን እርምጃ እንደሚፈልጉ ይገልጹ...",
@@ -1160,7 +1160,7 @@
       "forgot": {
         "title": "የይለፍ ቃል መቀየር",
         "subtitle": "ለመመዝገብ የተጠቀሙትን ኢሜል ይጻፉ።",
-        "success": "ከ{email} የተመዘገበ መለያ ካለ የመቀየር አገናኝ ላክን።",
+        "success": "ከ{{email}} የተመዘገበ መለያ ካለ የመቀየር አገናኝ ላክን።",
         "email": "የኢሜል አድራሻ",
         "send": "የመቀየር አገናኝ ላክ",
         "sending": "በማስኬድ ላይ...",

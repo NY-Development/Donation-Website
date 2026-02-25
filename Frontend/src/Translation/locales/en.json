@@ -177,7 +177,7 @@
       "pending": "Pending",
       "quote": "\"Every donation brings this mission closer to reality.\"",
       "everyBirr": "Every birr counts. Whether you can give ETB 5 or ETB 500, your contribution directly impacts a brighter future.",
-      "raisedOf": "raised of ETB {goal} goal",
+      "raisedOf": "ከETB {{goal}} ዓላማ ውስጥ ተሰብስቧል",
       "donations": "donations",
       "today": "today",
       "donateNow": "Donate Now",
@@ -214,10 +214,11 @@
       "uploadHint": "Upload an image if you want to include proof.",
       "acknowledge": "I understand this campaign is not approved and I donate at my own risk.",
       "processing": "Processing...",
-      "donateAmount": "Donate ETB {amount} Now",
+      "donateAmount": "ETB {{amount}} አሁን ይለግሱ",
+      "impactBody": "የETB {{amount}} ልገሳዎ ይህን ጉዳይ በቀጥታ ይደግፋል።",
       "supporting": "Supporting",
       "yourImpact": "Your impact",
-      "impactBody": "Your ETB {amount} donation supports this cause directly.",
+      "impactBody": "Your ETB {{amount}} donation supports this cause directly.",
       "donation": "Donation",
       "totalDue": "Total Due",
       "receiptPreviewAlt": "Receipt preview"
@@ -246,7 +247,7 @@
         "goal": "Goal",
         "media": "Media"
       },
-      "stepIndicator": "Step {step} of 4",
+      "stepIndicator": "Step {{step}} of 4",
       "headings": {
         "step1": "Let's start with the basics",
         "step2": "Tell your story",
@@ -413,7 +414,7 @@
       "pendingTitle": "Verification Pending",
       "approvedBody": "Your organizer account is verified. You can now launch your campaign.",
       "pendingBody": "We are reviewing your documents. You will receive an email confirmation once the admin team validates your submission.",
-      "returning": "Returning to your dashboard in {seconds}s.",
+      "returning": "Returning to your dashboard in {{seconds}}s.",
       "launch": "Launch campaign",
       "back": "Back to dashboard",
       "viewSubmission": "View submission",
@@ -467,7 +468,7 @@
         "button": "Search",
         "results": "Search results",
         "clear": "Clear",
-        "empty": "No results found. Try different keywords or contact support at {email}."
+        "empty": "No results found. Try different keywords or contact support at {{email}}."
       },
       "topics": {
         "donations": "Donations",
@@ -730,7 +731,7 @@
         "syncData": "Sync Data",
         "refresh": "Refresh",
         "searchPlaceholder": "Search campaigns or organizers...",
-        "viewing": "Viewing {count} campaigns",
+        "viewing": "Viewing {{count}} campaigns",
         "table": {
           "campaign": "Campaign",
           "category": "Category",
@@ -761,7 +762,7 @@
           "campaignLabel": "Campaign:",
           "campaignFallback": "Campaign",
           "userFallback": "User",
-          "requestedBy": "Requested by {name} · {date}",
+          "requestedBy": "Requested by {{name}} · {{date}}",
           "empty": "No pending campaign requests."
         },
         "requestActions": {
@@ -774,7 +775,7 @@
         "subtitle": "Review organizer verification submissions and resolve moderation actions.",
         "refresh": "Refresh",
         "tag": "Verification Review",
-        "submitted": "Submitted {date}.",
+        "submitted": "Submitted {{date}}.",
         "recently": "recently",
         "viewIdFront": "View ID Front",
         "viewIdBack": "View ID Back",
@@ -786,7 +787,7 @@
       },
       "users": {
         "title": "User Management",
-        "showing": "Showing {shown} of {total} users",
+        "showing": "Showing {{shown}} of {{total}} users",
         "loadError": "Unable to load users. Please try again.",
         "stats": {
           "totalDonors": "Total Donors",
@@ -871,9 +872,9 @@
           }
         },
         "options": {
-          "minutes": "{minutes} Minutes",
-          "hour": "{hours} Hour",
-          "hours": "{hours} Hours"
+          "minutes": "{{minutes}} Minutes",
+          "hour": "{{hours}} Hour",
+          "hours": "{{hours}} Hours"
         },
         "saveReminder": "Remember to save your changes.",
         "discard": "Discard Changes",
@@ -915,7 +916,7 @@
       "queue": {
         "title": "Campaign Verification Queue",
         "searchPlaceholder": "Search campaigns",
-        "matched": "{count} campaigns matched",
+        "matched": "{{count}} campaigns matched",
         "filters": {
           "all": "All status"
         }
@@ -939,14 +940,14 @@
       },
       "selected": {
         "label": "Selected campaign",
-        "organizer": "Organizer: {name}",
+        "organizer": "Organizer: {{name}}",
         "approve": "Approve",
         "flag": "Flag",
         "close": "Close"
       }
     },
     "userDashboard": {
-      "welcome": "Welcome back, !",
+      "welcome": "Welcome back, {{name}}!",
       "friend": "friend",
       "subtitle": "You're making a real difference. Here's your impact overview.",
       "donateAgain": "Donate Again",
@@ -977,19 +978,19 @@
         "noImage": "No image",
         "goalReached": "Goal reached",
         "celebration": "Celebration: you hit 100% of your goal!",
-        "raised": "{amount} raised",
-        "goal": "{amount} goal",
-        "funded": "{progress}% funded",
+        "raised": "{{amount}} raised",
+        "goal": "{{amount}} goal",
+        "funded": "{{progress}}% funded",
         "requestPause": "Request Pause",
         "requestDelete": "Request Delete",
         "empty": "You have not created any campaigns yet."
       },
       "pending": {
         "title": "Pending Donation Reviews",
-        "submissions": "{count} submissions",
+        "submissions": "{{count}} submissions",
         "loading": "Loading pending donations...",
         "campaignLabel": "Campaign",
-        "submitted": "Submitted {date}",
+        "submitted": "Submitted {{date}}",
         "donorLabel": "Donor",
         "anonymous": "Anonymous",
         "referenceLabel": "Reference",
@@ -1002,7 +1003,7 @@
       "timeline": {
         "title": "Timeline of Impact",
         "madeDonation": "You made a donation",
-        "campaignFallback": "Campaign {id}",
+        "campaignFallback": "Campaign {{id}}",
         "empty": "No donations yet."
       },
       "trends": {
@@ -1021,10 +1022,10 @@
         "paused": "Paused"
       },
       "request": {
-        "title": "Request {action}",
+        "title": "Request {{action}}",
         "pause": "Pause",
         "delete": "Delete",
-        "campaign": "Campaign: {title}",
+        "campaign": "Campaign: {{title}}",
         "close": "Close",
         "messageLabel": "Message to admin",
         "messagePlaceholder": "Explain why you want this action...",
@@ -1160,7 +1161,7 @@
       "forgot": {
         "title": "Reset your password",
         "subtitle": "We'll send reset instructions to the email you used to sign up.",
-        "success": "If an account exists for {email}, we've sent a reset link.",
+        "success": "If an account exists for {{email}}, we've sent a reset link.",
         "email": "Email address",
         "send": "Send reset link",
         "sending": "Processing...",
