@@ -209,7 +209,7 @@ const Signup: React.FC = () => {
                 <div className="relative flex w-full items-center">
                   <input
                     id="password"
-                    className="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-white dark:text-white dark:bg-[#2a1f36] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbcfe7] dark:border-[#4a3b5a] bg-white focus:border-primary h-12 placeholder:text-[#734c9a] dark:placeholder:text-[#a58dc2] pl-4 pr-12 text-base font-normal leading-normal transition-all duration-200"
+                    className="form-input flex w-full min-w-0 resize-none overflow-hidden rounded-lg text-black dark:text-white dark:bg-[#2a1f36] focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#dbcfe7] dark:border-[#4a3b5a] bg-white focus:border-primary h-12 placeholder:text-[#734c9a] dark:placeholder:text-[#a58dc2] pl-4 pr-12 text-base font-normal leading-normal transition-all duration-200"
                     placeholder="Enter your password"
                     type={showPassword ? 'text' : 'password'}
                     required
