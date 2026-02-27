@@ -1,5 +1,6 @@
 
 import React, { useLayoutEffect, useRef, useState } from 'react';
+import LegalModal from '../components/LegalModal';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { gsap } from 'gsap';
@@ -18,6 +19,8 @@ const Signup: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [wantsOrganizer, setWantsOrganizer] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [legalModalOpen, setLegalModalOpen] = useState(false);
+  const [legalModalContent, setLegalModalContent] = useState<'privacy' | 'terms'>('terms');
   const register = useAuthStore((state) => state.register);
   const isLoading = useAuthStore((state) => state.isLoading);
   const authError = useAuthStore((state) => state.error);
@@ -80,13 +83,12 @@ const Signup: React.FC = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="min-h-screen w-full bg-background-light dark:bg-background-dark text-[#140d1b] dark:text-white flex flex-col">
+    <><div ref={containerRef} className="min-h-screen w-full bg-background-light dark:bg-background-dark text-[#140d1b] dark:text-white flex flex-col">
       <div className="flex flex-col lg:flex-row min-h-screen w-full">
         <div className="relative w-full lg:w-5/12 bg-primary flex flex-col justify-center items-center overflow-hidden p-8 lg:p-12 text-white" data-animate="section">
           <div
             className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-20"
-            aria-hidden="true"
-          />
+            aria-hidden="true" />
           <div className="absolute inset-0 bg-linear-to-t from-primary to-primary/80 mix-blend-multiply" aria-hidden="true" />
           <div className="relative z-10 flex flex-col gap-8 max-w-md">
             <div className="flex flex-col gap-4">
@@ -144,8 +146,7 @@ const Signup: React.FC = () => {
                   <img
                     alt="User avatar"
                     className="w-full h-full object-cover"
-                    src="/yitbarek.jpg"
-                  />
+                    src="/yitbarek.jpg" />
                 </div>
                 <span className="text-sm font-semibold">{t('pages.auth.login.quoteName')}</span>
               </div>
@@ -181,8 +182,7 @@ const Signup: React.FC = () => {
                     setFullName(event.target.value);
                     if (formError) setFormError(null);
                     if (authError) clearError();
-                  }}
-                />
+                  } } />
               </div>
 
               <div className="flex flex-col gap-2">
@@ -200,8 +200,7 @@ const Signup: React.FC = () => {
                     setEmail(event.target.value);
                     if (formError) setFormError(null);
                     if (authError) clearError();
-                  }}
-                />
+                  } } />
               </div>
 
               <div className="flex flex-col gap-2">
@@ -220,8 +219,7 @@ const Signup: React.FC = () => {
                       setPassword(event.target.value);
                       if (formError) setFormError(null);
                       if (authError) clearError();
-                    }}
-                  />
+                    } } />
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
@@ -240,22 +238,36 @@ const Signup: React.FC = () => {
                     className="form-checkbox mt-1 h-4 w-4 rounded border-[#dbcfe7] dark:border-[#4a3b5a] dark:bg-[#2a1f36] text-primary focus:ring-primary/50 transition duration-150 ease-in-out"
                     type="checkbox"
                     checked={wantsOrganizer}
-                    onChange={(event) => setWantsOrganizer(event.target.checked)}
-                  />
+                    onChange={(event) => setWantsOrganizer(event.target.checked)} />
                   <span className="text-sm text-[#140d1b] dark:text-white/90 leading-normal select-none">
                     {t('pages.auth.signup.organizerOptIn')}
                   </span>
                 </label>
                 {/* <label className="inline-flex items-start gap-3 cursor-pointer group">
-                  <input className="form-checkbox mt-1 h-4 w-4 rounded border-[#dbcfe7] dark:border-[#4a3b5a] dark:bg-[#2a1f36] text-primary focus:ring-primary/50 transition duration-150 ease-in-out" type="checkbox" />
-                  <span className="text-sm text-[#140d1b] dark:text-white/90 leading-normal select-none">
-                    {t('pages.auth.signup.newsletterOptIn')}
-                  </span>
-                </label> */}
+      <input className="form-checkbox mt-1 h-4 w-4 rounded border-[#dbcfe7] dark:border-[#4a3b5a] dark:bg-[#2a1f36] text-primary focus:ring-primary/50 transition duration-150 ease-in-out" type="checkbox" />
+      <span className="text-sm text-[#140d1b] dark:text-white/90 leading-normal select-none">
+        {t('pages.auth.signup.newsletterOptIn')}
+      </span>
+    </label> */}
                 <label className="inline-flex items-start gap-3 cursor-pointer group">
                   <input className="form-checkbox mt-1 h-4 w-4 rounded border-[#dbcfe7] dark:border-[#4a3b5a] dark:bg-[#2a1f36] text-primary focus:ring-primary/50 transition duration-150 ease-in-out" type="checkbox" required />
                   <span className="text-sm text-[#140d1b] dark:text-white/90 leading-normal select-none">
-                    {t('pages.auth.signup.termsAgree')} <Link className="text-primary hover:underline font-medium" to="/terms">{t('pages.auth.signup.terms')}</Link> and <Link className="text-primary hover:underline font-medium" to="/privacy-policy">{t('pages.auth.signup.privacy')}</Link>.
+                    {t('pages.auth.signup.termsAgree')}
+                    <button
+                      type="button"
+                      className="text-primary hover:underline font-medium focus:outline-none bg-transparent border-none p-0"
+                      onClick={() => { setLegalModalContent('terms'); setLegalModalOpen(true); } }
+                    >
+                      {t('pages.auth.signup.terms')}
+                    </button>
+                    {' and '}
+                    <button
+                      type="button"
+                      className="text-primary hover:underline font-medium focus:outline-none bg-transparent border-none p-0"
+                      onClick={() => { setLegalModalContent('privacy'); setLegalModalOpen(true); } }
+                    >
+                      {t('pages.auth.signup.privacy')}
+                    </button>.
                   </span>
                 </label>
               </div>
@@ -282,6 +294,8 @@ const Signup: React.FC = () => {
         </div>
       </div>
     </div>
+    <LegalModal open={legalModalOpen} onClose={() => setLegalModalOpen(false)} content={legalModalContent} />
+  </>
   );
 };
 
