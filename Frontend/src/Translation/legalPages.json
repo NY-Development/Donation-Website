@@ -1,0 +1,62 @@
+{
+  "PrivacyPolicy": {
+    "title": "DONATIONS PLATFORM PRIVACY POLICY",
+    "lastUpdated": "February 27, 2026",
+    "summary": "This Privacy Notice for Donations Platform (\"we, us, or our\"), describes how and why we might access, collect, store, use, and/or share (\"process\") your personal information when you use our services (\"Services\"), including when you: ...",
+    "sections": {
+      "infocollect": "WHAT INFORMATION DO WE COLLECT?",
+      "infouse": "HOW DO WE PROCESS YOUR INFORMATION?",
+      "whoshare": "WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?",
+      "cookies": "DO WE USE COOKIES AND OTHER TRACKING TECHNOLOGIES?",
+      "sociallogins": "HOW DO WE HANDLE YOUR SOCIAL LOGINS?",
+      "inforetain": "HOW LONG DO WE KEEP YOUR INFORMATION?",
+      "infosafe": "HOW DO WE KEEP YOUR INFORMATION SAFE?",
+      "infominors": "DO WE COLLECT INFORMATION FROM MINORS?",
+      "privacyrights": "WHAT ARE YOUR PRIVACY RIGHTS?",
+      "dnt": "CONTROLS FOR DO-NOT-TRACK FEATURES",
+      "california": "DO CALIFORNIA RESIDENTS HAVE SPECIFIC PRIVACY RIGHTS?",
+      "updates": "DO WE MAKE UPDATES TO THIS NOTICE?",
+      "contact": "HOW CAN YOU CONTACT US ABOUT THIS NOTICE?",
+      "request": "HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?"
+    }
+  },
+  "Terms": {
+    "title": "TERMS AND CONDITIONS",
+    "lastUpdated": "February 27, 2026",
+    "sections": {
+      "acceptance": "ACCEPTANCE OF TERMS",
+      "accounts": "USER ACCOUNTS AND REGISTRATION",
+      "donations": "DONATIONS AND PAYMENT PROCESSING",
+      "verification": "BENEFICIARY VERIFICATION AND FRAUD",
+      "ai": "AI MODERATION AND RISK SCORING",
+      "ugc": "USER-GENERATED CONTENT",
+      "ip": "INTELLECTUAL PROPERTY",
+      "termination": "TERMINATION",
+      "disclaimer": "DISCLAIMER OF WARRANTIES",
+      "liability": "LIMITATION OF LIABILITY",
+      "law": "GOVERNING LAW",
+      "contact": "CONTACT US"
+    }
+  },
+  "Eula": {
+    "title": "End User License Agreement (EULA)",
+    "lastUpdated": "February 27, 2026",
+    "sections": {
+      "licensing": "Licensing Agreement",
+      "scope": "SCOPE OF LICENSE",
+      "requirements": "TECHNICAL REQUIREMENTS",
+      "maintenance": "MAINTENANCE AND SUPPORT",
+      "data": "USE OF DATA",
+      "ugc": "USER-GENERATED CONTENT",
+      "contribution": "CONTRIBUTION LICENSE",
+      "liability": "LIABILITY",
+      "warranty": "WARRANTY",
+      "claims": "PRODUCT CLAIMS",
+      "compliance": "LEGAL COMPLIANCE",
+      "termination": "TERMINATION",
+      "thirdparty": "THIRD-PARTY TERMS OF AGREEMENTS",
+      "contact": "CONTACT INFORMATION",
+      "misc": "MISCELLANEOUS"
+    }
+  }
+}

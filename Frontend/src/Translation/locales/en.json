@@ -1079,18 +1079,6 @@
       "card4Title": "Transparent Reporting",
       "card4Body": "Campaign updates keep donors informed and confident."
     },
-    "privacy": {
-      "title": "Privacy Policy",
-      "body": "We respect your privacy and explain how data is collected and used."
-    },
-    "terms": {
-      "title": "Terms & Service",
-      "body": "These terms govern your use of ImpactGive services and features."
-    },
-    "eula": {
-      "title": "EULA",
-      "body": "This End User License Agreement outlines the terms for using the ImpactGive platform."
-    },
     "protection": {
       "kicker": "Donation Protection",
       "title": "How we protect your donations",
@@ -1191,6 +1179,90 @@
       "backCampaigns": "Back to Campaigns",
       "explore": "Explore Campaigns",
       "signIn": "Sign In"
+    },
+  "common": {
+    "last_updated": "Last updated",
+    "table_of_contents": "TABLE OF CONTENTS",
+    "contact_us": "CONTACT US",
+    "visit": "visit"
+  },
+  "privacy": {
+    "title": "DONATIONS PLATFORM PRIVACY POLICY",
+    "intro": "This Privacy Notice for Donations Platform describes how and why we might access, collect, store, use, and/or share your personal information when you use our services.",
+    "summary_title": "SUMMARY OF KEY POINTS",
+    "summary_text": "We process account information, identity verification data, and technical usage data. Because we handle medical-related documentation, we handle sensitive personal data with enhanced encryption. We use AI for fraud prevention and connect donors with verified beneficiaries.",
+    "sections": {
+      "s1_title": "1. WHAT INFORMATION DO WE COLLECT?",
+      "s1_content": "We collect Account Information (name, email), Identity Verification Data (Gov ID, medical docs, biometrics), Financial Data (transaction history via Stripe/PayPal), and Technical Data (IP, AI risk logs).",
+      "s2_title": "2. HOW DO WE PROCESS YOUR INFORMATION?",
+      "s2_content": "To facilitate campaigns, verify beneficiary authenticity, perform AI risk scoring, process donations, and comply with legal AML/KYC requirements.",
+      "s3_title": "3. WHEN AND WITH WHOM DO WE SHARE YOUR DATA?",
+      "s3_content": "We share data with payment processors, identity verification services, AI model providers, and cloud hosting partners.",
+      "s4_title": "4. COOKIES AND TRACKING",
+      "s4_content": "We use cookies to enhance your experience and monitor platform security.",
+      "s5_title": "5. SOCIAL LOGINS",
+      "s5_content": "If you link a social account, we access basic profile info permitted by the provider.",
+      "s6_title": "6. DATA RETENTION",
+      "s6_content": "We keep data as long as necessary for fraud prevention, tax compliance, or service delivery.",
+      "s7_title": "7. DATA SECURITY",
+      "s7_content": "We use enhanced encryption for sensitive medical and identity data with strict internal access controls.",
+      "s8_title": "8. MINORS",
+      "s8_content": "We do not knowingly collect data from individuals under 18 without parental consent.",
+      "s9_title": "9. PRIVACY RIGHTS",
+      "s9_content": "Under GDPR/CCPA, you can access, delete, or correct data. You have a right to human review of AI-driven fraud decisions.",
+      "s10_title": "10. DO-NOT-TRACK",
+      "s10_content": "We currently do not respond to DNT browser signals.",
+      "s11_title": "11. CALIFORNIA RIGHTS",
+      "s11_content": "California residents have specific rights under CCPA regarding data access and non-discrimination.",
+      "s12_title": "12. UPDATES",
+      "s12_content": "We update this notice as regulations change or new features are added.",
+      "s13_title": "13. REVIEW AND DELETE",
+      "s13_content": "To request data deletion or review, contact our support team at the provided link."
     }
+  },
+  "terms": {
+    "title": "TERMS AND CONDITIONS",
+    "agreement": "By accessing or using the Service, you agree to be bound by these Terms. We function as an intermediary connecting verified beneficiaries with global donors.",
+    "sections": {
+      "s1_title": "1. ACCEPTANCE OF TERMS",
+      "s1_content": "You confirm you are at least 18 and agree to these legal terms.",
+      "s2_title": "2. USER ACCOUNTS",
+      "s2_content": "Beneficiaries must provide accurate identity and medical documentation to register.",
+      "s3_title": "3. DONATIONS",
+      "s3_content": "Donations are voluntary and processed via third-party gateways. They are generally non-refundable.",
+      "s4_title": "4. VERIFICATION",
+      "s4_content": "Mandatory authentication is required to prevent fraud. Campaigns are conditional upon approval.",
+      "s5_title": "5. AI MODERATION",
+      "s5_content": "We use AI for risk scoring. Suspicious activity triggers automatic suspension pending human review.",
+      "s6_title": "6. USER CONTENT",
+      "s6_content": "You grant us a license to host your campaign text and images for fundraising purposes.",
+      "s7_title": "7. INTELLECTUAL PROPERTY",
+      "s7_content": "Our verification algorithms and AI systems remain our exclusive property.",
+      "s8_title": "8. TERMINATION",
+      "s8_content": "We may terminate accounts for misrepresentation of hardships or fraud.",
+      "s9_title": "9. WARRANTIES",
+      "s9_content": "The service is provided 'as is'. We do not guarantee the success of any campaign.",
+      "s10_title": "10. LIABILITY",
+      "s10_content": "We are not liable for user fraud or medical outcomes of beneficiaries.",
+      "s11_title": "11. GOVERNING LAW",
+      "s11_content": "Governed by the laws of the State of Delaware, USA.",
+      "s12_title": "12. CONTACT",
+      "s12_content": "Email: support@donationsplatform.com"
+    }
+  },
+  "eula": {
+    "title": "END USER LICENSE AGREEMENT",
+    "licensing": "This application is licensed to you by Donations Platform for use under these terms.",
+    "sections": {
+      "s1_title": "1. SCOPE",
+      "s1_content": "Non-exclusive license to use the app for fundraising and donating.",
+      "s2_title": "2. REQUIREMENTS",
+      "s2_content": "Requires internet and camera access for biometric/ID verification.",
+      "s4_title": "4. DATA USE",
+      "s4_content": "We process biometric and medical data for campaign authentication.",
+      "s10_title": "10. COMPLIANCE",
+      "s10_content": "Users must comply with global AML and KYC regulations."
+    }
+  }
 }
 }

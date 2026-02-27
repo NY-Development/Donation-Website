@@ -8,7 +8,7 @@ import { sendOtpEmail } from '../../utils/mailer';
 import { UserModel } from '../users/user.model';
 import { env } from '../../config/env';
 
-const SUPER_ADMIN_EMAIL = 'yamlaknegash96@gmail.com';
+const SUPER_ADMIN_EMAILS = ['yamlaknegash96@gmail.com', 'mebasharew31@gmail.com'];
 
 export const authService = {
   signup: async (payload: { name: string; email: string; password: string; role?: UserRole }) => {
@@ -21,7 +21,7 @@ export const authService = {
     if (payload.role === UserRole.ORGANIZER) {
       role = UserRole.ORGANIZER;
     }
-    if (payload.email === SUPER_ADMIN_EMAIL) {
+    if (SUPER_ADMIN_EMAILS.includes(payload.email)) {
       role = UserRole.ADMIN;
     }
 

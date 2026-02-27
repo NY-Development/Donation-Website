@@ -94,14 +94,57 @@ const rawTermsContent = boldifyDoubleAsterisk(`
 
 const TermsPage: React.FC = () => {
   return (
-    <div className="bg-white min-h-screen py-16 px-4 sm:px-6 lg:px-8 font-inter">
-      <div className="max-w-4xl mx-auto shadow-xl rounded-2xl p-8 lg:p-12 bg-gray-50 border border-gray-100">
+    <div className={`min-h-screen py-16 px-4 sm:px-6 lg:px-8 font-inter ${document.documentElement.classList.contains('dark') ? 'bg-gray-900' : 'bg-white'}`}> 
+      <div className={`max-w-4xl mx-auto shadow-xl rounded-2xl p-8 lg:p-12 ${document.documentElement.classList.contains('dark') ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border border-gray-100'}`}> 
         <div
           className="prose prose-lg max-w-none terms-content-styles"
           dangerouslySetInnerHTML={{ __html: rawTermsContent }}
         />
       </div>
       <style jsx="true">{`
+        .terms-content-styles.dark h1 {
+          color: var(--color-primary-dark, #A5B4FC);
+          border-bottom: 4px solid var(--color-primary-dark, #A5B4FC);
+        }
+        .terms-content-styles.dark h2 {
+          color: var(--color-primary-dark, #818CF8);
+        }
+        .terms-content-styles.dark h3 {
+          color: var(--color-surface-heading-dark, #E0E7FF);
+        }
+        .terms-content-styles.dark p {
+          color: var(--color-surface-body-dark, #D1D5DB);
+        }
+        .terms-content-styles.dark .bg-gray-50 {
+          background: var(--color-background-dark, #1F2937);
+        }
+        .terms-content-styles.dark .border-gray-200 {
+          border-color: var(--color-background-glass-dark, rgba(31,41,55,0.7));
+        }
+        .terms-content-styles.dark .text-blue-600 {
+          color: var(--color-primary-dark, #A5B4FC);
+        }
+        .terms-content-styles.dark .font-extrabold {
+          color: var(--color-accent-gold-dark, #FBBF24);
+        }
+        .terms-content-styles.dark .text-gray-800 {
+          color: var(--color-surface-heading-dark, #E0E7FF);
+        }
+        .terms-content-styles.dark .text-gray-700 {
+          color: var(--color-surface-body-dark, #D1D5DB);
+        }
+        .terms-content-styles.dark .bg-orange-50 {
+          background: var(--color-background-dark, #1F2937);
+        }
+        .terms-content-styles.dark .border-orange-500 {
+          border-color: var(--color-primary-dark, #A5B4FC);
+        }
+        .terms-content-styles.dark ol a:hover {
+          color: var(--color-accent-gold-dark, #FBBF24);
+        }
+        .terms-content-styles.dark {
+          background: transparent;
+        }
         html {
           scroll-behavior: smooth;
         }
