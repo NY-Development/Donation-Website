@@ -82,7 +82,7 @@ const Footer: React.FC = () => {
         <div className="border-t border-gray-100 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-bold text-gray-400 uppercase tracking-widest">
           <p>© 2026 Impact Foundation. All rights reserved.</p>
           <div className="flex gap-8">
-            <Link className="hover:text-gray-900 dark:hover:text-white transition-colors" to="/privacy">{t('footer.privacy', 'Privacy Policy')}</Link>
+            <Link className="hover:text-gray-900 dark:hover:text-white transition-colors" to="/privacy-policy">{t('footer.privacy', 'Privacy Policy')}</Link>
             <Link className="hover:text-gray-900 dark:hover:text-white transition-colors" to="/terms">{t('footer.terms', 'Terms of Service')}</Link>
           </div>
         </div>

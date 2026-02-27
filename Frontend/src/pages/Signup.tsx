@@ -255,7 +255,7 @@ const Signup: React.FC = () => {
                 <label className="inline-flex items-start gap-3 cursor-pointer group">
                   <input className="form-checkbox mt-1 h-4 w-4 rounded border-[#dbcfe7] dark:border-[#4a3b5a] dark:bg-[#2a1f36] text-primary focus:ring-primary/50 transition duration-150 ease-in-out" type="checkbox" required />
                   <span className="text-sm text-[#140d1b] dark:text-white/90 leading-normal select-none">
-                    {t('pages.auth.signup.termsAgree')} <Link className="text-primary hover:underline font-medium" to="/terms">{t('pages.auth.signup.terms')}</Link> and <Link className="text-primary hover:underline font-medium" to="/privacy">{t('pages.auth.signup.privacy')}</Link>.
+                    {t('pages.auth.signup.termsAgree')} <Link className="text-primary hover:underline font-medium" to="/terms">{t('pages.auth.signup.terms')}</Link> and <Link className="text-primary hover:underline font-medium" to="/privacy-policy">{t('pages.auth.signup.privacy')}</Link>.
                   </span>
                 </label>
               </div>

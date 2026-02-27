@@ -1,7 +1,7 @@
 
 import React, { Suspense, useMemo, useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Navbar from './src/components/Navbar';
 import Footer from './src/components/Footer';
 import ProtectedRoute from './src/components/ProtectedRoute';
@@ -9,6 +9,7 @@ import { useAuthStore } from './src/store';
 import { HelpCircle, X } from 'lucide-react';
 import adminService from './src/Services/admin';
 import { useTranslation } from 'react-i18next';
+
 
 const Home = React.lazy(() => import('./src/pages/Home'));
 const Explore = React.lazy(() => import('./src/pages/Explore'));
@@ -37,7 +38,7 @@ const SafetyTrust = React.lazy(() => import('./src/pages/SafetyTrust'));
 const AboutUs = React.lazy(() => import('./src/pages/AboutUs'));
 const Eula = React.lazy(() => import('./src/pages/Eula'));
 const Terms = React.lazy(() => import('./src/pages/Terms'));
-const Privacy = React.lazy(() => import('./src/pages/Privacy'));
+const PrivacyPolicy = React.lazy(() => import('./src/pages/PrivacyPolicy'));
 const ForgotPassword = React.lazy(() => import('./src/pages/ForgotPassword'));
 const ResetPassword = React.lazy(() => import('./src/pages/ResetPassword'));
 const Protection = React.lazy(() => import('./src/pages/Protection'));
@@ -119,7 +120,7 @@ const App: React.FC = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <HashRouter>
+      <BrowserRouter>
         <ScrollToTop />
         <div className="min-h-screen flex flex-col">
         {/* Hide default navbar on checkout or admin pages if needed, but for simplicity we show it or a variant */}
@@ -216,7 +217,7 @@ const App: React.FC = () => {
               <Route path="/about" element={<AboutUs />} />
               <Route path="/eula" element={<Eula />} />
               <Route path="/terms" element={<Terms />} />
-              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/protection" element={<Protection />} />
             </Routes>
           </Suspense>
@@ -281,7 +282,7 @@ const App: React.FC = () => {
           </div>
         )}
         </div>
-      </HashRouter>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 };

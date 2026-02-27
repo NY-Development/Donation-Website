@@ -382,7 +382,7 @@ const HelpCenter: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => navigate('/privacy')}
+                  onClick={() => navigate('/privacy-policy')}
                   className="flex w-full items-center gap-3 rounded-xl border border-gray-100 dark:border-gray-800 p-3 text-left hover:border-primary/40 hover:bg-primary/5 transition"
                 >
                   <Lock className="size-4 text-primary" aria-hidden="true" />
