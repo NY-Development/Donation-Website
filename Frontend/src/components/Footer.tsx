@@ -84,6 +84,7 @@ const Footer: React.FC = () => {
           <div className="flex gap-8">
             <Link className="hover:text-gray-900 dark:hover:text-white transition-colors" to="/privacy-policy">{t('footer.privacy', 'Privacy Policy')}</Link>
             <Link className="hover:text-gray-900 dark:hover:text-white transition-colors" to="/terms">{t('footer.terms', 'Terms of Service')}</Link>
+            <Link className="hover:text-gray-900 dark:hover:text-white transition-colors" to="/eula">{t('footer.eula', 'EULA')}</Link>
           </div>
         </div>
       </div>
