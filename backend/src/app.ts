@@ -171,4 +171,8 @@ app.use('/api/donations', donationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/organizer', organizerRoutes);
 
+// Cookie Consent API
+import cookieConsentRoutes from './modules/users/cookieConsent.routes';
+app.use('/api/cookie-consent', cookieConsentRoutes);
+
 app.use(errorHandler);

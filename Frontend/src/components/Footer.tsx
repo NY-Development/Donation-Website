@@ -85,6 +85,15 @@ const Footer: React.FC = () => {
             <Link className="hover:text-gray-900 dark:hover:text-white transition-colors" to="/privacy-policy">{t('footer.privacy', 'Privacy Policy')}</Link>
             <Link className="hover:text-gray-900 dark:hover:text-white transition-colors" to="/terms">{t('footer.terms', 'Terms of Service')}</Link>
             <Link className="hover:text-gray-900 dark:hover:text-white transition-colors" to="/eula">{t('footer.eula', 'EULA')}</Link>
+            <button
+              type="button"
+              className="hover:text-gray-900 dark:hover:text-white transition-colors underline ml-2"
+              onClick={() => {
+                if (window.dispatchEvent) {
+                  window.dispatchEvent(new CustomEvent('openCookieSettings'));
+                }
+              }}
+            >Cookie Settings</button>
           </div>
         </div>
       </div>

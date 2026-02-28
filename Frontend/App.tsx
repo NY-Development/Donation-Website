@@ -10,6 +10,8 @@ import { HelpCircle, X } from 'lucide-react';
 import adminService from './src/Services/admin';
 import { useTranslation } from 'react-i18next';
 
+import CookieConsentModal from './src/components/CookieConsentModal';
+
 
 const Home = React.lazy(() => import('./src/pages/Home'));
 const Explore = React.lazy(() => import('./src/pages/Explore'));
@@ -123,6 +125,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <ScrollToTop />
         <div className="min-h-screen flex flex-col">
+          <CookieConsentModal />
         {/* Hide default navbar on checkout or admin pages if needed, but for simplicity we show it or a variant */}
         <Navbar toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode}/>
         
