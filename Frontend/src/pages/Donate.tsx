@@ -37,6 +37,8 @@ const Donate: React.FC = () => {
     enabled: Boolean(id)
   });
 
+  const campaignCoverImage = campaign?.media?.[0];
+
   const isClosed = campaign?.status === 'closed';
   const isExpired = campaign?.deadline ? new Date(campaign.deadline) <= new Date() : false;
 
@@ -336,8 +338,16 @@ const Donate: React.FC = () => {
         <div className="lg:col-span-5 xl:col-span-4">
           <div className="sticky top-24 space-y-4" data-animate="section">
             <div className="bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
-              <div className="w-full aspect-video relative bg-gradient-to-br from-green-400 to-emerald-700 flex items-end p-4">
-                <div className="bg-black/30 px-3 py-1 rounded text-white text-xs font-bold uppercase tracking-wider">
+              <div className="w-full aspect-video relative flex items-end p-4 overflow-hidden bg-gradient-to-br from-green-400 to-emerald-700">
+                {campaignCoverImage && (
+                  <img
+                    src={campaignCoverImage}
+                    alt={campaign?.title ?? t('pages.campaignDetail.campaign')}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                )}
+                <div className="absolute inset-0 bg-black/25" aria-hidden="true" />
+                <div className="relative z-10 bg-black/30 px-3 py-1 rounded text-white text-xs font-bold uppercase tracking-wider">
                   {campaign?.category ?? 'Campaign'}
                 </div>
               </div>

@@ -21,7 +21,7 @@
     "campaignNotFound": "ዘመቻ አልተገኘም",
     "campaignPaused": "ዘመቻው ተቋርጧል እና ልገሳ መቀበል አይችልም",
     "campaignClosed": "ዘመቻው ተዘግቷል እና ልገሳ መቀበል አይችልም",
-    "campaignNotAcceptingDonations": "ዘመቻው ልገሳ አይቀበልም",
+    "campaignNotAcceptingDonations": "ዘመቻው ልገሳ አይቀበልም, እባክዎ በመረጋገጥ ላይ ነው።",
     "campaignDeadlinePassed": "የዘመቻው የመጨረሻ ቀን አልፏል",
     "paymentProviderNotConfigured": "የክፍያ አቅራቢ አልተዋቀረም",
     "transactionIdOrScreenshotRequired": "የግብይት መለያ ወይም QR ስክሪንሾት ያስፈልጋል",
