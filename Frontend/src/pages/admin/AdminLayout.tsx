@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { BarChart3, FileText, LayoutDashboard, Menu, Settings, ShieldCheck, Users, X } from 'lucide-react';
+import { BarChart3, FileText, Headset, LayoutDashboard, Menu, Settings, ShieldCheck, Users, X } from 'lucide-react';
 import { useAuthStore } from '../../store';
 import { useTranslation } from 'react-i18next';
 
@@ -17,6 +17,7 @@ const AdminLayout: React.FC = () => {
       { label: t('pages.admin.nav.campaigns'), to: '/admin/campaigns', icon: BarChart3 },
       { label: t('pages.admin.nav.users'), to: '/admin/users', icon: Users },
       { label: t('pages.admin.nav.reports'), to: '/admin/reports', icon: ShieldCheck },
+      { label: t('pages.admin.nav.support'), to: '/admin/support', icon: Headset },
       { label: t('pages.admin.nav.settings'), to: '/admin/settings', icon: Settings }
     ],
     [t]

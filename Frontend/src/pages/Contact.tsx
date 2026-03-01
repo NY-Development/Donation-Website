@@ -2,9 +2,58 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Globe, Mail, MapPin, Megaphone, Phone, Share2 } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import supportService from '../Services/support';
+import { getErrorMessage } from '../store/apiHelpers';
 
 const Contact: React.FC = () => {
   const { t } = useTranslation();
+  const [form, setForm] = React.useState({
+    name: '',
+    email: '',
+    subject: 'General Inquiry',
+    message: ''
+  });
+  const [formError, setFormError] = React.useState<string | null>(null);
+  const [formSuccess, setFormSuccess] = React.useState<string | null>(null);
+
+  const submitMutation = useMutation({
+    mutationFn: async () => {
+      await supportService.create({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        subject: form.subject.trim(),
+        message: form.message.trim()
+      });
+    },
+    onSuccess: () => {
+      setFormError(null);
+      setFormSuccess(t('pages.contact.form.success', 'Your message has been sent. Our team will contact you soon.'));
+      setForm({
+        name: '',
+        email: '',
+        subject: 'General Inquiry',
+        message: ''
+      });
+    },
+    onError: (error) => {
+      setFormSuccess(null);
+      setFormError(getErrorMessage(error));
+    }
+  });
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setFormError(null);
+    setFormSuccess(null);
+
+    if (!form.name.trim() || !form.email.trim() || !form.subject.trim() || !form.message.trim()) {
+      setFormError(t('pages.contact.form.validation', 'Please fill in all fields before sending your message.'));
+      return;
+    }
+
+    submitMutation.mutate();
+  };
 
   return (
     <div className="mt-6 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
@@ -29,7 +78,7 @@ const Contact: React.FC = () => {
                   <Mail className="size-6" aria-hidden="true" />
                 </div>
                 <h3 className="font-bold text-slate-900 dark:text-slate-100">{t('pages.contact.email.title', 'Email Us')}</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400">{t('pages.contact.email.value', 'support@socialimpact.org')}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{t('pages.contact.email.value', 'mebasharew31@gmail.com')}</p>
               </div>
 
               <div className="group">
@@ -97,7 +146,7 @@ const Contact: React.FC = () => {
                 {t('pages.contact.form.subtitle', "Fill out the form below and we'll get back to you within 24 hours.")}
               </p>
 
-              <form className="space-y-6" onSubmit={(event) => event.preventDefault()}>
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 ml-1" htmlFor="contact-name">
                     {t('pages.contact.form.fullName', 'Full Name')}
@@ -105,6 +154,8 @@ const Contact: React.FC = () => {
                   <input
                     id="contact-name"
                     type="text"
+                    value={form.name}
+                    onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
                     placeholder={t('pages.contact.form.fullNamePlaceholder', 'John Doe')}
                     className="w-full bg-slate-50 dark:bg-slate-900/50 border-transparent focus:border-primary/30 focus:ring-4 focus:ring-primary/10 rounded-xl px-5 py-3 text-slate-900 dark:text-slate-100 transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700"
                   />
@@ -117,6 +168,8 @@ const Contact: React.FC = () => {
                   <input
                     id="contact-email"
                     type="email"
+                    value={form.email}
+                    onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
                     placeholder={t('pages.contact.form.emailPlaceholder', 'john@example.com')}
                     className="w-full bg-slate-50 dark:bg-slate-900/50 border-transparent focus:border-primary/30 focus:ring-4 focus:ring-primary/10 rounded-xl px-5 py-3 text-slate-900 dark:text-slate-100 transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700"
                   />
@@ -128,6 +181,8 @@ const Contact: React.FC = () => {
                   </label>
                   <select
                     id="contact-subject"
+                    value={form.subject}
+                    onChange={(event) => setForm((prev) => ({ ...prev, subject: event.target.value }))}
                     className="w-full bg-slate-50 dark:bg-slate-900/50 border-transparent focus:border-primary/30 focus:ring-4 focus:ring-primary/10 rounded-xl px-5 py-3 text-slate-900 dark:text-slate-100 transition-all"
                   >
                     <option>{t('pages.contact.form.subjectOptions.general', 'General Inquiry')}</option>
@@ -144,16 +199,29 @@ const Contact: React.FC = () => {
                   <textarea
                     id="contact-message"
                     rows={4}
+                    value={form.message}
+                    onChange={(event) => setForm((prev) => ({ ...prev, message: event.target.value }))}
                     placeholder={t('pages.contact.form.messagePlaceholder', 'How can we help you today?')}
                     className="w-full bg-slate-50 dark:bg-slate-900/50 border-transparent focus:border-primary/30 focus:ring-4 focus:ring-primary/10 rounded-xl px-5 py-3 text-slate-900 dark:text-slate-100 transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700 resize-none"
                   />
                 </div>
 
+                {formError && (
+                  <p className="text-sm text-red-600 dark:text-red-400">{formError}</p>
+                )}
+
+                {formSuccess && (
+                  <p className="text-sm text-green-600 dark:text-green-400">{formSuccess}</p>
+                )}
+
                 <button
                   type="submit"
+                  disabled={submitMutation.isPending}
                   className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 transition-all"
                 >
-                  {t('pages.contact.form.send', 'Send Message')}
+                  {submitMutation.isPending
+                    ? t('pages.contact.form.sending', 'Sending...')
+                    : t('pages.contact.form.send', 'Send Message')}
                 </button>
               </form>
 

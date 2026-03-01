@@ -169,7 +169,7 @@
       "subtitle": "We're here to help and answer any question you might have. Your support fuels our mission for global impact.",
       "email": {
         "title": "Email Us",
-        "value": "support@socialimpact.org"
+        "value": "mebasharew31@gmail.com"
       },
       "phone": {
         "title": "Call Us",
@@ -202,6 +202,9 @@
         "message": "Message",
         "messagePlaceholder": "How can we help you today?",
         "send": "Send Message",
+        "sending": "Sending...",
+        "success": "Your message has been sent. Our team will contact you soon.",
+        "validation": "Please fill in all fields before sending your message.",
         "faqPrompt": "Have questions about our operations?",
         "faqLink": "Read our Transparency FAQ"
       }
@@ -757,6 +760,7 @@
         "campaigns": "Campaigns",
         "users": "Users",
         "reports": "Reports",
+        "support": "Support",
         "settings": "Settings"
       },
       "actions": {
@@ -849,6 +853,23 @@
         "approve": "Approve",
         "empty": "No pending reports or verification requests.",
         "rejectReason": "Insufficient verification details."
+      },
+      "support": {
+        "title": "Support Requests",
+        "subtitle": "Review contact issues submitted by users.",
+        "refresh": "Refresh",
+        "searchPlaceholder": "Search by name, email, subject...",
+        "showing": "Showing {{shown}} of {{total}}",
+        "loading": "Loading support requests...",
+        "error": "Unable to load support requests right now.",
+        "empty": "No support requests found.",
+        "submitted": "Submitted {{date}}",
+        "accountLinked": "Linked account role: {{role}}",
+        "stats": {
+          "total": "Total requests",
+          "open": "Open requests",
+          "withAccount": "From signed-in users"
+        }
       },
       "users": {
         "title": "User Management",
