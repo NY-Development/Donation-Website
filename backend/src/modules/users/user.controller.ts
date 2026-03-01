@@ -1,8 +1,17 @@
-import { NextFunction, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { AuthRequest } from '../../middlewares/auth.middleware';
 import { userService } from './user.service';
 
 export const userController = {
+  getPublicById: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const t = (req as Request & { t?: (key: string) => string }).t ?? ((key: string) => key);
+      const user = await userService.getPublicProfileById(req.params.id);
+      res.json({ success: true, message: t('messages.profileFetched'), data: user });
+    } catch (error) {
+      next(error);
+    }
+  },
   getMe: async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const t = req.t ?? ((key: string) => key);

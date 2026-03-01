@@ -2,6 +2,7 @@ import api from './axios';
 
 export const userService = {
   getMe: () => api.get('/users/me'),
+  getById: (id: string) => api.get(`/users/${id}`),
   updateMe: (payload: { name?: string; email?: string } | FormData) => {
     const isFormData = typeof FormData !== 'undefined' && payload instanceof FormData;
     return api.patch('/users/me', payload, isFormData ? { headers: { 'Content-Type': 'multipart/form-data' } } : undefined);

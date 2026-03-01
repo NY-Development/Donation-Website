@@ -1,4 +1,3 @@
-
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
@@ -9,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 const Explore: React.FC = () => {
   const { t } = useTranslation();
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [urgentOnly, setUrgentOnly] = useState(false);
   const [status, setStatus] = useState<'approved' | 'pending_verification' | 'rejected' | 'draft' | 'closed' | 'all'>('all');
   const [query, setQuery] = useState('');
@@ -68,11 +67,25 @@ const Explore: React.FC = () => {
     closed: t('status.closed')
   };
 
-  const categories = ['All', 'Education', 'Medical', 'Environment', 'Disaster Relief', 'Community'];
+  // const categories = ['All', 'Education', 'Medical', 'Environment', 'Disaster Relief', 'Community'];
+  const categories = ['All', 'Medical'];
+
+  const toggleCategory = (category: string) => {
+    if (category === 'All') {
+      setSelectedCategories([]);
+      return;
+    }
+
+    setSelectedCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((item) => item !== category)
+        : [...prev, category]
+    );
+  };
 
   useEffect(() => {
     const params = {
-      category: activeCategory === 'All' ? undefined : activeCategory,
+      category: selectedCategories.length === 1 ? selectedCategories[0] : undefined,
       urgent: urgentOnly ? true : undefined,
       status: status === 'all' ? 'all' : status,
       limit: 12,
@@ -80,14 +93,17 @@ const Explore: React.FC = () => {
     };
 
     fetchAll(params, true);
-  }, [activeCategory, urgentOnly, status, fetchAll]);
+  }, [selectedCategories, urgentOnly, status, fetchAll]);
 
-  const filteredCampaigns = query.trim()
-    ? campaigns.filter((campaign) => campaign.title.toLowerCase().includes(query.trim().toLowerCase()))
-    : campaigns;
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredCampaigns = campaigns.filter((campaign) => {
+    const matchesQuery = !normalizedQuery || campaign.title.toLowerCase().includes(normalizedQuery);
+    const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(campaign.category);
+    return matchesQuery && matchesCategory;
+  });
 
   return (
-    <div ref={containerRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div ref={containerRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-16">
       <div className="mb-8" data-animate="section">
         <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-2">{t('pages.explore.title')}</h1>
         <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl">{t('pages.explore.subtitle')}</p>
@@ -113,26 +129,25 @@ const Explore: React.FC = () => {
               </div>
             </div>
 
-            <div className="space-y-3">
+            {/* <div className="space-y-3">  Category filters are temporarily removed until we have more categories to show
               <div className="flex items-center justify-between">
                 <label className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">{t('pages.explore.categories')}</label>
-                <button onClick={() => setActiveCategory('All')} className="text-xs text-primary font-medium hover:underline">{t('pages.explore.clear')}</button>
+                <button onClick={() => setSelectedCategories([])} className="text-xs text-primary font-medium hover:underline">{t('pages.explore.clear')}</button>
               </div>
               <div className="space-y-2">
                 {categories.map(cat => (
                   <label key={cat} className="flex items-center gap-3 cursor-pointer group">
                     <input 
-                      type="radio" 
-                      name="category" 
-                      checked={activeCategory === cat}
-                      onChange={() => setActiveCategory(cat)}
+                      type="checkbox"
+                      checked={cat === 'All' ? selectedCategories.length === 0 : selectedCategories.includes(cat)}
+                      onChange={() => toggleCategory(cat)}
                       className="w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 bg-transparent"
                     />
-                    <span className="text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors">{cat}</span>
+                    <span className="text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors">{cat === 'All' ? t('common.all') : cat}</span>
                   </label>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             <div className="space-y-3">
               <label className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">{t('pages.explore.urgency')}</label>
@@ -244,7 +259,7 @@ const Explore: React.FC = () => {
             {nextCursor && (
               <button
                 onClick={() => fetchAll({
-                  category: activeCategory === 'All' ? undefined : activeCategory,
+                  category: selectedCategories.length === 1 ? selectedCategories[0] : undefined,
                   urgent: urgentOnly ? true : undefined,
                   status: status === 'all' ? 'all' : status,
                   limit: 12,

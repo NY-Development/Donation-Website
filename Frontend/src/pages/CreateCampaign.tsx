@@ -24,7 +24,8 @@ import {
   Lightbulb,
   Link as LinkIcon,
   Wallet, 
-  TimerReset
+  TimerReset,
+  TriangleAlert
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -402,7 +403,7 @@ const CreateCampaign: React.FC = () => {
         </div>
       )}
 
-      <div className="flex justify-center mb-10" data-animate="section">
+      <div className="flex justify-center mb-10 mt-16" data-animate="section">
         <nav className="inline-flex flex-wrap gap-2 md:gap-4 items-center bg-white dark:bg-surface-dark px-6 py-3 rounded-full shadow-sm border border-gray-100 dark:border-gray-800">
           {[1, 2, 3, 4].map((s) => (
             <React.Fragment key={s}>
@@ -482,10 +483,10 @@ const CreateCampaign: React.FC = () => {
                     }}
                   >
                     <option value="">{t('pages.createCampaign.basics.categoryPlaceholder')}</option>
-                    <option>{t('pages.createCampaign.categories.education')}</option>
+                    {/* <option>{t('pages.createCampaign.categories.education')}</option> */}
                     <option>{t('pages.createCampaign.categories.medical')}</option>
-                    <option>{t('pages.createCampaign.categories.environment')}</option>
-                    <option>{t('pages.createCampaign.categories.emergency')}</option>
+                    {/* <option>{t('pages.createCampaign.categories.environment')}</option>
+                    <option>{t('pages.createCampaign.categories.emergency')}</option> */}
                   </select>
                 </div>
                 {/* Verification file for medical/emergency */}
@@ -583,7 +584,7 @@ const CreateCampaign: React.FC = () => {
                   <div className="mt-6">
                     <label className="block text-lg font-bold mb-2">{t('pages.createCampaign.goal.deadlineLabel')}</label>
                     <input
-                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 text-surface-heading border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary outline-none transition-colors duration-300"
                       type="date"
                       value={deadline}
                       onChange={(event) => {
@@ -756,13 +757,24 @@ const CreateCampaign: React.FC = () => {
               data-animate="button"
               disabled={loading}
             >
-              {step === 4 ? ( loading ? <TimerReset className="size-4" aria-hidden="true" /> : t('pages.createCampaign.actions.launch')) : (t('pages.createCampaign.actions.continue'))}
+              {step === 4 ? (
+                  loading ? (
+                    <>
+                      <TimerReset className="size-4 mr-2 animate-pulse" aria-hidden="true" />
+                      <p className="text-sm animate-pulse">{t('pages.createCampaign.loading')}</p>
+                    </>
+                  ) : (
+                    t('pages.createCampaign.actions.launch')
+                  )
+                ) : (
+                  t('pages.createCampaign.actions.continue')
+              )}
               <ArrowRight className="size-4" aria-hidden="true" />
             </button>
           </div>
           {formError && (
             <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-              {formError}
+              <TriangleAlert className="animate-pulse inline-block mr-2" aria-hidden="true" />{formError}
             </div>
           )}
         </div>

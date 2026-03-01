@@ -5,8 +5,9 @@ import { animatePageIn, animateSectionsOnScroll, ensureGsap, prefersReducedMotio
 import { AlertTriangle, BadgeCheck, Heart, Lock, Mail, MapPin, TrendingUp } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import campaignService from '../Services/campaigns';
+import userService from '../Services/users';
 import { getApiData } from '../store/apiHelpers';
-import type { Campaign, CampaignDonor } from '../../types';
+import type { Campaign, CampaignDonor, UserSummary } from '../../types';
 import { useTranslation } from 'react-i18next';
 
 const CampaignDetail: React.FC = () => {
@@ -15,6 +16,7 @@ const CampaignDetail: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
   const [showWarning, setShowWarning] = useState(false);
+  const [orgProfile, setOrgProfile] = useState<UserSummary | null>(null);
 
   useLayoutEffect(() => {
     ensureGsap();
@@ -44,24 +46,40 @@ const CampaignDetail: React.FC = () => {
     queryFn: async () => {
       if (!id) return [] as CampaignDonor[];
       const response = await campaignService.getDonors(id);
+      setOrgProfile(response.data ?? null);
       return getApiData<CampaignDonor[]>(response) ?? [];
     },
     enabled: Boolean(id)
   });
+  const organizerId = typeof campaign?.organizer === 'string' ? campaign.organizer : campaign?.organizer?._id;
+
+  const { data: organizerProfile } = useQuery({
+    queryKey: ['users', organizerId],
+    queryFn: async () => {
+      if (!organizerId) return null;
+      const response = await userService.getById(organizerId);
+      return getApiData<UserSummary>(response);
+    },
+    enabled: Boolean(organizerId && typeof campaign?.organizer === 'string')
+  });
+
+  console.log(orgProfile)
 
   const image = campaign?.media?.[0] ?? 'https://images.unsplash.com/photo-1529390079861-591de354faf5?q=80&w=2070&auto=format&fit=crop';
   const raised = campaign?.raisedAmount ?? 0;
   const goal = campaign?.goalAmount ?? 1;
   const percent = Math.round((raised / goal) * 100);
   const getInitial = (value: string | undefined, fallback: string) => value?.trim()?.[0]?.toUpperCase() || fallback;
-  const organizerInfo = campaign?.organizer && typeof campaign.organizer !== 'string' ? campaign.organizer : null;
+  const organizerInfo = (campaign?.organizer && typeof campaign.organizer !== 'string'
+    ? campaign.organizer
+    : organizerProfile) as UserSummary | null;
   const organizerName = organizerInfo?.name ?? 'Organizer';
   const organizerEmail = organizerInfo?.email ?? '';
   const organizerImage = organizerInfo?.profileImage?.trim() || '';
   const organizerInitial = getInitial(organizerName || organizerEmail, 'O');
 
   return (
-    <div ref={containerRef} className="max-w-7xl mx-auto px-4 md:px-8 py-6">
+    <div ref={containerRef} className="max-w-7xl mx-auto px-4 md:px-8 py-6 mt-16">
       <div className="flex flex-wrap gap-2 mb-6" data-animate="section">
         <Link className="text-primary hover:underline text-sm font-medium" to="/">{t('pages.campaignDetail.home')}</Link>
         <span className="text-gray-400 text-sm">/</span>
@@ -70,7 +88,7 @@ const CampaignDetail: React.FC = () => {
         <span className="text-gray-600 dark:text-gray-400 text-sm font-medium">{campaign?.category ?? t('pages.campaignDetail.campaign')}</span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mt-15">
         <div className="lg:col-span-8 flex flex-col gap-6" data-animate="section">
           <div className="flex flex-col gap-3">
             <h1 className="text-3xl md:text-5xl font-black leading-tight tracking-tight text-gray-900 dark:text-white">

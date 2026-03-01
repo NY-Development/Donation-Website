@@ -89,3 +89,16 @@ body {
 .animate-fade-in-up {
   animation: fade-in-up 1s ease forwards;
 }
+
+/* ================= DATE INPUT DARK MODE FIX ================= */
+
+/* Target the calendar icon */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0);
+  cursor: pointer;
+}
+
+/* Make it white in dark mode */
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}

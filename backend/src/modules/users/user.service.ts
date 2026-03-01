@@ -5,6 +5,20 @@ import { makeCursor } from '../../utils/pagination';
 import { campaignRepository } from '../campaigns/campaign.repository';
 
 export const userService = {
+  getPublicProfileById: async (userId: string) => {
+    const user = await userRepository.findByIdLean(userId);
+    if (!user) {
+      throw { status: 404, message: 'errors.userNotFound' };
+    }
+
+    return {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      profileImage: user.profileImage,
+      role: user.role
+    };
+  },
   getProfile: async (userId: string) => {
     const user = await userRepository.findByIdLean(userId);
     if (!user) {

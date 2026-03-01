@@ -28,6 +28,10 @@ const pendingDonationsQuerySchema = z.object({
 	limit: z.coerce.number().min(1).max(50).optional()
 });
 
+const userIdParamSchema = z.object({
+  id: z.string().length(24)
+});
+
 const updateProfileSchema = z.object({
 	name: z.string().min(2).optional(),
 	email: z.string().email().optional()
@@ -40,5 +44,6 @@ router.get('/me/dashboard', requireAuth, validate(dashboardQuerySchema, 'query')
 router.get('/me/trends', requireAuth, validate(trendsQuerySchema, 'query'), userController.getTrends);
 router.get('/me/campaigns', requireAuth, validate(organizerCampaignsQuerySchema, 'query'), userController.getMyCampaigns);
 router.get('/me/pending-donations', requireAuth, validate(pendingDonationsQuerySchema, 'query'), userController.getPendingDonations);
+router.get('/:id', validate(userIdParamSchema, 'params'), userController.getPublicById);
 
 export default router;
