@@ -140,6 +140,72 @@
       "subscribe": "Subscribe",
       "joinCount": "Join 5,000+ others. Unsubscribe at any time."
     },
+    "successStories": {
+      "kicker": "Impact Report",
+      "heroTitlePrefix": "Real Stories of",
+      "heroTitleHighlight": "Real Change",
+      "title": "Success Stories",
+      "subtitle": "Campaigns shown here are completed or have reached 100% of their goal.",
+      "chips": [
+        "All Stories",
+        "Health",
+        "Environment",
+        "Education",
+        "Clean Water"
+      ],
+      "before": "Before",
+      "after": "After",
+      "successCategory": "Success",
+      "loading": "Loading success stories...",
+      "error": "Unable to load success stories right now.",
+      "empty": "No completed campaigns yet. Please check back soon.",
+      "noImage": "No image available",
+      "goal": "Goal",
+      "viewCampaign": "View campaign"
+    },
+    "contact": {
+      "titlePrefix": "Contact Our",
+      "titleHighlight": "Team",
+      "subtitle": "We're here to help and answer any question you might have. Your support fuels our mission for global impact.",
+      "email": {
+        "title": "Email Us",
+        "value": "support@socialimpact.org"
+      },
+      "phone": {
+        "title": "Call Us",
+        "value": "+1 (555) 000-0000"
+      },
+      "address": {
+        "title": "Visit HQ",
+        "value": "123 Impact Way, San Francisco, CA 94103"
+      },
+      "mapAlt": "Stylized map showing our headquarters location",
+      "social": {
+        "web": "Website",
+        "share": "Share",
+        "campaign": "Campaign"
+      },
+      "form": {
+        "title": "Send us a message",
+        "subtitle": "Fill out the form below and we'll get back to you within 24 hours.",
+        "fullName": "Full Name",
+        "fullNamePlaceholder": "John Doe",
+        "email": "Email Address",
+        "emailPlaceholder": "john@example.com",
+        "subject": "Subject",
+        "subjectOptions": {
+          "general": "General Inquiry",
+          "donation": "Donation Support",
+          "partnership": "Partnership Proposal",
+          "volunteer": "Volunteer Opportunity"
+        },
+        "message": "Message",
+        "messagePlaceholder": "How can we help you today?",
+        "send": "Send Message",
+        "faqPrompt": "Have questions about our operations?",
+        "faqLink": "Read our Transparency FAQ"
+      }
+    },
     "explore": {
       "title": "Explore Campaigns",
       "subtitle": "Browse all active, pending, and rejected campaigns with clear status labels.",
@@ -215,7 +281,6 @@
       "acknowledge": "I understand this campaign is not approved and I donate at my own risk.",
       "processing": "Processing...",
       "donateAmount": "ETB {{amount}} አሁን ይለግሱ",
-      "impactBody": "የETB {{amount}} ልገሳዎ ይህን ጉዳይ በቀጥታ ይደግፋል።",
       "supporting": "Supporting",
       "yourImpact": "Your impact",
       "impactBody": "Your ETB {{amount}} donation supports this cause directly.",

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 const HowItWorks: React.FC = () => {
   const { t } = useTranslation();
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="mt-14 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-10">
         <p className="text-primary text-sm font-bold uppercase tracking-wider mb-2">{t('pages.howItWorks.kicker')}</p>
         <h1 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white">{t('pages.howItWorks.title')}</h1>

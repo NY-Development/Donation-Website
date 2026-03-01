@@ -165,7 +165,7 @@ const HelpCenter: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-background-light dark:bg-background-dark">
+    <div className="mt-14 min-h-[calc(100vh-64px)] bg-background-light dark:bg-background-dark">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-8">

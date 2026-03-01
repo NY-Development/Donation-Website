@@ -137,6 +137,72 @@
       "subscribe": "ይመዝገቡ",
       "joinCount": "5,000+ ሰዎችን ይቀላቀሉ። ማንኛውንም ጊዜ ማስወገድ ይችላሉ።"
     },
+    "successStories": {
+      "kicker": "የተፅዕኖ ሪፖርት",
+      "heroTitlePrefix": "እውነተኛ ታሪኮች የ",
+      "heroTitleHighlight": "እውነተኛ ለውጥ",
+      "title": "የስኬት ታሪኮች",
+      "subtitle": "እዚህ የሚታዩት ዘመቻዎች የተጠናቀቁ ወይም 100% ግባቸውን የደረሱ ናቸው።",
+      "chips": [
+        "ሁሉም ታሪኮች",
+        "ጤና",
+        "አካባቢ",
+        "ትምህርት",
+        "ንጹህ ውሃ"
+      ],
+      "before": "በፊት",
+      "after": "በኋላ",
+      "successCategory": "ስኬት",
+      "loading": "የስኬት ታሪኮች በመጫን ላይ...",
+      "error": "አሁን የስኬት ታሪኮችን መጫን አልተቻለም።",
+      "empty": "እስካሁን የተጠናቀቁ ዘመቻዎች የሉም። በኋላ ይመልከቱ።",
+      "noImage": "ምስል አልተገኘም",
+      "goal": "ግብ",
+      "viewCampaign": "ዘመቻን ይመልከቱ"
+    },
+    "contact": {
+      "titlePrefix": "ቡድናችንን",
+      "titleHighlight": "ያግኙ",
+      "subtitle": "ለመርዳት እና ማንኛውንም ጥያቄ ለመመለስ እዚህ ነን። ድጋፍዎ የአለም አቀፍ ተፅዕኖ ተልእኮአችንን ያበረታታል።",
+      "email": {
+        "title": "ኢሜል ያድርጉልን",
+        "value": "support@socialimpact.org"
+      },
+      "phone": {
+        "title": "ይደውሉልን",
+        "value": "+1 (555) 000-0000"
+      },
+      "address": {
+        "title": "ዋና ቢሮአችንን ይጎብኙ",
+        "value": "123 Impact Way, San Francisco, CA 94103"
+      },
+      "mapAlt": "የዋና ቢሮአችንን ቦታ የሚያሳይ ካርታ",
+      "social": {
+        "web": "ድህረ ገጽ",
+        "share": "አጋራ",
+        "campaign": "ዘመቻ"
+      },
+      "form": {
+        "title": "መልዕክት ይላኩልን",
+        "subtitle": "ከታች ያለውን ቅጽ ይሙሉ፤ በ24 ሰዓት ውስጥ እንመልስልዎታለን።",
+        "fullName": "ሙሉ ስም",
+        "fullNamePlaceholder": "John Doe",
+        "email": "የኢሜል አድራሻ",
+        "emailPlaceholder": "john@example.com",
+        "subject": "ርዕስ",
+        "subjectOptions": {
+          "general": "አጠቃላይ ጥያቄ",
+          "donation": "የልገሳ ድጋፍ",
+          "partnership": "የትብብር ጥያቄ",
+          "volunteer": "የበጎ ፈቃድ ዕድል"
+        },
+        "message": "መልዕክት",
+        "messagePlaceholder": "ዛሬ እንዴት ልንረዳዎት እንችላለን?",
+        "send": "መልዕክት ላክ",
+        "faqPrompt": "ስለ ስራዎቻችን ጥያቄ አለዎት?",
+        "faqLink": "የግልፅነት FAQ ያንብቡ"
+      }
+    },
     "explore": {
       "title": "ዘመቻዎችን ያስሱ",
       "subtitle": "ሁሉንም ንቁ፣ በግምገማ ላይ እና ተቀባይነት አልተሰጠውም ዘመቻዎች ይመልከቱ።",

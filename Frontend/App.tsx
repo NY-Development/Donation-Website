@@ -33,9 +33,11 @@ const Login = React.lazy(() => import('./src/pages/Login'));
 const Signup = React.lazy(() => import('./src/pages/Signup'));
 const VerifyOtp = React.lazy(() => import('./src/pages/VerifyOtp'));
 const Success = React.lazy(() => import('./src/pages/Success'));
+const SuccessStory = React.lazy(() => import('./src/pages/successStory'));
 const HowItWorks = React.lazy(() => import('./src/pages/HowItWorks'));
 const ForNonprofits = React.lazy(() => import('./src/pages/ForNonprofits'));
 const HelpCenter = React.lazy(() => import('./src/pages/HelpCenter'));
+const Contact = React.lazy(() => import('./src/pages/Contact'));
 const SafetyTrust = React.lazy(() => import('./src/pages/SafetyTrust'));
 const AboutUs = React.lazy(() => import('./src/pages/AboutUs'));
 const Eula = React.lazy(() => import('./src/pages/Eula'));
@@ -213,8 +215,10 @@ const App: React.FC = () => {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset" element={<ResetPassword />} />
               <Route path="/success" element={<Success />} />
+              <Route path="/success-stories" element={<SuccessStory />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/for-nonprofits" element={<ForNonprofits />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/help-center" element={<HelpCenter />} />
               <Route path="/safety-trust" element={<SafetyTrust />} />
               <Route path="/about" element={<AboutUs />} />
