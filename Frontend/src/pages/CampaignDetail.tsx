@@ -16,7 +16,6 @@ const CampaignDetail: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
   const [showWarning, setShowWarning] = useState(false);
-  const [orgProfile, setOrgProfile] = useState<UserSummary | null>(null);
 
   useLayoutEffect(() => {
     ensureGsap();
@@ -46,7 +45,6 @@ const CampaignDetail: React.FC = () => {
     queryFn: async () => {
       if (!id) return [] as CampaignDonor[];
       const response = await campaignService.getDonors(id);
-      setOrgProfile(response.data ?? null);
       return getApiData<CampaignDonor[]>(response) ?? [];
     },
     enabled: Boolean(id)
@@ -62,8 +60,6 @@ const CampaignDetail: React.FC = () => {
     },
     enabled: Boolean(organizerId && typeof campaign?.organizer === 'string')
   });
-
-  console.log(orgProfile)
 
   const image = campaign?.media?.[0] ?? 'https://images.unsplash.com/photo-1529390079861-591de354faf5?q=80&w=2070&auto=format&fit=crop';
   const raised = campaign?.raisedAmount ?? 0;

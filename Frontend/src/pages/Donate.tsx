@@ -1,4 +1,3 @@
-
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { gsap } from 'gsap';
@@ -333,7 +332,7 @@ const Donate: React.FC = () => {
             </div>
           </div>
         </div>
-
+              {/* Donation Section */}
         <div className="lg:col-span-5 xl:col-span-4">
           <div className="sticky top-24 space-y-4" data-animate="section">
             <div className="bg-white dark:bg-surface-dark rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
