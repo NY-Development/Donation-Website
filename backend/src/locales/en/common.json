@@ -21,7 +21,7 @@
     "campaignNotFound": "Campaign not found",
     "campaignPaused": "Campaign is paused and cannot accept donations",
     "campaignClosed": "Campaign is closed and cannot accept donations",
-    "campaignNotAcceptingDonations": "Campaign is not accepting donations, needs to verified first.",
+    "campaignNotAcceptingDonations": "Campaign is not accepting donations, Campaign is not yet verified.",
     "campaignDeadlinePassed": "Campaign deadline has passed",
     "paymentProviderNotConfigured": "Payment provider not configured",
     "transactionIdOrScreenshotRequired": "Transaction ID or QR screenshot is required",
