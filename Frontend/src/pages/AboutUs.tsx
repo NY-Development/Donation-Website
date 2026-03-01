@@ -116,7 +116,7 @@ export default function AboutUs() {
               viewport={{ once: true, amount: 0.2 }}
               variants={fadeInUp}
               whileHover={{ y: -8 }}
-              className="bg-background rounded-2xl p-8 shadow-glass hover:shadow-glow-purple transition-all duration-300"
+              className="bg-background dark:border border-purple-400 rounded-2xl p-8 shadow-glass hover:shadow-glow-purple transition-all duration-300"
             >
               <h3 className="text-xl font-semibold mb-4 text-primary">
                 {item.title}
