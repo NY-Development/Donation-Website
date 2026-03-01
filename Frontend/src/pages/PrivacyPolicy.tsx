@@ -17,7 +17,7 @@ const PrivacyPolicy: React.FC = () => {
           <main>
             <header className="mb-8">
               <h1 className="text-3xl font-bold mb-2">DONATIONS PLATFORM PRIVACY POLICY</h1>
-              <p className="text-sm text-gray-500 font-medium">Last updated: February 27, 2026</p>
+              <p className="text-sm text-gray-500 font-medium">Last updated: March 01, 2026</p>
             </header>
             <section className="mb-8">
               <p className="mb-4">

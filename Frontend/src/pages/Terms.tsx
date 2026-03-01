@@ -7,9 +7,9 @@ function boldifyDoubleAsterisk(text: string): string {
 
 const rawTermsContent = boldifyDoubleAsterisk(`
   <h1>TERMS AND CONDITIONS</h1>
-  <p>Last updated: <span class="font-semibold text-gray-700">February 27, 2026</span></p>
+  <p>Last updated: <span class="font-semibold text-gray-700">March 01, 2026</span></p>
 
-  <p>These Terms and Conditions ("Terms") govern your use of the Donations Platform, including the website at <a href="https://donations-platform.example.com" class="text-blue-600 hover:text-orange-600 transition-colors">https://donations-platform.example.com</a> and the associated mobile application (collectively, the "Service"), provided by <span class="font-semibold text-orange-600">Donations Platform</span> ("we," "us," or "our").</p>
+  <p>These Terms and Conditions ("Terms") govern your use of the Donations Platform, including the website at <a href="https://impactdonation.vercel.app" class="text-blue-600 hover:text-orange-600 transition-colors">https://impactdonation.vercel.app</a> and the associated mobile application (collectively, the "Service"), provided by <span class="font-semibold text-orange-600">Donations Platform</span> ("we," "us," or "our").</p>
 
   <p class="mt-6 bg-orange-50 p-4 border-l-4 border-orange-500 text-gray-800">
     By accessing or using the Service, you agree to be bound by these Terms. Our Service functions as an intermediary platform connecting verified beneficiaries with global donors. We are not a bank, charity, or insurance provider.
@@ -45,7 +45,13 @@ const rawTermsContent = boldifyDoubleAsterisk(`
 
   <h2 id="3-donations-and-payment-processing">3. DONATIONS AND PAYMENT PROCESSING</h2>
   <h3>Intermediary Status</h3>
-  <p>Donations Platform is a SaaS intermediary. We do not hold funds directly. All financial transactions are processed through third-party providers (e.g., Stripe, PayPal). By donating, you agree to the terms of these third-party processors.</p>
+  <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+    <strong>Donations Platform</strong> operates as a SaaS intermediary and does not directly 
+    handle or store your funds. All financial transactions are securely processed via 
+    integrated third-party providers (such as Chapa, Stripe, or PayPal) or verified through 
+    manual payment documentation uploads. By completing a donation, you acknowledge and 
+    agree to the terms of service of these respective payment processors.
+  </p>
 
   <h3>Donation Finality</h3>
   <p>All donations are voluntary and generally non-refundable. Because funds are often disbursed quickly to verified beneficiaries in hardship, donors acknowledge that the platform cannot guarantee a return of funds once a transaction is completed, except in proven cases of fraud as determined by our internal review.</p>
@@ -82,13 +88,13 @@ const rawTermsContent = boldifyDoubleAsterisk(`
   <p class="font-extrabold text-lg text-red-700 bg-red-100 p-4 rounded-md">IN NO EVENT SHALL DONATIONS PLATFORM, ITS DIRECTORS, OR EMPLOYEES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES RESULTING FROM FRAUDULENT ACTIONS BY THIRD-PARTY USERS, MEDICAL OUTCOMES OF BENEFICIARIES, OR THE LOSS OF DONATED FUNDS THROUGH THIRD-PARTY PAYMENT GATEWAYS.</p>
 
   <h2 id="11-governing-law">11. GOVERNING LAW</h2>
-  <p>These Terms shall be governed by the laws of the **State of Delaware, USA** (or other selected jurisdiction), without regard to its conflict of law provisions. We also comply with international standards including GDPR and CCPA where applicable.</p>
+  <p>These Terms shall be governed by the laws of the **City of Addis Ababa, Ethiopia** (or other selected jurisdiction), without regard to its conflict of law provisions. We also comply with international standards including GDPR and CCPA where applicable.</p>
 
   <h2 id="12-contact-us">12. CONTACT US</h2>
   <p>If you have any questions about these Terms, please contact us:</p>
   <ul class="list-disc ml-6 space-y-1">
-      <li>By email: <a href="mailto:support@donationsplatform.com" class="text-blue-600 hover:underline">support@donationsplatform.com</a></li>
-      <li>By post: Donations Platform Legal Dept, 123 Impact Way, Delaware, USA</li>
+      <li>By email: <a href="mailto:mebasharew31@gmail.com" class="text-blue-600 hover:underline">mebasharew31@gmail.com</a></li>
+      <li>By post: Donations Platform Legal Dept, 123 Impact Way, Addis Ababa, Ethiopia</li>
   </ul>
 `);
 

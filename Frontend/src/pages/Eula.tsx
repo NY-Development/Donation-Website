@@ -7,7 +7,7 @@ function boldifyDoubleAsterisk(text: string): string {
 
 const rawEULAContent = boldifyDoubleAsterisk(`
   <h1>End User License Agreement (EULA)</h1>
-  <p>Last updated: <span class="font-semibold text-gray-700">February 27, 2026</span></p>
+  <p>Last updated: <span class="font-semibold text-gray-700">March 01, 2026</span></p>
 
   <h2 id="licensing-agreement">Licensing Agreement</h2>
   <p>The "Donations Platform" (the "Licensed Application") is licensed to You (End-User) by <span class="font-semibold text-purple-600">Donations Platform</span> (the "Licensor"), for use only under the terms of this License Agreement.</p>
@@ -58,29 +58,54 @@ const rawEULAContent = boldifyDoubleAsterisk(`
   <h2 id="8-warranty">8. WARRANTY</h2>
   <p>The Licensed Application is provided "as is." Licensor warrants that the Application will perform substantially as described; however, we do not warrant that the fraud detection system will be 100% error-free. In the event of a failure to conform to any applicable warranty, you may notify the platform for support or potential donation dispute resolution.</p>
 
-  <h2 id="9-product-claims">9. PRODUCT CLAIMS</h2>
-  <p>You acknowledge that Licensor, not third-party service providers, is responsible for addressing any claims relating to the Licensed Application, including but not limited to: (i) product liability claims; (ii) any claim that the Application fails to conform to any applicable legal or regulatory requirement; and (iii) claims arising under consumer protection laws.</p>
+<h2 id="9-product-claims" className="text-xl font-bold text-slate-900 dark:text-white mt-8 mb-4">
+  9. PRODUCT CLAIMS & PAYMENT INTERMEDIARY
+  </h2>
+  <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400 mb-4">
+    You acknowledge that Licensor, not third-party service providers, is responsible for addressing 
+    any claims relating to the Licensed Application. However, <strong>Donations Platform</strong> 
+    operates solely as a SaaS intermediary and does not directly handle or store your funds. 
+  </p>
+  <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+    All financial transactions are securely processed via integrated third-party providers 
+    (such as Chapa, Stripe, or PayPal) or verified through manual payment documentation 
+    uploads. By completing a donation, you acknowledge and agree that financial liability 
+    regarding fund transfers rests with these respective payment processors and not the Licensor.
+  </p>
 
-  <h2 id="10-legal-compliance">10. LEGAL COMPLIANCE</h2>
-  <p>You represent and warrant that (i) You are not located in a country that is subject to a U.S. Government embargo; and (ii) You are not listed on any U.S. Government list of prohibited or restricted parties. You agree to comply with all global anti-money laundering (AML) and "Know Your Customer" (KYC) regulations applicable to your jurisdiction.</p>
+<h2 id="10-legal-compliance">10. LEGAL COMPLIANCE</h2>
+  <p>
+    You represent and warrant that (i) You are not located in a country that is subject to an Ethiopian Government embargo; and (ii) You are not listed on any Ethiopian Government list of prohibited or restricted parties.
+  </p>
+  <p>
+    As <strong>Donations Platform</strong> is a SaaS intermediary facilitating transactions through third-party providers, you agree to comply with all global anti-money laundering (AML) and "Know Your Customer" (KYC) regulations. You acknowledge that providing manual payment documentation (e.g., screenshots) may be required to fulfill these compliance standards and verify the legitimacy of funds processed through our third-party partners.
+  </p>
 
   <h2 id="11-termination">11. TERMINATION</h2>
   <p>The license is effective until terminated by You or Licensor. Your rights under this license will terminate automatically if you fail to pass our AI risk-scoring verification, provide fraudulent medical documentation, or violate any terms of this Agreement.</p>
 
   <h2 id="12-third-party-terms">12. THIRD-PARTY TERMS OF AGREEMENTS</h2>
-  <p>You must comply with applicable third-party terms of agreement when using the Licensed Application, including those of your payment processor (Stripe/PayPal) and your wireless data service provider.</p>
+  <p>You must comply with applicable third-party terms of agreement when using the Licensed Application, including those of your payment processor (Chapa/Stripe/PayPal) and your wireless data service provider.</p>
 
   <h2 id="13-contact-information">13. CONTACT INFORMATION</h2>
   <p>For questions, complaints, or claims with respect to the Licensed Application, please contact:</p>
   <p>
     **Donations Platform Legal Department**<br />
-    Email: <a href="mailto:legal@donationsplatform.com" class="text-blue-600 hover:underline">legal@donationsplatform.com</a><br />
-    Address: 123 Impact Way, Delaware, USA
+    Email: <a href="mailto:mebasharew31@gmail.com" class="text-blue-600 hover:underline">mebasharew31@gmail.com</a><br />
+    Address: 123 Impact Way, Addis Ababa, Ethiopia
   </p>
 
-  <h2 id="14-miscellaneous">14. MISCELLANEOUS</h2>
-  <p>If any provision of this Agreement is held to be invalid or unenforceable, such provision shall be struck and the remaining provisions shall be enforced. This Agreement constitutes the entire agreement between the parties regarding the license of the Donations Platform.</p>
-`);
+  <h2 id="14-miscellaneous" className="text-xl font-bold text-slate-900 dark:text-white mt-8 mb-4">
+  14. MISCELLANEOUS
+</h2>
+<p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+  If any provision of this Agreement is held to be invalid or unenforceable, such provision shall 
+  be struck and the remaining provisions shall be enforced. This Agreement, along with any 
+  applicable third-party payment processor terms, constitutes the entire agreement between 
+  the parties regarding the use and licensing of the <strong>Donations Platform</strong>. 
+  As a SaaS intermediary, our failure to act with respect to a breach by you or others does 
+  not waive our right to act with respect to subsequent or similar breaches.
+</p>`);
 
 const EULA: React.FC = () => {
   return (
