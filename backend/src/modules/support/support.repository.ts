@@ -15,6 +15,11 @@ export const supportRepository = {
       .populate('replies.sentBy', 'name email role')
       .lean(),
 
+  findPublicByUserId: (userId: string) =>
+    SupportRequestModel.findById(userId)
+      .populate('replies.sentBy', 'name email role')
+      .lean(),
+
   addReply: (payload: {
     id: string;
     subject: string;

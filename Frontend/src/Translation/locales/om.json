@@ -1,0 +1,24 @@
+{
+  "pages": {
+    "publicSupport": {
+      "platform": "Donations Platform",
+      "supportResponse": "Deebii Deeggarsaa",
+      "returnHome": "Gara Fuula Duraa Deebi'i",
+      "invalidLink": "Linkiin deeggarsaa sirrii miti.",
+      "ticketId": "Tiketi: {{id}}",
+      "languageTag": "Afaan: {{lang}}",
+      "loadingTitle": "Ergaa deeggarsaa fe'aa jira...",
+      "loading": "Deebii deeggarsaa fe'aa jira...",
+      "error": "Deebii deeggarsaa fiduu hin dandeenye.",
+      "adminName": "Maqaa Admin",
+      "supportTeam": "Garee Deeggarsaa",
+      "sentAt": "Yeroo Ergame",
+      "messageBody": "Ergaa",
+      "aiTranslate": "Hiika AI",
+      "translating": "Hiikamaa jira...",
+      "translateError": "Hiikni hin milkoofne. Irra deebi'ii yaali.",
+      "emptyMessage": "Ergaan hin jiru.",
+      "disclaimer": "Platformiin Buusii giddu-galessa SaaS dha. Nutis kallattiin maallaqa hin qabnu."
+    }
+  }
+}

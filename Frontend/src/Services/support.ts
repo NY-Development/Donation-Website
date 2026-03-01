@@ -9,6 +9,7 @@ export type CreateSupportPayload = {
 
 export const supportService = {
   create: (payload: CreateSupportPayload) => api.post('/support', payload),
+  getPublicByUserId: (userId: string) => api.get(`/support/public/${userId}`),
   listForAdmin: (params?: {
     page?: number;
     limit?: number;

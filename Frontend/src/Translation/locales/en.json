@@ -883,6 +883,26 @@
           "withAccount": "From signed-in users"
         }
       },
+      "publicSupport": {
+        "platform": "Donations Platform",
+        "supportResponse": "Support Response",
+        "returnHome": "Return to Home",
+        "invalidLink": "Invalid support link.",
+        "ticketId": "Ticket: {{id}}",
+        "languageTag": "Language: {{lang}}",
+        "loadingTitle": "Loading support message...",
+        "loading": "Fetching your support response...",
+        "error": "Unable to fetch support response.",
+        "adminName": "Admin Name",
+        "supportTeam": "Support Team",
+        "sentAt": "Sent At",
+        "messageBody": "Message",
+        "aiTranslate": "AI Translate",
+        "translating": "Translating...",
+        "translateError": "Translation failed. Please try again.",
+        "emptyMessage": "No message available.",
+        "disclaimer": "Donations Platform is a SaaS intermediary. We do not hold funds directly."
+      },
       "users": {
         "title": "User Management",
         "showing": "Showing {{shown}} of {{total}} users",

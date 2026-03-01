@@ -18,6 +18,10 @@ export const supportIdSchema = z.object({
   id: z.string().min(1)
 });
 
+export const supportPublicUserIdSchema = z.object({
+  userId: z.string().min(1)
+});
+
 export const supportReplySchema = z.object({
   subject: z.string().min(3).max(180),
   content: z.string().min(10).max(5000)

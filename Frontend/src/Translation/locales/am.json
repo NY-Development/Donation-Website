@@ -883,6 +883,26 @@
           "withAccount": "ከገቡ ተጠቃሚዎች"
         }
       },
+      "publicSupport": {
+        "platform": "Donations Platform",
+        "supportResponse": "የድጋፍ ምላሽ",
+        "returnHome": "ወደ መነሻ ተመለስ",
+        "invalidLink": "የድጋፍ ሊንኩ ትክክል አይደለም።",
+        "ticketId": "ቲኬት: {{id}}",
+        "languageTag": "ቋንቋ: {{lang}}",
+        "loadingTitle": "የድጋፍ መልዕክት በመጫን ላይ...",
+        "loading": "የድጋፍ ምላሽዎን በመጫን ላይ...",
+        "error": "የድጋፍ ምላሹን ማምጣት አልተቻለም።",
+        "adminName": "የአስተዳዳሪ ስም",
+        "supportTeam": "የድጋፍ ቡድን",
+        "sentAt": "የተላከበት ጊዜ",
+        "messageBody": "መልዕክት",
+        "aiTranslate": "AI ትርጉም",
+        "translating": "በትርጉም ላይ...",
+        "translateError": "ትርጉም አልተሳካም። እባክዎ እንደገና ይሞክሩ።",
+        "emptyMessage": "መልዕክት አልተገኘም።",
+        "disclaimer": "Donations Platform የSaaS አማላጅ ነው። ገንዘቦችን በቀጥታ አንይዝም።"
+      },
       "users": {
         "title": "የተጠቃሚ አስተዳደር",
         "showing": "{{shown}} ከ {{total}} ተጠቃሚዎች በመመልከት ላይ",

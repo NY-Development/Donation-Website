@@ -128,6 +128,29 @@ export const supportService = {
     };
   },
 
+  getByIdForPublic: async (userId: string) => {
+    const item = await supportRepository.findPublicByUserId(userId);
+
+    if (!item) {
+      throw { status: 404, message: 'Support request not found' };
+    }
+
+    const replies = Array.isArray((item as { replies?: unknown[] }).replies)
+      ? ((item as { replies?: unknown[] }).replies ?? []).map(mapReply)
+      : [];
+    const latestReply = replies.length > 0 ? replies[replies.length - 1] : undefined;
+
+    return {
+      id: item._id.toString(),
+      subject: latestReply?.subject ?? item.subject,
+      message: latestReply?.content ?? item.message,
+      adminName: latestReply?.sentBy?.name,
+      repliedAt: latestReply?.sentAt,
+      createdAt: item.createdAt,
+      hasReply: Boolean(latestReply)
+    };
+  },
+
   replyForAdmin: async (payload: {
     id: string;
     subject: string;
@@ -144,7 +167,12 @@ export const supportService = {
       to: item.email,
       requesterName: item.name,
       subject: payload.subject.trim(),
-      content: payload.content.trim()
+      content: payload.content.trim(),
+      links: {
+        en: `https://impactdonation.vercel.app/support/en@${payload.id}`,
+        am: `https://impactdonation.vercel.app/support/am@${payload.id}`,
+        om: `https://impactdonation.vercel.app/support/om@${payload.id}`
+      }
     });
 
     const updated = await supportRepository.addReply({

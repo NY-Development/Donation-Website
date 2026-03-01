@@ -194,13 +194,29 @@ export const sendSupportReplyEmail = async (payload: {
   requesterName?: string;
   subject: string;
   content: string;
+  links: {
+    am: string;
+    om: string;
+    en?: string;
+  };
 }) => {
+  const linkButton = (label: string, href: string) => `
+    <a href="${href}" style="display:inline-block;padding:10px 14px;border-radius:10px;background:#7f13ec;color:#ffffff;text-decoration:none;font-size:13px;font-weight:700;">${label}</a>
+  `;
+
   const html = emailLayout({
     preheader: payload.subject,
     title: 'Support Team Reply',
     subtitle: `Hi ${payload.requesterName ?? 'there'}, we replied to your support request.`,
     bodyHtml: `
       <p style="margin:0 0 12px;font-size:15px;line-height:1.7;color:#374151;">${payload.content.replace(/\n/g, '<br/>')}</p>
+      <div style="margin:16px 0;">
+        <p style="margin:0 0 10px;font-size:13px;color:#6b7280;">Open this reply in your preferred language:</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          ${linkButton('አማርኛ', payload.links.am)}
+          ${linkButton('Afaan Oromic', payload.links.om)}
+        </div>
+      </div>
       <div style="margin:14px 0;padding:12px 14px;border:1px solid #ddd6fe;background:#f5f3ff;border-radius:12px;color:#4c1d95;font-size:13px;line-height:1.7;">
         If you need more help, you can reply to this email or open a new support request from our contact page.
       </div>
@@ -211,7 +227,7 @@ export const sendSupportReplyEmail = async (payload: {
     from: env.SENDER_EMAIL,
     to: payload.to,
     subject: payload.subject,
-    text: payload.content,
+    text: `${payload.content}\n\nAmharic: ${payload.links.am}\nOromic: ${payload.links.om}`,
     html,
     attachments: [logoAttachment]
   });
