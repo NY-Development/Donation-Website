@@ -66,8 +66,8 @@ const Footer: React.FC = () => {
             <h4 className="font-bold text-gray-900 dark:text-white mb-6">{t('footer.resources', 'Resources')}</h4>
             <ul className="space-y-4 text-sm text-gray-500 dark:text-gray-400">
               <li><Link className="hover:text-primary transition-colors" to="/help-center">{t('footer.helpCenter', 'Help Center')}</Link></li>
-              <li><Link className="hover:text-primary transition-colors" to="/safety">{t('footer.safetyTrust', 'Safety & Trust')}</Link></li>
-              <li><Link className="hover:text-primary transition-colors" to="/guidelines">{t('footer.guidelines', 'Guidelines')}</Link></li>
+              {/* <li><Link className="hover:text-primary transition-colors" to="/safety">{t('footer.safetyTrust', 'Safety & Trust')}</Link></li>
+              <li><Link className="hover:text-primary transition-colors" to="/guidelines">{t('footer.guidelines', 'Guidelines')}</Link></li> */}
             </ul>
           </div>
           <div>

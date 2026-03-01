@@ -15,7 +15,9 @@ export const supportService = {
     search?: string;
     status?: 'open' | 'resolved';
   }) => api.get('/support', { params }),
-  getByIdForAdmin: (id: string) => api.get(`/support/${id}`)
+  getByIdForAdmin: (id: string) => api.get(`/support/${id}`),
+  replyForAdmin: (id: string, payload: { subject: string; content: string }) =>
+    api.post(`/support/${id}/reply`, payload)
 };
 
 export default supportService;

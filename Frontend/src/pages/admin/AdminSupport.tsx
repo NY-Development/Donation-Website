@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import supportService from '../../Services/support';
-import { getApiData } from '../../store/apiHelpers';
+import { getApiData, getErrorMessage } from '../../store/apiHelpers';
 import { useTranslation } from 'react-i18next';
-import { Search, RefreshCw, User, MessageSquare, Inbox } from 'lucide-react';
+import { Search, RefreshCw, User, MessageSquare, Inbox, Send, Reply } from 'lucide-react';
 
 type SupportItem = {
   id: string;
@@ -32,6 +32,9 @@ type SupportListResponse = {
 const AdminSupport: React.FC = () => {
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
+  const [openReplyId, setOpenReplyId] = useState<string | null>(null);
+  const [replyDraft, setReplyDraft] = useState<{ subject: string; content: string }>({ subject: '', content: '' });
+  const [replyFeedback, setReplyFeedback] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
 
   const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ['admin', 'support', search],
@@ -47,6 +50,29 @@ const AdminSupport: React.FC = () => {
 
   const requests = data?.data ?? [];
 
+  const sendReplyMutation = useMutation({
+    mutationFn: async (payload: { id: string; subject: string; content: string }) => {
+      await supportService.replyForAdmin(payload.id, {
+        subject: payload.subject,
+        content: payload.content
+      });
+    },
+    onSuccess: () => {
+      setReplyFeedback({
+        type: 'success',
+        text: t('pages.admin.support.replySuccess', 'Reply email sent successfully.')
+      });
+      setReplyDraft({ subject: '', content: '' });
+      setOpenReplyId(null);
+    },
+    onError: (error) => {
+      setReplyFeedback({
+        type: 'error',
+        text: getErrorMessage(error)
+      });
+    }
+  });
+
   const summary = useMemo(() => {
     return {
       total: data?.total ?? 0,
@@ -54,6 +80,36 @@ const AdminSupport: React.FC = () => {
       withAccount: requests.filter((item) => Boolean(item.user?.id)).length
     };
   }, [data?.total, requests]);
+
+  const handleOpenReply = (item: SupportItem) => {
+    setReplyFeedback(null);
+    setOpenReplyId((prev) => {
+      const willOpen = prev !== item.id;
+      if (willOpen) {
+        setReplyDraft({
+          subject: `Re: ${item.subject}`,
+          content: ''
+        });
+      }
+      return willOpen ? item.id : null;
+    });
+  };
+
+  const handleSendReply = (id: string) => {
+    if (!replyDraft.subject.trim() || !replyDraft.content.trim()) {
+      setReplyFeedback({
+        type: 'error',
+        text: t('pages.admin.support.replyValidation', 'Please provide both subject and message before sending.')
+      });
+      return;
+    }
+
+    sendReplyMutation.mutate({
+      id,
+      subject: replyDraft.subject.trim(),
+      content: replyDraft.content.trim()
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-200">
@@ -133,6 +189,11 @@ const AdminSupport: React.FC = () => {
 
           {!isLoading && !isError && (
             <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              {replyFeedback && (
+                <div className={`p-4 text-sm ${replyFeedback.type === 'error' ? 'text-red-600 bg-red-50 dark:bg-red-950/20' : 'text-green-700 bg-green-50 dark:bg-green-950/20'}`}>
+                  {replyFeedback.text}
+                </div>
+              )}
               {requests.map((item) => (
                 <article key={item.id} className="p-4 sm:p-6 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group">
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
@@ -171,6 +232,70 @@ const AdminSupport: React.FC = () => {
                       {item.message}
                     </p>
                   </div>
+
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenReply(item)}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    >
+                      <Reply className="size-4" aria-hidden="true" />
+                      {t('pages.admin.support.reply', 'Reply')}
+                    </button>
+                  </div>
+
+                  {openReplyId === item.id && (
+                    <div className="mt-4 p-4 sm:p-5 bg-white dark:bg-slate-900 rounded-xl border border-primary/20">
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                            {t('pages.admin.support.replySubject', 'Reply Subject')}
+                          </label>
+                          <input
+                            type="text"
+                            value={replyDraft.subject}
+                            onChange={(event) => setReplyDraft((prev) => ({ ...prev, subject: event.target.value }))}
+                            placeholder={t('pages.admin.support.replySubjectPlaceholder', 'Enter email subject')}
+                            className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                            {t('pages.admin.support.replyContent', 'Reply Message')}
+                          </label>
+                          <textarea
+                            rows={5}
+                            value={replyDraft.content}
+                            onChange={(event) => setReplyDraft((prev) => ({ ...prev, content: event.target.value }))}
+                            placeholder={t('pages.admin.support.replyContentPlaceholder', 'Type your response email content...')}
+                            className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm resize-y"
+                          />
+                        </div>
+
+                        <div className="flex justify-end gap-3">
+                          <button
+                            type="button"
+                            onClick={() => setOpenReplyId(null)}
+                            className="px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 dark:border-slate-700"
+                          >
+                            {t('common.cancel', 'Cancel')}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSendReply(item.id)}
+                            disabled={sendReplyMutation.isPending}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white hover:bg-primary/90 disabled:opacity-50"
+                          >
+                            <Send className="size-4" aria-hidden="true" />
+                            {sendReplyMutation.isPending
+                              ? t('pages.admin.support.sendingReply', 'Sending...')
+                              : t('pages.admin.support.sendReply', 'Send Reply')}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </article>
               ))}
 

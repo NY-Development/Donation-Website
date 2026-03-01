@@ -1,4 +1,5 @@
 import { supportRepository } from './support.repository';
+import { sendSupportReplyEmail } from '../../utils/mailer';
 
 export const supportService = {
   createRequest: async (payload: {
@@ -94,6 +95,33 @@ export const supportService = {
       status: item.status,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt
+    };
+  },
+
+  replyForAdmin: async (payload: {
+    id: string;
+    subject: string;
+    content: string;
+    adminName?: string;
+  }) => {
+    const item = await supportRepository.findById(payload.id);
+
+    if (!item) {
+      throw { status: 404, message: 'Support request not found' };
+    }
+
+    await sendSupportReplyEmail({
+      to: item.email,
+      requesterName: item.name,
+      subject: payload.subject.trim(),
+      content: payload.content.trim()
+    });
+
+    return {
+      id: item._id.toString(),
+      to: item.email,
+      subject: payload.subject.trim(),
+      sent: true
     };
   }
 };

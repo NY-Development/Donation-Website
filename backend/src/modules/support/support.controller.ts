@@ -56,5 +56,25 @@ export const supportController = {
     } catch (error) {
       next(error);
     }
+  },
+
+  replyForAdmin: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const data = await supportService.replyForAdmin({
+        id: req.params.id,
+        subject: req.body.subject,
+        content: req.body.content,
+        adminName: req.user?.id
+      });
+
+      const t = req.t ?? ((key: string, options?: { defaultValue?: string }) => options?.defaultValue ?? key);
+      res.json({
+        success: true,
+        message: t('messages.supportReplySent', { defaultValue: 'Reply email sent successfully.' }),
+        data
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 };
