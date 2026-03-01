@@ -212,7 +212,7 @@ export const sendSupportReplyEmail = async (payload: {
       <p style="margin:0 0 12px;font-size:15px;line-height:1.7;color:#374151;">${payload.content.replace(/\n/g, '<br/>')}</p>
       <div style="margin:16px 0;">
         <p style="margin:0 0 10px;font-size:13px;color:#6b7280;">Open this reply in your preferred language:</p>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;padding:8px;">
           ${linkButton('አማርኛ', payload.links.am)}
           ${linkButton('Afaan Oromic', payload.links.om)}
         </div>

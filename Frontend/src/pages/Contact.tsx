@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Globe, Mail, MapPin, Megaphone, Phone, Share2 } from 'lucide-react';
+import { Globe, Mail, MapPin, Phone, Share2 } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import supportService from '../Services/support';
 import { getErrorMessage } from '../store/apiHelpers';
@@ -16,6 +16,8 @@ const Contact: React.FC = () => {
   });
   const [formError, setFormError] = React.useState<string | null>(null);
   const [formSuccess, setFormSuccess] = React.useState<string | null>(null);
+  const [shareFeedback, setShareFeedback] = React.useState<string | null>(null);
+  const addisAbabaGoogleMapLink = 'https://www.google.com/maps/place/Addis+Ababa/@8.9631768,38.7781448,12z/data=!3m1!4b1!4m6!3m5!1s0x164b85cef5ab402d:0x8467b6b037a24d49!8m2!3d9.0191936!4d38.7524635!16zL20vMGR0dGY?entry=ttu&g_ep=EgoyMDI2MDIyNS4wIKXMDSoASAFQAw%3D%3D';
 
   const submitMutation = useMutation({
     mutationFn: async () => {
@@ -53,6 +55,24 @@ const Contact: React.FC = () => {
     }
 
     submitMutation.mutate();
+  };
+
+  const handleShareMap = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: t('pages.contact.address.title', 'Visit HQ'),
+          text: t('pages.contact.mapAlt', 'Map showing Addis Ababa, Ethiopia'),
+          url: addisAbabaGoogleMapLink
+        });
+        setShareFeedback(t('pages.contact.social.shared', 'Map link shared.'));
+      } else {
+        await navigator.clipboard.writeText(addisAbabaGoogleMapLink);
+        setShareFeedback(t('pages.contact.social.copied', 'Map link copied to clipboard.'));
+      }
+    } catch {
+      setShareFeedback(t('pages.contact.social.copyFailed', 'Unable to share right now. Please copy the link manually.'));
+    }
   };
 
   return (
@@ -105,10 +125,10 @@ const Contact: React.FC = () => {
                 <div
                   className="w-full h-full bg-cover bg-center opacity-80"
                   role="img"
-                  aria-label={t('pages.contact.mapAlt', 'Stylized map showing our headquarters location')}
+                  aria-label={t('pages.contact.mapAlt', 'Map showing Addis Ababa, Ethiopia')}
                   style={{
                     backgroundImage:
-                      "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCvYYu_KC7fj0pBPFbLUVVh3SLqsiRFFiXzE7DSyl5-S_3zy26b9jT__oZbI0orD2VJtzMUQ-VnVEjpaVJBn-qsAEM-nJjY0J7yJ3ai6rB5IOPNtRpdExYv1Aau63vjdRnrnDvIrT1TllpnZmFb4Mu_V5bjleg2V4SDZ8FNs2ENdIMqvWuVemui2-XVfJnQvait4yidjJhrd-L9BKysyCgm9E13lmVVvIKveNgzVpXFb_lAl7sLIOh0Uhk2Y465BmUOfVac7Kh2x11S')"
+                      "url('https://staticmap.openstreetmap.de/staticmap.php?center=Addis%20Ababa,Ethiopia&zoom=12&size=1200x700&markers=9.0191936,38.7524635,red-pushpin')"
                   }}
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-background-light/40 to-transparent" />
@@ -122,16 +142,31 @@ const Contact: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-6 pt-4">
-              <Link to="/" className="text-slate-400 hover:text-primary transition-colors" aria-label={t('pages.contact.social.web', 'Website')}>
+              <a
+                href={addisAbabaGoogleMapLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-slate-400 hover:text-primary transition-colors"
+                aria-label={t('pages.contact.social.web', 'Open Addis Ababa map')}
+              >
                 <Globe className="size-6" aria-hidden="true" />
-              </Link>
-              <Link to="/" className="text-slate-400 hover:text-primary transition-colors" aria-label={t('pages.contact.social.share', 'Share')}>
+              </a>
+              <button
+                type="button"
+                onClick={handleShareMap}
+                className="text-slate-400 hover:text-primary transition-colors"
+                aria-label={t('pages.contact.social.share', 'Share map link')}
+              >
                 <Share2 className="size-6" aria-hidden="true" />
-              </Link>
-              <Link to="/" className="text-slate-400 hover:text-primary transition-colors" aria-label={t('pages.contact.social.campaign', 'Campaign')}>
+              </button>
+              {/* <Link to="/" className="text-slate-400 hover:text-primary transition-colors" aria-label={t('pages.contact.social.campaign', 'Campaign')}>
                 <Megaphone className="size-6" aria-hidden="true" />
-              </Link>
+              </Link> */}
             </div>
+
+            {shareFeedback && (
+              <p className="text-xs text-slate-500 dark:text-slate-400 -mt-2">{shareFeedback}</p>
+            )}
           </div>
 
           <div className="relative">
