@@ -29,7 +29,7 @@ export default function AboutUs() {
             </span>
           </h1>
 
-          <p className="text-lg md:text-xl text-surface-body max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-white max-w-2xl mx-auto">
             We connect verified individuals in medical and hardship situations
             with compassionate donors worldwide — securely, transparently, and ethically.
           </p>

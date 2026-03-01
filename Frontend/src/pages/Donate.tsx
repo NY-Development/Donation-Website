@@ -77,6 +77,7 @@ const Donate: React.FC = () => {
         state: {
           amount: numericAmount,
           campaignTitle: campaign?.title ?? 'Campaign',
+          campaignImage: campaignCoverImage,
           redirectTo: isAuthenticated ? '/dashboard' : '/campaigns'
         }
       });
@@ -131,7 +132,7 @@ const Donate: React.FC = () => {
   }, [receipt]);
 
   return (
-    <div ref={containerRef} className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10 py-8 lg:py-12">
+    <div ref={containerRef} className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-10 py-8 lg:py-12 mt-4">
       <button
         type="button"
         onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/explore'))}

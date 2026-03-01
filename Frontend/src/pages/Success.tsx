@@ -1,4 +1,3 @@
-
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
@@ -14,9 +13,15 @@ const Success: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const state = location.state as { amount?: number; campaignTitle?: string; redirectTo?: string } | undefined;
+  const state = location.state as {
+    amount?: number;
+    campaignTitle?: string;
+    campaignImage?: string;
+    redirectTo?: string;
+  } | undefined;
   const amount = state?.amount ?? 0;
   const campaignTitle = state?.campaignTitle ?? 'Campaign';
+  const campaignImage = state?.campaignImage;
   const redirectTo = state?.redirectTo ?? (isAuthenticated ? '/dashboard' : '/campaigns');
 
   useEffect(() => {
@@ -114,7 +119,10 @@ const Success: React.FC = () => {
           </div>
           <div className="p-8 bg-gray-50 dark:bg-gray-900/50">
             <div className="flex items-start gap-4 text-left">
-              <div className="w-12 h-12 rounded-lg bg-cover bg-center bg-gray-200" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1541544537156-7627a7a4aa1c?q=80&w=200&auto=format&fit=crop")' }}></div>
+              <div
+                className="w-12 h-12 rounded-lg bg-cover bg-center bg-gray-200"
+                style={campaignImage ? { backgroundImage: `url("${campaignImage}")` } : undefined}
+              ></div>
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase">{t('pages.success.campaign')}</p>
                 <h3 className="text-lg font-bold">{campaignTitle}</h3>
