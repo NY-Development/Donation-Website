@@ -5,6 +5,7 @@ import adminService from '../../Services/admin';
 import { getApiData } from '../../store/apiHelpers';
 import type { Campaign } from '../../../types';
 import { useTranslation } from 'react-i18next';
+import ConfirmDialog from '../../components/ConfirmDialog';
 
 type CampaignActionRequest = {
   id: string;
@@ -21,6 +22,10 @@ const AdminCampaignModeration: React.FC = () => {
   const [actionId, setActionId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
+  const [rejectRequestId, setRejectRequestId] = useState<string | null>(null);
+  const [rejectReason, setRejectReason] = useState('');
 
   const { data, refetch, isFetching } = useQuery({
     queryKey: ['admin', 'campaigns', 'all'],
@@ -77,8 +82,13 @@ const AdminCampaignModeration: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    const confirmed = window.confirm(t('pages.admin.campaigns.confirm.deleteOne'));
-    if (!confirmed) return;
+    setConfirmDeleteId(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!confirmDeleteId) return;
+    const id = confirmDeleteId;
+    setConfirmDeleteId(null);
 
     setDeleteId(id);
     try {
@@ -90,8 +100,11 @@ const AdminCampaignModeration: React.FC = () => {
   };
 
   const handleDeleteAll = async () => {
-    const confirmed = window.confirm(t('pages.admin.campaigns.confirm.deleteAll'));
-    if (!confirmed) return;
+    setConfirmDeleteAll(true);
+  };
+
+  const confirmDeleteAllCampaigns = async () => {
+    setConfirmDeleteAll(false);
 
     setBulkDeleting(true);
     try {
@@ -108,7 +121,19 @@ const AdminCampaignModeration: React.FC = () => {
   };
 
   const handleRejectRequest = async (requestId: string) => {
-    const reason = window.prompt(t('pages.admin.campaigns.prompt.rejectReason')) ?? undefined;
+    setRejectRequestId(requestId);
+    setRejectReason('');
+  };
+
+  const confirmRejectRequest = async () => {
+    if (!rejectRequestId) return;
+
+    const requestId = rejectRequestId;
+    const reason = rejectReason.trim();
+
+    setRejectRequestId(null);
+    setRejectReason('');
+
     await adminService.rejectCampaignRequest(requestId, reason ? { reason } : undefined);
     await refetchRequests();
   };
@@ -330,6 +355,50 @@ const AdminCampaignModeration: React.FC = () => {
           </div>
         </div>
       </main>
+
+      <ConfirmDialog
+        isOpen={Boolean(confirmDeleteId)}
+        title={t('pages.admin.campaigns.actions.delete')}
+        message={t('pages.admin.campaigns.confirm.deleteOne')}
+        confirmLabel={t('pages.admin.campaigns.actions.delete')}
+        cancelLabel={t('common.cancel')}
+        isLoading={Boolean(deleteId)}
+        onCancel={() => setConfirmDeleteId(null)}
+        onConfirm={confirmDelete}
+      />
+
+      <ConfirmDialog
+        isOpen={confirmDeleteAll}
+        title={t('pages.admin.campaigns.deleteAll')}
+        message={t('pages.admin.campaigns.confirm.deleteAll')}
+        confirmLabel={t('pages.admin.campaigns.deleteAll')}
+        cancelLabel={t('common.cancel')}
+        isLoading={bulkDeleting}
+        onCancel={() => setConfirmDeleteAll(false)}
+        onConfirm={confirmDeleteAllCampaigns}
+      />
+
+      <ConfirmDialog
+        isOpen={Boolean(rejectRequestId)}
+        title={t('pages.admin.campaigns.actions.reject')}
+        message={t('pages.admin.campaigns.prompt.rejectReason')}
+        confirmLabel={t('pages.admin.campaigns.actions.reject')}
+        cancelLabel={t('common.cancel')}
+        isLoading={false}
+        onCancel={() => {
+          setRejectRequestId(null);
+          setRejectReason('');
+        }}
+        onConfirm={confirmRejectRequest}
+      >
+        <textarea
+          rows={4}
+          value={rejectReason}
+          onChange={(event) => setRejectReason(event.target.value)}
+          placeholder={t('pages.admin.campaigns.prompt.rejectReason')}
+          className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm"
+        />
+      </ConfirmDialog>
     </div>
   );
 };

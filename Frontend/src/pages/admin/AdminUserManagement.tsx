@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import adminService from '../../Services/admin';
 import { getApiData } from '../../store/apiHelpers';
 import { useTranslation } from 'react-i18next';
+import ConfirmDialog from '../../components/ConfirmDialog';
 import { 
   Users, 
   ShieldCheck,
@@ -41,6 +42,8 @@ const AdminUserManagement: React.FC = () => {
   const [verification, setVerification] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
   const [actionId, setActionId] = useState<string | null>(null);
   const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [confirmUserId, setConfirmUserId] = useState<string | null>(null);
+  const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
 
   const { data, isError, refetch, isFetching } = useQuery({
     queryKey: ['admin', 'users', search, role, verification],
@@ -65,7 +68,14 @@ const AdminUserManagement: React.FC = () => {
   }), [users]);
 
   const handleDeleteUser = async (userId: string) => {
-    if (!window.confirm(t('pages.admin.users.confirm.deleteOne'))) return;
+    setConfirmUserId(userId);
+  };
+
+  const confirmDeleteUser = async () => {
+    if (!confirmUserId) return;
+
+    const userId = confirmUserId;
+    setConfirmUserId(null);
     setActionId(userId);
     try {
       await adminService.deleteUser(userId);
@@ -76,7 +86,11 @@ const AdminUserManagement: React.FC = () => {
   };
 
   const handleDeleteAllUsers = async () => {
-    if (!window.confirm(t('pages.admin.users.confirm.deleteAll'))) return;
+    setConfirmDeleteAll(true);
+  };
+
+  const confirmDeleteAllUsers = async () => {
+    setConfirmDeleteAll(false);
     setBulkDeleting(true);
     try {
       await adminService.deleteAllUsers();
@@ -270,6 +284,28 @@ const AdminUserManagement: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={Boolean(confirmUserId)}
+        title={t('pages.admin.users.actions.delete')}
+        message={t('pages.admin.users.confirm.deleteOne')}
+        confirmLabel={t('pages.admin.users.actions.delete')}
+        cancelLabel={t('common.cancel')}
+        isLoading={Boolean(actionId)}
+        onCancel={() => setConfirmUserId(null)}
+        onConfirm={confirmDeleteUser}
+      />
+
+      <ConfirmDialog
+        isOpen={confirmDeleteAll}
+        title={t('pages.admin.users.deleteAll')}
+        message={t('pages.admin.users.confirm.deleteAll')}
+        confirmLabel={t('pages.admin.users.deleteAll')}
+        cancelLabel={t('common.cancel')}
+        isLoading={bulkDeleting}
+        onCancel={() => setConfirmDeleteAll(false)}
+        onConfirm={confirmDeleteAllUsers}
+      />
     </div>
   );
 };
