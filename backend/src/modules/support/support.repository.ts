@@ -12,6 +12,31 @@ export const supportRepository = {
   findById: (id: string) =>
     SupportRequestModel.findById(id)
       .populate('user', 'name email role')
+      .populate('replies.sentBy', 'name email role')
+      .lean(),
+
+  addReply: (payload: {
+    id: string;
+    subject: string;
+    content: string;
+    sentBy?: string;
+  }) =>
+    SupportRequestModel.findByIdAndUpdate(
+      payload.id,
+      {
+        $push: {
+          replies: {
+            subject: payload.subject,
+            content: payload.content,
+            sentBy: payload.sentBy,
+            sentAt: new Date()
+          }
+        }
+      },
+      { new: true }
+    )
+      .populate('user', 'name email role')
+      .populate('replies.sentBy', 'name email role')
       .lean(),
 
   list: (options: {
@@ -43,6 +68,7 @@ export const supportRepository = {
         .skip(skip)
         .limit(options.limit)
         .populate('user', 'name email role')
+        .populate('replies.sentBy', 'name email role')
         .lean(),
       SupportRequestModel.countDocuments(filter)
     ]);

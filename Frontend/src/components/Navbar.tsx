@@ -185,8 +185,8 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
 
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 font-black text-lg">
-              <div className="size-9 rounded-xl bg-primary text-white flex items-center justify-center">
-                <HeartHandshake className="size-5" />
+              <div className="size-9 rounded-xl text-primary flex items-center justify-center">
+                <img src="/impact-logo.png" className="size-15 rounded-2xl" />
               </div>
               <span className="hidden sm:inline text-gray-900 dark:text-white">
                 {t('common.brand')}

@@ -1,4 +1,3 @@
-
 import React, { useLayoutEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
@@ -37,7 +36,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-20">
           <div className="col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2 mb-6">
-              <HeartHandshake className="size-7 text-primary" aria-hidden="true" />
+              <img src="/impact-logo.png" alt="Logo" className="size-12 rounded-full text-primary" aria-hidden="true" />
               <span className="text-2xl font-black text-gray-900 dark:text-white">{t('common.brand')}</span>
             </div>
             <p className="text-gray-500 dark:text-gray-400 max-w-xs mb-8 leading-relaxed">

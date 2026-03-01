@@ -64,7 +64,7 @@ export const supportController = {
         id: req.params.id,
         subject: req.body.subject,
         content: req.body.content,
-        adminName: req.user?.id
+        adminId: req.user?.id
       });
 
       const t = req.t ?? ((key: string, options?: { defaultValue?: string }) => options?.defaultValue ?? key);

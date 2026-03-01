@@ -14,6 +14,17 @@ type SupportItem = {
   status: 'open' | 'resolved';
   createdAt: string;
   updatedAt: string;
+  replies?: Array<{
+    subject: string;
+    content: string;
+    sentAt: string;
+    sentBy?: {
+      id: string;
+      name?: string;
+      email?: string;
+      role?: string;
+    };
+  }>;
   user?: {
     id: string;
     name?: string;
@@ -64,6 +75,7 @@ const AdminSupport: React.FC = () => {
       });
       setReplyDraft({ subject: '', content: '' });
       setOpenReplyId(null);
+      void refetch();
     },
     onError: (error) => {
       setReplyFeedback({
@@ -232,6 +244,38 @@ const AdminSupport: React.FC = () => {
                       {item.message}
                     </p>
                   </div>
+
+                  {(item.replies?.length ?? 0) > 0 && (
+                    <div className="mt-4 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                      <div className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                        {t('pages.admin.support.replyHistory', 'Reply History')}
+                      </div>
+                      <div className="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-slate-900">
+                        {(item.replies ?? []).map((reply, index) => (
+                          <div key={`${item.id}-reply-${index}`} className="p-4">
+                            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+                              <span className="font-semibold text-slate-700 dark:text-slate-200">{reply.subject}</span>
+                              <span>
+                                {t('pages.admin.support.repliedAt', {
+                                  date: new Date(reply.sentAt).toLocaleString(),
+                                  defaultValue: 'Replied {{date}}'
+                                })}
+                              </span>
+                            </div>
+                            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{reply.content}</p>
+                            {reply.sentBy?.name && (
+                              <p className="mt-2 text-xs text-primary">
+                                {t('pages.admin.support.repliedBy', {
+                                  name: reply.sentBy.name,
+                                  defaultValue: 'Sent by {{name}}'
+                                })}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="mt-4 flex justify-end">
                     <button

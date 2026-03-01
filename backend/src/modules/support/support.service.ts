@@ -1,6 +1,30 @@
 import { supportRepository } from './support.repository';
 import { sendSupportReplyEmail } from '../../utils/mailer';
 
+const mapReply = (reply: unknown) => {
+  const value = reply as {
+    subject?: string;
+    content?: string;
+    sentAt?: Date | string;
+    sentBy?: { _id?: { toString: () => string }; name?: string; email?: string; role?: string };
+  };
+
+  return {
+    subject: value.subject ?? '',
+    content: value.content ?? '',
+    sentAt: value.sentAt,
+    sentBy:
+      value.sentBy && typeof value.sentBy === 'object'
+        ? {
+            id: value.sentBy._id?.toString?.() ?? '',
+            name: value.sentBy.name,
+            email: value.sentBy.email,
+            role: value.sentBy.role
+          }
+        : undefined
+  };
+};
+
 export const supportService = {
   createRequest: async (payload: {
     userId?: string;
@@ -61,6 +85,9 @@ export const supportService = {
         subject: item.subject,
         message: item.message,
         status: item.status,
+        replies: Array.isArray((item as { replies?: unknown[] }).replies)
+          ? ((item as { replies?: unknown[] }).replies ?? []).map(mapReply)
+          : [],
         createdAt: item.createdAt,
         updatedAt: item.updatedAt
       })),
@@ -93,6 +120,9 @@ export const supportService = {
       subject: item.subject,
       message: item.message,
       status: item.status,
+      replies: Array.isArray((item as { replies?: unknown[] }).replies)
+        ? ((item as { replies?: unknown[] }).replies ?? []).map(mapReply)
+        : [],
       createdAt: item.createdAt,
       updatedAt: item.updatedAt
     };
@@ -102,7 +132,7 @@ export const supportService = {
     id: string;
     subject: string;
     content: string;
-    adminName?: string;
+    adminId?: string;
   }) => {
     const item = await supportRepository.findById(payload.id);
 
@@ -117,11 +147,25 @@ export const supportService = {
       content: payload.content.trim()
     });
 
+    const updated = await supportRepository.addReply({
+      id: payload.id,
+      subject: payload.subject.trim(),
+      content: payload.content.trim(),
+      sentBy: payload.adminId
+    });
+
+    if (!updated) {
+      throw { status: 404, message: 'Support request not found' };
+    }
+
     return {
-      id: item._id.toString(),
+      id: updated._id.toString(),
       to: item.email,
       subject: payload.subject.trim(),
-      sent: true
+      sent: true,
+      replies: Array.isArray((updated as { replies?: unknown[] }).replies)
+        ? ((updated as { replies?: unknown[] }).replies ?? []).map(mapReply)
+        : []
     };
   }
 };

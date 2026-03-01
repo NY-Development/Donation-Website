@@ -2,6 +2,13 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export type SupportRequestStatus = 'open' | 'resolved';
 
+export interface SupportReply {
+  subject: string;
+  content: string;
+  sentBy?: mongoose.Types.ObjectId;
+  sentAt: Date;
+}
+
 export interface SupportRequestDocument extends Document {
   user?: mongoose.Types.ObjectId;
   name: string;
@@ -9,9 +16,20 @@ export interface SupportRequestDocument extends Document {
   subject: string;
   message: string;
   status: SupportRequestStatus;
+  replies: SupportReply[];
   createdAt: Date;
   updatedAt: Date;
 }
+
+const supportReplySchema = new Schema<SupportReply>(
+  {
+    subject: { type: String, required: true, trim: true },
+    content: { type: String, required: true, trim: true },
+    sentBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    sentAt: { type: Date, default: Date.now }
+  },
+  { _id: false }
+);
 
 const supportRequestSchema = new Schema<SupportRequestDocument>(
   {
@@ -20,7 +38,8 @@ const supportRequestSchema = new Schema<SupportRequestDocument>(
     email: { type: String, required: true, trim: true, lowercase: true },
     subject: { type: String, required: true, trim: true },
     message: { type: String, required: true, trim: true },
-    status: { type: String, enum: ['open', 'resolved'], default: 'open', index: true }
+    status: { type: String, enum: ['open', 'resolved'], default: 'open', index: true },
+    replies: { type: [supportReplySchema], default: [] }
   },
   { timestamps: true }
 );

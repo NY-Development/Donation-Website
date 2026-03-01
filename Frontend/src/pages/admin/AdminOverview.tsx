@@ -104,16 +104,16 @@ const AdminOverview: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50/50 dark:bg-background-dark">
       {/* Sticky Header */}
-      <header className="h-16 sm:h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30">
+      <header className="h-16 sm:h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 sm:px-8 flex items-center justify-center sticky top-0 z-30">
         <div className="relative w-full max-w-96 hidden md:block">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 size-4" />
+          <Search className="absolute left-3 top-2 text-slate-400 size-4" />
           <input
             className="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/20"
             placeholder={t('pages.admin.overview.searchPlaceholder')}
             type="text"
           />
         </div>
-        <div className="flex items-center gap-3 sm:gap-4">
+        {/* <div className="flex items-center gap-3 sm:gap-4">
           <button className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg relative transition-all">
             <Bell className="size-5" />
             <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white" />
@@ -122,7 +122,7 @@ const AdminOverview: React.FC = () => {
             <Plus className="size-4" />
             <span className="hidden sm:inline">{t('pages.admin.overview.newCampaign')}</span>
           </button>
-        </div>
+        </div> */}
       </header>
 
       <div className="p-4 sm:p-6 lg:p-8 space-y-8">
