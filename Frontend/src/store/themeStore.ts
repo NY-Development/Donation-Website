@@ -1,7 +1,8 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { createJSONStorage } from "zustand/middleware";
 
-export type Theme = 'light' | 'dark';
+export type Theme = "light" | "dark";
 
 interface ThemeState {
   theme: Theme;
@@ -12,13 +13,14 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
-      theme: 'light',
+      theme: "light",
       setTheme: (theme) => set({ theme }),
-      toggleTheme: () => set({ theme: get().theme === 'dark' ? 'light' : 'dark' }),
+      toggleTheme: () =>
+        set({ theme: get().theme === "dark" ? "light" : "dark" }),
     }),
     {
-      name: 'theme-preference',
-      getStorage: () => localStorage,
-    }
-  )
+      name: "theme-preference",
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
 );

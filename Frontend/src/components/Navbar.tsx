@@ -1,7 +1,11 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { gsap } from 'gsap';
-import { addHoverScale, ensureGsap, prefersReducedMotion } from '../utils/gsapAnimations';
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { gsap } from "gsap";
+import {
+  addHoverScale,
+  ensureGsap,
+  prefersReducedMotion,
+} from "../utils/gsapAnimations";
 import {
   Compass,
   Globe,
@@ -14,34 +18,20 @@ import {
   Menu,
   X,
   LogOut,
-} from 'lucide-react';
-import { useAuthStore } from '../store/authStore';
-import { getErrorMessage } from '../store/apiHelpers';
-import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
+} from "lucide-react";
+import { useAuthStore } from "../store/authStore";
+import { getErrorMessage } from "../store/apiHelpers";
+import { useTranslation } from "react-i18next";
+import { motion, AnimatePresence } from "framer-motion";
+import { useThemeStore } from "../store/themeStore";
 
-interface NavbarProps {
-  // Remove props, handle theme locally
-}
-
-const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
+const Navbar: React.FC = () => {
   const { t, i18n } = useTranslation();
   const location = useLocation();
-  const isCheckout = location.pathname.startsWith('/donate');
-  const isAdmin = location.pathname.startsWith('/admin');
-    const [theme, setTheme] = useState(() => {
-      if (typeof window !== 'undefined') {
-        return localStorage.getItem('theme') || 'light';
-      }
-      return 'light';
-    });
-
-    useEffect(() => {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('theme', theme);
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-      }
-    }, [theme]);
+  const isCheckout = location.pathname.startsWith("/donate");
+  const isAdmin = location.pathname.startsWith("/admin");
+  const theme = useThemeStore((state) => state.theme);
+  const toggleTheme = useThemeStore((state) => state.toggleTheme);
 
   const navRef = useRef<HTMLElement | null>(null);
   const lastScrollY = useRef(0);
@@ -51,20 +41,22 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
   const { isAuthenticated, logout, user, updateProfile } = useAuthStore();
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [profileName, setProfileName] = useState('');
-  const [profileEmail, setProfileEmail] = useState('');
+  const [profileName, setProfileName] = useState("");
+  const [profileEmail, setProfileEmail] = useState("");
   const [profileError, setProfileError] = useState<string | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
-  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
+    null,
+  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const profileInitial =
     user?.name?.trim()?.[0]?.toUpperCase() ||
     user?.email?.trim()?.[0]?.toUpperCase() ||
-    'U';
+    "U";
 
-  const profileImage = user?.profileImage?.trim() || '';
+  const profileImage = user?.profileImage?.trim() || "";
   const hasProfileImage = Boolean(profileImage);
 
   /* ===============================
@@ -84,8 +76,8 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
       lastScrollY.current = currentY;
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   /* ===============================
@@ -100,13 +92,13 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
         autoAlpha: 0,
         y: -20,
         duration: 0.6,
-        ease: 'power3.out',
+        ease: "power3.out",
       });
     }, navRef);
 
     const cleanupHover = addHoverScale(
       gsap.utils.toArray('[data-animate="nav-link"]', navRef.current),
-      1.05
+      1.05,
     );
 
     return () => {
@@ -120,8 +112,8 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
   =============================== */
   const openProfileModal = () => {
     setProfileError(null);
-    setProfileName(user?.name ?? '');
-    setProfileEmail(user?.email ?? '');
+    setProfileName(user?.name ?? "");
+    setProfileEmail(user?.email ?? "");
     setProfileImageFile(null);
     setProfileImagePreview(profileImage || null);
     setIsProfileOpen(true);
@@ -146,7 +138,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
       });
 
       if (success) setIsProfileOpen(false);
-      else setProfileError(t('navbar.profile.updateError'));
+      else setProfileError(t("navbar.profile.updateError"));
     } catch (error) {
       setProfileError(getErrorMessage(error));
     } finally {
@@ -164,9 +156,9 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
   if (isAdmin) return null;
 
   const navItems = [
-    { to: '/', label: t('navbar.home'), icon: Home },
-    { to: '/explore', label: t('navbar.explore'), icon: Compass },
-    { to: '/dashboard', label: t('navbar.dashboard'), icon: LayoutDashboard },
+    { to: "/", label: t("navbar.home"), icon: Home },
+    { to: "/explore", label: t("navbar.explore"), icon: Compass },
+    { to: "/dashboard", label: t("navbar.dashboard"), icon: LayoutDashboard },
   ];
 
   /* ===================================================
@@ -182,14 +174,13 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
       >
         <div className="rounded-3xl border border-white/20 bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] px-6 py-3 justify-center items-center">
           <div className="flex items-center justify-center gap-6">
-
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 font-black text-lg">
               <div className="size-9 rounded-xl text-primary flex items-center justify-center">
                 <img src="/impact-logo.png" className="size-15 rounded-2xl" />
               </div>
               <span className="hidden sm:inline text-gray-900 dark:text-white">
-                {t('common.brand')}
+                {t("common.brand")}
               </span>
             </Link>
 
@@ -206,8 +197,8 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                     data-animate="nav-link"
                     className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition ${
                       isActive
-                        ? 'bg-primary text-white'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-primary'
+                        ? "bg-primary text-white"
+                        : "text-gray-700 dark:text-gray-300 hover:text-primary"
                     }`}
                   >
                     <Icon className="size-4" />
@@ -219,12 +210,12 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
 
             {/* Right Actions */}
             <div className="flex items-center gap-3">
-
               {/* Language Globe */}
               <button
-                onClick={() => {const nextLang = i18n.language.startsWith('am') ? 'en' : 'am';
-                      i18n.changeLanguage(nextLang);}
-                }
+                onClick={() => {
+                  const nextLang = i18n.language.startsWith("am") ? "en" : "am";
+                  i18n.changeLanguage(nextLang);
+                }}
                 className="p-2 rounded-full hover:bg-white/50 dark:hover:bg-gray-800"
               >
                 <Globe size={18} />
@@ -232,11 +223,11 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
 
               {/* Theme */}
               <button
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                onClick={toggleTheme}
                 className="p-2 rounded-full hover:bg-white/50 dark:hover:bg-gray-800"
                 aria-label="Toggle theme"
               >
-                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
               </button>
 
               {/* Auth */}
@@ -246,7 +237,10 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                   className="size-9 rounded-full bg-primary text-white font-bold overflow-hidden"
                 >
                   {hasProfileImage ? (
-                    <img src={profileImage} className="w-full h-full object-cover" />
+                    <img
+                      src={profileImage}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     profileInitial
                   )}
@@ -256,7 +250,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                   to="/login"
                   className="hidden md:inline-block px-5 py-2 rounded-full bg-primary text-white font-bold"
                 >
-                  {t('navbar.logIn')}
+                  {t("navbar.logIn")}
                 </Link>
               )}
 
@@ -290,9 +284,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
               className="w-[90%] max-w-md rounded-[2.5rem] bg-white/80 dark:bg-gray-900/80 backdrop-blur-2xl p-8 shadow-2xl"
             >
               <div className="flex justify-between items-center mb-8">
-                <h3 className="text-xl font-black">
-                  {t('common.brand')}
-                </h3>
+                <h3 className="text-xl font-black">{t("common.brand")}</h3>
                 <button onClick={() => setIsMobileMenuOpen(false)}>
                   <X />
                 </button>
@@ -320,7 +312,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                     className="flex items-center gap-4 p-4 rounded-2xl bg-red-50 text-red-500 font-bold"
                   >
                     <LogOut />
-                    {t('navbar.logOut')}
+                    {t("navbar.logOut")}
                   </button>
                 ) : (
                   <Link
@@ -328,7 +320,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="p-4 rounded-2xl bg-primary text-white text-center font-bold"
                   >
-                    {t('navbar.logIn')}
+                    {t("navbar.logIn")}
                   </Link>
                 )}
               </div>
@@ -356,7 +348,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
             >
               <div className="flex justify-between mb-6">
                 <h3 className="text-2xl font-black">
-                  {t('navbar.profile.title')}
+                  {t("navbar.profile.title")}
                 </h3>
                 <button onClick={closeProfileModal}>
                   <X />
@@ -368,9 +360,15 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                 <div className="flex flex-col items-center gap-2">
                   <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                     {profileImagePreview ? (
-                      <img src={profileImagePreview} alt="Profile preview" className="object-cover w-full h-full" />
+                      <img
+                        src={profileImagePreview}
+                        alt="Profile preview"
+                        className="object-cover w-full h-full"
+                      />
                     ) : (
-                      <span className="text-3xl font-bold text-gray-400">{profileInitial}</span>
+                      <span className="text-3xl font-bold text-gray-400">
+                        {profileInitial}
+                      </span>
                     )}
                   </div>
                   <input
@@ -378,7 +376,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                     accept="image/*"
                     ref={fileInputRef}
                     className="hidden"
-                    onChange={e => {
+                    onChange={(e) => {
                       const file = e.target.files?.[0] || null;
                       setProfileImageFile(file);
                     }}
@@ -388,30 +386,34 @@ const Navbar: React.FC<NavbarProps> = ({ toggleDarkMode, isDarkMode }) => {
                     className="px-3 py-1 rounded bg-gray-100 dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
                     onClick={() => fileInputRef.current?.click()}
                   >
-                    {t('navbar.profile.changePicture', 'Change Picture')}
+                    {t("navbar.profile.changePicture", "Change Picture")}
                   </button>
                 </div>
                 <input
                   className="w-full rounded-xl bg-gray-100 dark:bg-gray-800 px-4 py-3"
                   value={profileName}
                   onChange={(e) => setProfileName(e.target.value)}
-                  placeholder={t('navbar.profile.name', 'Name')}
+                  placeholder={t("navbar.profile.name", "Name")}
                 />
                 <input
                   className="w-full rounded-xl bg-gray-100 dark:bg-gray-800 px-4 py-3"
                   value={profileEmail}
                   onChange={(e) => setProfileEmail(e.target.value)}
-                  placeholder={t('navbar.profile.email', 'Email')}
+                  placeholder={t("navbar.profile.email", "Email")}
                 />
                 <button
                   type="submit"
                   className="w-full py-3 rounded-xl bg-primary text-white font-bold"
                   disabled={profileLoading}
                 >
-                  {profileLoading ? t('navbar.profile.saving', 'Saving...') : t('navbar.profile.save')}
+                  {profileLoading
+                    ? t("navbar.profile.saving", "Saving...")
+                    : t("navbar.profile.save")}
                 </button>
                 {profileError && (
-                  <div className="text-red-500 text-sm text-center mt-2">{profileError}</div>
+                  <div className="text-red-500 text-sm text-center mt-2">
+                    {profileError}
+                  </div>
                 )}
               </form>
             </motion.div>

@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Globe, Mail, MapPin, Phone, Share2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import supportService from "../Services/support";
 import { getErrorMessage } from "../store/apiHelpers";
+import {
+  APIProvider,
+  Map,
+  AdvancedMarker,
+  Pin,
+  InfoWindow,
+} from "@vis.gl/react-google-maps";
+import { tr } from "zod/v4/locales";
 
 const Contact: React.FC = () => {
   const { t } = useTranslation();
@@ -19,6 +27,8 @@ const Contact: React.FC = () => {
   const [shareFeedback, setShareFeedback] = React.useState<string | null>(null);
   const addisAbabaGoogleMapLink =
     "https://www.google.com/maps/place/Addis+Ababa/@8.9631768,38.7781448,12z/data=!3m1!4b1!4m6!3m5!1s0x164b85cef5ab402d:0x8467b6b037a24d49!8m2!3d9.0191936!4d38.7524635!16zL20vMGR0dGY?entry=ttu&g_ep=EgoyMDI2MDIyNS4wIKXMDSoASAFQAw%3D%3D";
+  const position = { lat: 9.061627, lng: 38.763527 };
+  const [open, setOpen] = useState(false);
 
   const submitMutation = useMutation({
     mutationFn: async () => {
@@ -159,29 +169,32 @@ const Contact: React.FC = () => {
               </div>
             </div>
 
-            <div className="relative w-full aspect-video rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm">
-              <div className="absolute inset-0 bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
-                <div
-                  className="w-full h-full bg-cover bg-center opacity-80"
-                  role="img"
-                  aria-label={t(
-                    "pages.contact.mapAlt",
-                    "Map showing Addis Ababa, Ethiopia",
+            <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+              <div className="h-100 w-100% rounded-xl overflow-hidden">
+                <Map
+                  zoom={15}
+                  center={position}
+                  mapId={import.meta.env.VITE_GOOGLE_MAPS_MAP_ID}
+                >
+                  <AdvancedMarker
+                    position={position}
+                    onClick={() => setOpen(true)}
+                  >
+                    <Pin />
+                  </AdvancedMarker>
+                  {open && (
+                    <InfoWindow
+                      position={position}
+                      onCloseClick={() => setOpen(false)}
+                    >
+                      <div className="text-sm text-black dark:text-black">
+                        {t("pages.contact.mapAlt", "Our HQ in Addis Ababa")}
+                      </div>
+                    </InfoWindow>
                   )}
-                  style={{
-                    backgroundImage:
-                      "url('https://staticmap.openstreetmap.de/staticmap.php?center=Addis%20Ababa,Ethiopia&zoom=12&size=1200x700&markers=9.0191936,38.7524635,red-pushpin')",
-                  }}
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-background-light/40 to-transparent" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                  <div className="relative">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-40" />
-                    <div className="relative size-6 bg-primary border-4 border-white rounded-full shadow-lg" />
-                  </div>
-                </div>
+                </Map>
               </div>
-            </div>
+            </APIProvider>
 
             <div className="flex items-center gap-6 pt-4">
               <a
@@ -204,9 +217,6 @@ const Contact: React.FC = () => {
               >
                 <Share2 className="size-6" aria-hidden="true" />
               </button>
-              {/* <Link to="/" className="text-slate-400 hover:text-primary transition-colors" aria-label={t('pages.contact.social.campaign', 'Campaign')}>
-                <Megaphone className="size-6" aria-hidden="true" />
-              </Link> */}
             </div>
 
             {shareFeedback && (
