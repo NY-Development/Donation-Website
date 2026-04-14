@@ -149,8 +149,8 @@ const App: React.FC = () => {
         <ThemeSync />
         <ScrollToTop />
         <div className="min-h-screen flex flex-col">
-          {/* <CookieConsentModal />
-           Hide default navbar on checkout or admin pages if needed, but for simplicity we show it or a variant */}
+          <CookieConsentModal />
+          {/* Hide default navbar on checkout or admin pages if needed, but for simplicity we show it or a variant */}
           <Navbar />
 
           <main className="grow">

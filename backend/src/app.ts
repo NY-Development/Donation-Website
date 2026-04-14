@@ -20,6 +20,10 @@ app.set('trust proxy', 1);
 
 app.use(i18nMiddleware);
 
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(...securityMiddlewares);
+
 // Database Guard Middleware
 app.use(async (req, res, next) => {
   try {
@@ -42,9 +46,6 @@ app.use((req, res, next) => {
   return jsonParser(req, res, next);
 });
 
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(...securityMiddlewares);
 app.use(publicLimiter);
 
 app.use((req, res, next) => {
@@ -178,3 +179,5 @@ import cookieConsentRoutes from './modules/users/cookieConsent.routes';
 app.use('/api/cookie-consent', cookieConsentRoutes);
 
 app.use(errorHandler);
+
+export default app;
