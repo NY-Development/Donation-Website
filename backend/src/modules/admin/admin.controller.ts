@@ -12,6 +12,16 @@ export const adminController = {
       next(error);
     }
   },
+  inviteAdmin: async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const { name, email } = req.body;
+      const data = await adminService.inviteAdmin(name, email);
+      const t = req.t ?? ((key: string) => key);
+      res.status(201).json({ success: true, message: 'Admin invited successfully', data });
+    } catch (error) {
+      next(error);
+    }
+  },
   getTrends: async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const days = req.query.days ? Number(req.query.days) : 7;

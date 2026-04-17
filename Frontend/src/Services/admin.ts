@@ -13,6 +13,7 @@ export const adminService = {
   }) => api.get('/admin/users', { params }),
   deleteUser: (id: string) => api.delete(`/admin/users/${id}`),
   deleteAllUsers: () => api.delete('/admin/users'),
+  inviteAdmin: (payload: { name: string; email: string }) => api.post('/admin/invite-admin', payload),
   verifyCampaign: (id: string, payload: { status: 'approved' | 'rejected' }) =>
     api.patch(`/admin/campaigns/${id}/verify`, payload),
   deleteCampaign: (id: string) => api.delete(`/admin/campaigns/${id}`),

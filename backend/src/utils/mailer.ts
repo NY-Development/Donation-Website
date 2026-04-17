@@ -232,3 +232,34 @@ export const sendSupportReplyEmail = async (payload: {
     attachments: [logoAttachment]
   });
 };
+
+export const sendAdminInviteEmail = async (payload: {
+  email: string;
+  name: string;
+  password?: string;
+}) => {
+  const html = emailLayout({
+    preheader: 'You have been invited as an Admin',
+    title: 'Admin Invitation',
+    subtitle: `Welcome aboard, ${payload.name}!`,
+    bodyHtml: `
+      <p style="margin:0 0 12px;font-size:15px;line-height:1.7;color:#374151;">You have been invited as an Administrator to the platform.</p>
+      ${payload.password ? `
+        <div style="margin:14px 0;padding:12px 14px;border:1px solid #d1fae5;background:#ecfdf5;border-radius:12px;color:#065f46;font-size:14px;line-height:1.6;">
+          Your temporary password is: <strong>${payload.password}</strong><br/>
+          Please log in and change it as soon as possible.
+        </div>
+      ` : ''}
+      <p style="margin:0;font-size:13px;line-height:1.7;color:#6b7280;">Thank you for helping us maintain the platform.</p>
+    `
+  });
+
+  await mailer.sendMail({
+    from: env.SENDER_EMAIL,
+    to: payload.email,
+    subject: 'You have been invited as an Admin',
+    text: `Hi ${payload.name},\n\nYou have been invited as an Administrator.\n${payload.password ? `Your password is: ${payload.password}\n` : ''}`,
+    html,
+    attachments: [logoAttachment]
+  });
+};

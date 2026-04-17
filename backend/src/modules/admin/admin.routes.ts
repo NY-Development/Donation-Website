@@ -12,6 +12,11 @@ const verifySchema = z.object({
   status: z.enum(['approved', 'rejected'])
 });
 
+const inviteAdminSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email()
+});
+
 const idSchema = z.object({
   id: z.string().min(1)
 });
@@ -55,6 +60,7 @@ const topCampaignsQuerySchema = z.object({
 });
 
 router.get('/overview', requireAuth, requireRole(['admin']), adminLimiter, adminController.overview);
+router.post('/invite-admin', requireAuth, requireRole(['admin']), adminLimiter, validate(inviteAdminSchema, 'body'), adminController.inviteAdmin);
 router.get('/trends', requireAuth, requireRole(['admin']), adminLimiter, validate(trendsQuerySchema, 'query'), adminController.getTrends);
 router.get('/top-campaigns', requireAuth, requireRole(['admin']), adminLimiter, validate(topCampaignsQuerySchema, 'query'), adminController.getTopCampaigns);
 router.get('/users', requireAuth, requireRole(['admin']), adminLimiter, adminController.getUsers);

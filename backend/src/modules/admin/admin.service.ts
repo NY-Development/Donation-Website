@@ -4,8 +4,9 @@ import { campaignActionRequestRepository } from '../campaigns/campaignActionRequ
 import { userRepository } from '../users/user.repository';
 import { UserModel } from '../users/user.model';
 import { cloudinary } from '../../config/cloudinary';
+import bcrypt from 'bcrypt';
 import { AdminSettingsModel } from './adminSettings.model';
-import { sendOrganizerVerificationApprovedEmail, sendOrganizerVerificationRejectedEmail } from '../../utils/mailer';
+import { sendOrganizerVerificationApprovedEmail, sendOrganizerVerificationRejectedEmail, sendAdminInviteEmail } from '../../utils/mailer';
 
 export const adminService = {
   getOverview: async () => {
@@ -22,6 +23,27 @@ export const adminService = {
       campaignsApproved,
       usersCount
     };
+  },
+  inviteAdmin: async (name: string, email: string) => {
+    const existing = await userRepository.findByEmail(email);
+    if (existing) {
+      throw { status: 409, message: 'errors.emailInUse' };
+    }
+
+    const randomPassword = Math.random().toString(36).slice(-10) + 'X1!';
+    const hashed = await bcrypt.hash(randomPassword, 12);
+
+    const user = await userRepository.create({
+      name,
+      email,
+      password: hashed,
+      role: 'admin' as any,
+      emailVerified: true
+    });
+
+    await sendAdminInviteEmail({ email, name, password: randomPassword });
+
+    return { id: user._id.toString(), email, name };
   },
   getTrends: async (days = 7) => {
     const safeDays = Math.min(Math.max(days, 3), 30);

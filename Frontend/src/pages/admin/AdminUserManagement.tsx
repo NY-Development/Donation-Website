@@ -45,6 +45,11 @@ const AdminUserManagement: React.FC = () => {
   const [confirmUserId, setConfirmUserId] = useState<string | null>(null);
   const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
 
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteName, setInviteName] = useState('');
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [isInviting, setIsInviting] = useState(false);
+
   const { data, isError, refetch, isFetching } = useQuery({
     queryKey: ['admin', 'users', search, role, verification],
     queryFn: async () => {
@@ -118,7 +123,7 @@ const AdminUserManagement: React.FC = () => {
           </div>
         </div>
         <button 
-          onClick={() => {}} // Logical for adding user if available
+          onClick={() => setInviteOpen(true)}
           className="flex items-center gap-2 bg-slate-900 dark:bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold active:scale-95 transition-all shadow-lg shadow-slate-200 dark:shadow-primary/20"
         >
           <UserPlus className="size-4" />
@@ -306,6 +311,99 @@ const AdminUserManagement: React.FC = () => {
         onCancel={() => setConfirmDeleteAll(false)}
         onConfirm={confirmDeleteAllUsers}
       />
+
+      {/* Invite Admin Modal */}
+      {inviteOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" 
+            onClick={() => !isInviting && setInviteOpen(false)}
+          />
+          <div className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="absolute top-0 inset-x-0 h-1 bg-primary" />
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              if (!inviteName || !inviteEmail) return;
+              setIsInviting(true);
+              try {
+                await adminService.inviteAdmin({ name: inviteName, email: inviteEmail });
+                setInviteOpen(false);
+                setInviteName('');
+                setInviteEmail('');
+                await refetch();
+              } catch (err) {
+                console.error('Error inviting admin:', err);
+                // Optionally show error toast
+              } finally {
+                setIsInviting(false);
+              }
+            }}>
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 rounded-xl bg-primary/10 text-primary">
+                    <UserPlus className="size-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">Invite Admin</h3>
+                    <p className="text-xs text-slate-500">Send an invitation to a new administrator.</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-medium"
+                      placeholder="e.g. Abebe Kebede"
+                      value={inviteName}
+                      onChange={(e) => setInviteName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-medium"
+                      placeholder="admin@example.com"
+                      value={inviteEmail}
+                      onChange={(e) => setInviteEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-8 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    className="px-4 py-2 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    onClick={() => setInviteOpen(false)}
+                    disabled={isInviting}
+                  >
+                    {t('common.cancel')}
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2 rounded-xl text-sm font-bold bg-primary text-white hover:bg-primary/90 transition-all flex items-center justify-center min-w-[120px] disabled:opacity-70"
+                    disabled={isInviting || !inviteName.trim() || !inviteEmail.trim()}
+                  >
+                    {isInviting ? (
+                      <div className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      'Send Invite'
+                    )}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
