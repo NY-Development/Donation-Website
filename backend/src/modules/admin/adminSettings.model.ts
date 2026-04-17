@@ -22,8 +22,8 @@ export interface AdminSettingsDocument extends Document {
 
 const adminSettingsSchema = new Schema<AdminSettingsDocument>(
   {
-    platformName: { type: String, default: 'ImpactGive' },
-    supportEmail: { type: String, default: 'support@impactgive.org' },
+    platformName: { type: String, default: 'etfund' },
+    supportEmail: { type: String, default: 'support@etfund.org' },
     fontFamily: { type: String, default: 'Source Sans Pro' },
     maintenanceMode: { type: Boolean, default: false },
     platformFeePercent: { type: Number, default: 2.5 },

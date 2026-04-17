@@ -81,10 +81,10 @@
     "requestRejected": "ጥያቄ ተቀባይነት አላገኘም"
   },
   "root": {
-    "title": "ImpactGive API",
-    "badge": "ImpactGive API",
+    "title": "etfund API",
+    "badge": "etfund API",
     "heading": "ባክእንድ በስራ ላይ ነው።",
-    "body": "የImpactGive ሰርቨርን ደርሰዋል። ዘመቻዎች፣ ተጠቃሚዎች እና ልገሳዎችን ለማግኘት የAPI መንገዶችን ይጠቀሙ።",
+    "body": "የetfund ሰርቨርን ደርሰዋል። ዘመቻዎች፣ ተጠቃሚዎች እና ልገሳዎችን ለማግኘት የAPI መንገዶችን ይጠቀሙ።",
     "statusLabel": "ሁኔታ",
     "statusValue": "በመስመር ላይ",
     "healthLabel": "ጤና",

@@ -163,7 +163,7 @@ export const adminService = {
       settings = await AdminSettingsModel.findById(created._id).lean();
     }
     return {
-      platformName: settings?.platformName ?? 'ImpactGive',
+      platformName: settings?.platformName ?? 'etfund',
       fontFamily: settings?.fontFamily ?? 'Source Sans Pro'
     };
   },

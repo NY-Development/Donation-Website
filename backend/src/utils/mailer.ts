@@ -57,7 +57,7 @@ const emailLayout = (payload: {
             </tr>
             <tr>
               <td style="padding:16px 28px 28px;border-top:1px solid #f0ecfb;">
-                <p style="margin:0;color:#7a7a8a;font-size:12px;line-height:1.6;">${payload.footerNote ?? 'You are receiving this email because you have an account or activity on ImpactGive.'}</p>
+                <p style="margin:0;color:#7a7a8a;font-size:12px;line-height:1.6;">${payload.footerNote ?? 'You are receiving this email because you have an account or activity on etfund.'}</p>
               </td>
             </tr>
           </table>
@@ -123,7 +123,7 @@ export const sendCampaignCreatedEmail = async (payload: {
       </table>
       <p style="margin:14px 0 0;font-size:13px;line-height:1.7;color:#6b7280;">Open the admin dashboard to review and moderate this campaign.</p>
     `,
-    footerNote: 'This is an automated admin notification from ImpactGive.'
+    footerNote: 'This is an automated admin notification from etfund.'
   });
 
   await mailer.sendMail({

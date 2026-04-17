@@ -81,10 +81,10 @@
     "requestRejected": "Request rejected"
   },
   "root": {
-    "title": "ImpactGive API",
-    "badge": "ImpactGive API",
+    "title": "etfund API",
+    "badge": "etfund API",
     "heading": "Backend is live and ready.",
-    "body": "You have reached the ImpactGive server. Use the API routes to access campaigns, users, and donations.",
+    "body": "You have reached the etfund server. Use the API routes to access campaigns, users, and donations.",
     "statusLabel": "Status",
     "statusValue": "Online",
     "healthLabel": "Health",

@@ -360,7 +360,7 @@ const HelpCenter: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    window.location.href = `mailto:${supportEmail}?subject=ImpactGive%20Issue`;
+                    window.location.href = `mailto:${supportEmail}?subject=etfund%20Issue`;
                   }}
                   className="flex w-full items-center gap-3 rounded-xl border border-gray-100 dark:border-gray-800 p-3 text-left hover:border-primary/40 hover:bg-primary/5 transition"
                 >

@@ -60,7 +60,7 @@
     "safetyTrust": "ደህንነት እና እምነት",
     "aboutUs": "ስለ እኛ",
     "exploreCampaigns": "ዘመቻዎችን ያስሱ",
-    "copyright": "© 2026 ImpactGive Foundation. ሁሉም መብቶች ተጠብቀዋል።",
+    "copyright": "© 2026 etfund Foundation. ሁሉም መብቶች ተጠብቀዋል።",
     "developedBy": "በ NYDev ቡድን ተገንብቷል",
     "privacy": "የግላዊነት ፖሊሲ",
     "terms": "የአገልግሎት ደንቦች",
@@ -751,7 +751,7 @@
     },
     "admin": {
       "layout": {
-        "brandName": "ImpactGive",
+        "brandName": "etfund",
         "toggleNav": "የአስተዳደር አሰሳ ቀይር",
         "closeNav": "የአስተዳደር አሰሳ ዝጋ"
       },
@@ -1001,7 +1001,7 @@
       }
     },
     "adminDashboard": {
-      "brandTitle": "ImpactGive አስተዳደር",
+      "brandTitle": "etfund አስተዳደር",
       "brandSubtitle": "የእንቅስቃሴ መቆጣጠሪያ",
       "nav": {
         "overview": "አጠቃላይ",

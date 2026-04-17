@@ -64,7 +64,7 @@
     "safetyTrust": "Safety & Trust",
     "aboutUs": "About Us",
     "exploreCampaigns": "Explore Campaigns",
-    "copyright": "© 2026 ImpactGive Foundation. All rights reserved.",
+    "copyright": "© 2026 etfund Foundation. All rights reserved.",
     "developedBy": "Developed by NYDev Team",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
@@ -751,7 +751,7 @@
     },
     "admin": {
       "layout": {
-        "brandName": "ImpactGive",
+        "brandName": "etfund",
         "toggleNav": "Toggle admin navigation",
         "closeNav": "Close admin navigation"
       },
@@ -1001,7 +1001,7 @@
       }
     },
     "adminDashboard": {
-      "brandTitle": "ImpactGive Admin",
+      "brandTitle": "etfund Admin",
       "brandSubtitle": "Operations console",
       "nav": {
         "overview": "Overview",
@@ -1156,14 +1156,14 @@
     "about": {
       "kicker": "About Us",
       "title": "Building trust in giving",
-      "subtitle": "ImpactGive connects donors with verified causes to make giving transparent, fast, and meaningful.",
+      "subtitle": "etfund connects donors with verified causes to make giving transparent, fast, and meaningful.",
       "missionTitle": "Our Mission",
       "missionBody": "Empower donors and nonprofits with tools that maximize impact.",
       "valuesTitle": "Our Values",
       "valuesBody": "Transparency, accountability, and community-driven change."
     },
     "howItWorks": {
-      "kicker": "ImpactGive",
+      "kicker": "etfund",
       "title": "How It Works",
       "subtitle": "Transparent giving from start to finish. Discover causes, donate securely, and track impact in real time.",
       "step1Title": "1. Discover",
