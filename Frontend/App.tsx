@@ -306,7 +306,7 @@ const App: React.FC = () => {
                   </button>
                   <button className="w-full text-left p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:border-primary/40 hover:bg-primary/5 transition">
                     <p className="font-semibold">
-                      Where can I track my impact?
+                      Where can I track my etfund?
                     </p>
                     <p className="text-sm text-gray-500">
                       See donations, updates, and progress reports.

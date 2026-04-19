@@ -123,7 +123,7 @@ const Contact: React.FC = () => {
               <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
                 {t(
                   "pages.contact.subtitle",
-                  "We're here to help and answer any question you might have. Your support fuels our mission for global impact.",
+                  "We're here to help and answer any question you might have. Your support fuels our mission for global etfund.",
                 )}
               </p>
             </div>
@@ -163,7 +163,7 @@ const Contact: React.FC = () => {
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   {t(
                     "pages.contact.address.value",
-                    "123 Impact Way, San Francisco, CA 94103",
+                    "123 etfund Way, San Francisco, CA 94103",
                   )}
                 </p>
               </div>

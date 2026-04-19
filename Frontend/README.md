@@ -158,4 +158,4 @@ Keep animations minimal and purposeful
 📜 License
 This frontend project is licensed under the MIT License.
 
-💜 Crafted with care to maximize trust, clarity, and impact.
+💜 Crafted with care to maximize trust, clarity, and etfund.

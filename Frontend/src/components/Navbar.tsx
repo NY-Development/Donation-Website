@@ -177,7 +177,7 @@ const Navbar: React.FC = () => {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 font-black text-lg">
               <div className="size-9 rounded-xl text-primary flex items-center justify-center">
-                <img src="/impact-logo.png" className="size-15 rounded-2xl" />
+                <img src="/etfund-logo.png" className="size-15 rounded-2xl" />
               </div>
               <span className="hidden sm:inline text-gray-900 dark:text-white">
                 {t("common.brand")}

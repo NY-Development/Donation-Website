@@ -133,7 +133,7 @@ const Success: React.FC = () => {
 
         <div className="flex flex-col sm:flex-row gap-4 w-full">
           <Link to={redirectTo} className="flex-1 h-12 rounded-xl bg-primary text-white font-bold flex items-center justify-center hover:bg-primary-hover transition-all">
-            {isAuthenticated ? t('pages.success.goImpact') : t('pages.success.backCampaigns')}
+            {isAuthenticated ? t('pages.success.goetfund') : t('pages.success.backCampaigns')}
           </Link>
           <Link to={isAuthenticated ? '/campaigns' : '/login'} className="flex-1 h-12 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-bold flex items-center justify-center hover:border-primary transition-all">
             {isAuthenticated ? t('pages.success.explore') : t('pages.success.signIn')}

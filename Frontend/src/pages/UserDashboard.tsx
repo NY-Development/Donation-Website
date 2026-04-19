@@ -172,7 +172,7 @@ const UserDashboard: React.FC = () => {
       badges.push({ label: t('pages.userDashboard.badges.firstDonation'), icon: <Star className="size-4" aria-hidden="true" /> });
     }
     if (campaignsSupported >= 3) {
-      badges.push({ label: t('pages.userDashboard.badges.impactBuilder'), icon: <Heart className="size-4" aria-hidden="true" /> });
+      badges.push({ label: t('pages.userDashboard.badges.etfundBuilder'), icon: <Heart className="size-4" aria-hidden="true" /> });
     }
     if (totalDonated >= 250) {
       badges.push({ label: t('pages.userDashboard.badges.generousGiver'), icon: <Award className="size-4" aria-hidden="true" /> });

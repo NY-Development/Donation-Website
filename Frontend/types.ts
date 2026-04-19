@@ -82,7 +82,7 @@ export interface CampaignDonor {
 export interface GlobalStats {
   totalDonated: number;
   donorsCount: number;
-  livesImpacted: number;
+  livesetfunded: number;
 }
 
 export interface DonationTrendPoint {

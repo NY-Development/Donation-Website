@@ -50,7 +50,7 @@ const PublicSupportView: React.FC = () => {
 
   useEffect(() => {
     void i18n.changeLanguage(parsed.lang);
-    localStorage.setItem('impact:lang', parsed.lang);
+    localStorage.setItem('etfund:lang', parsed.lang);
   }, [i18n, parsed.lang]);
 
   const { data, isLoading, isError, error } = useQuery({

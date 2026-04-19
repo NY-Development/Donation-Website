@@ -1,6 +1,6 @@
 import React from 'react';
 
-// EULA content customized for Donations Platform (Impact Donation Website)
+// EULA content customized for Donations Platform (etfund Donation Website)
 function boldifyDoubleAsterisk(text: string): string {
   return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 }
@@ -92,7 +92,7 @@ const rawEULAContent = boldifyDoubleAsterisk(`
   <p>
     **Donations Platform Legal Department**<br />
     Email: <a href="mailto:mebasharew31@gmail.com" class="text-blue-600 hover:underline">mebasharew31@gmail.com</a><br />
-    Address: 123 Impact Way, Addis Ababa, Ethiopia
+    Address: 123 etfund Way, Addis Ababa, Ethiopia
   </p>
 
   <h2 id="14-miscellaneous" className="text-xl font-bold text-slate-900 dark:text-white mt-8 mb-4">

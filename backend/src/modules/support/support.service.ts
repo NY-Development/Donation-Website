@@ -169,9 +169,9 @@ export const supportService = {
       subject: payload.subject.trim(),
       content: payload.content.trim(),
       links: {
-        en: `https://impactdonation.vercel.app/support/en@${payload.id}`,
-        am: `https://impactdonation.vercel.app/support/am@${payload.id}`,
-        om: `https://impactdonation.vercel.app/support/om@${payload.id}`
+        en: `https://www.etfund.org/support/en@${payload.id}`,
+        am: `https://www.etfund.org/support/am@${payload.id}`,
+        om: `https://www.etfund.org/support/om@${payload.id}`
       }
     });
 

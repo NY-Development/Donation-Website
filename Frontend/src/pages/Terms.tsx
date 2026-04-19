@@ -1,6 +1,6 @@
 import React from 'react';
 
-// Terms and Conditions content customized for Donations Platform (Impact Donation Website)
+// Terms and Conditions content customized for Donations Platform (etfund Donation Website)
 function boldifyDoubleAsterisk(text: string): string {
   return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 }
@@ -9,7 +9,7 @@ const rawTermsContent = boldifyDoubleAsterisk(`
   <h1>TERMS AND CONDITIONS</h1>
   <p>Last updated: <span class="font-semibold text-gray-700">March 01, 2026</span></p>
 
-  <p>These Terms and Conditions ("Terms") govern your use of the Donations Platform, including the website at <a href="https://impactdonation.vercel.app" class="text-blue-600 hover:text-orange-600 transition-colors">https://impactdonation.vercel.app</a> and the associated mobile application (collectively, the "Service"), provided by <span class="font-semibold text-orange-600">Donations Platform</span> ("we," "us," or "our").</p>
+  <p>These Terms and Conditions ("Terms") govern your use of the Donations Platform, including the website at <a href="https://www.etfund.org" class="text-blue-600 hover:text-orange-600 transition-colors">https://www.etfund.org</a> and the associated mobile application (collectively, the "Service"), provided by <span class="font-semibold text-orange-600">Donations Platform</span> ("we," "us," or "our").</p>
 
   <p class="mt-6 bg-orange-50 p-4 border-l-4 border-orange-500 text-gray-800">
     By accessing or using the Service, you agree to be bound by these Terms. Our Service functions as an intermediary platform connecting verified beneficiaries with global donors. We are not a bank, charity, or insurance provider.
@@ -67,7 +67,7 @@ const rawTermsContent = boldifyDoubleAsterisk(`
   <h2 id="5-ai-moderation-and-risk-scoring">5. AI MODERATION AND RISK SCORING</h2>
   <p>We utilize AI-powered systems to ensure the safety of our global community:</p>
   <ul class="list-disc ml-6 space-y-1">
-      <li>**Risk Scoring:** AI models analyze campaigns for risk patterns, potentially impacting campaign approval or withdrawal controls.</li>
+      <li>**Risk Scoring:** AI models analyze campaigns for risk patterns, potentially etfunding campaign approval or withdrawal controls.</li>
       <li>**Anomaly Detection:** Our system monitors donation patterns for signs of money laundering or automated fraud.</li>
       <li>**Appeals:** If an AI decision results in an account suspension, users may request a human review of the automated findings.</li>
   </ul>
@@ -94,7 +94,7 @@ const rawTermsContent = boldifyDoubleAsterisk(`
   <p>If you have any questions about these Terms, please contact us:</p>
   <ul class="list-disc ml-6 space-y-1">
       <li>By email: <a href="mailto:mebasharew31@gmail.com" class="text-blue-600 hover:underline">mebasharew31@gmail.com</a></li>
-      <li>By post: Donations Platform Legal Dept, 123 Impact Way, Addis Ababa, Ethiopia</li>
+      <li>By post: Donations Platform Legal Dept, 123 etfund Way, Addis Ababa, Ethiopia</li>
   </ul>
 `);
 

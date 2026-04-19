@@ -32,7 +32,7 @@
     "secureVerification": "ደህንነቱ የተጠበቀ ማረጋገጫ",
     "campaigns": "ዘመቻዎች",
     "startCampaign": "ዘመቻ ጀምር",
-    "myImpact": "የኔ ተፅዕኖ",
+    "myetfund": "የኔ ተፅዕኖ",
     "logOut": "ውጣ",
     "logIn": "ግባ",
     "donate": "ለግስ",
@@ -174,7 +174,7 @@
       },
       "address": {
         "title": "ዋና ቢሮአችንን ይጎብኙ",
-        "value": "123 Impact Way, Addis Ababa, Ethiopia"
+        "value": "123 etfund Way, Addis Ababa, Ethiopia"
       },
       "mapAlt": "የዋና ቢሮአችንን ቦታ የሚያሳይ ካርታ",
       "social": {
@@ -282,8 +282,8 @@
       "processing": "በማስኬድ ላይ...",
       "donateAmount": "ETB {{amount}} አሁን ይለግሱ",
       "supporting": "የሚደግፉት",
-      "yourImpact": "ተፅዕኖዎ",
-      "impactBody": "የETB {{amount}} ልገሳዎ ይህን ጉዳይ በቀጥታ ይደግፋል።",
+      "youretfund": "ተፅዕኖዎ",
+      "etfundBody": "የETB {{amount}} ልገሳዎ ይህን ጉዳይ በቀጥታ ይደግፋል።",
       "donation": "ልገሳ",
       "totalDue": "ጠቅላላ ክፍያ",
       "receiptPreviewAlt": "የደረሰኝ ቅድሚያ እይታ"
@@ -1132,7 +1132,7 @@
         "title": "የተገኙ ምልክቶች",
         "empty": "እስካሁን ምልክት የለም። ልገሳ አድርጉ እና ጀምሩ።",
         "firstDonation": "የመጀመሪያ ልገሳ",
-        "impactBuilder": "ተፅዕኖ ገንቢ",
+        "etfundBuilder": "ተፅዕኖ ገንቢ",
         "generousGiver": "በጎ ሰጪ",
         "consistentSupporter": "ቀጣይ ደጋፊ"
       },
@@ -1305,7 +1305,7 @@
       "totalLabel": "ጠቅላላ ልገሳ",
       "submitted": "ለምርመራ ተልኳል",
       "campaign": "ዘመቻ",
-      "goImpact": "ወደ ተፅዕኖዬ ሂድ",
+      "goetfund": "ወደ ተፅዕኖዬ ሂድ",
       "backCampaigns": "ወደ ዘመቻዎች ተመለስ",
       "explore": "ዘመቻዎችን ያስሱ",
       "signIn": "ግባ"

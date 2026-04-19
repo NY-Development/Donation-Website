@@ -17,7 +17,7 @@ export default defineConfig({
         // Accent Colors (Success & Confirmation)
         accent: {
           success: '#10B981', // Soft Green
-          gold: '#F59E0B',    // Impact/Highlight
+          gold: '#F59E0B',    // etfund/Highlight
           glow: '#A78BFA',    // For 3D/Futuristic glow effects
         },
         // Neutral Palette (Clarity & Cleanliness)

@@ -34,14 +34,14 @@ const Home: React.FC = () => {
       const sections = gsap.utils.toArray<HTMLElement>('[data-animate="section"]', containerRef.current);
       animateSectionsOnScroll(sections);
 
-      const impactSteps = gsap.utils.toArray<HTMLElement>('[data-animate="impact-step"]', containerRef.current);
-      if (impactSteps.length) {
-        animateStagger(impactSteps, {
+      const etfundSteps = gsap.utils.toArray<HTMLElement>('[data-animate="etfund-step"]', containerRef.current);
+      if (etfundSteps.length) {
+        animateStagger(etfundSteps, {
           y: 16,
           duration: 0.6,
           stagger: 0.08,
           scrollTrigger: {
-            trigger: impactSteps[0],
+            trigger: etfundSteps[0],
             start: 'top 85%',
             toggleActions: 'play none none none',
           },
@@ -87,7 +87,7 @@ const Home: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const seen = localStorage.getItem('impact:onboarding');
+    const seen = localStorage.getItem('etfund:onboarding');
     if (!seen) {
       setShowOnboarding(true);
     }
@@ -99,7 +99,7 @@ const Home: React.FC = () => {
   }>;
 
   const closeOnboarding = () => {
-    localStorage.setItem('impact:onboarding', 'true');
+    localStorage.setItem('etfund:onboarding', 'true');
     setShowOnboarding(false);
   };
 
@@ -219,7 +219,7 @@ const Home: React.FC = () => {
                   <img alt="Community" className="w-full h-full object-cover" src={heroImages[0]} />
                 </div>
                 <div ref={heroImg2Ref} className="w-40 h-52 rounded-[2.5rem] overflow-hidden shadow-xl opacity-80 filter grayscale-[0.5] border-4 border-white dark:border-surface-dark">
-                  <img alt="Impact" className="w-full h-full object-cover" src={heroImages[1]} />
+                  <img alt="etfund" className="w-full h-full object-cover" src={heroImages[1]} />
                 </div>
               </>
             ) : (
@@ -228,7 +228,7 @@ const Home: React.FC = () => {
                   <img alt="Community" className="w-full h-full object-cover" src={heroImages[0]} />
                 </div>
                 <div ref={heroImg2Ref} className="absolute w-56 h-72 rounded-[3.5rem] overflow-hidden transform rotate-[8deg] translate-x-[40%] translate-y-[10%] shadow-xl z-0 opacity-80 filter grayscale-[0.5]">
-                  <img alt="Impact" className="w-full h-full object-cover" src={heroImages[1]} />
+                  <img alt="etfund" className="w-full h-full object-cover" src={heroImages[1]} />
                 </div>
               </>
             )}
@@ -243,7 +243,7 @@ const Home: React.FC = () => {
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> Verified ★
               </div>
               <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-xs md:text-sm font-bold text-white border border-white/30">
-                National Impact
+                National etfund
               </div>
               <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-xs md:text-sm font-bold text-white border border-white/30">
                 Direct Giving
@@ -270,7 +270,7 @@ const Home: React.FC = () => {
               <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('pages.home.totalRaised', 'Total Raised')}</p>
             </div>
             <div className="flex flex-col items-center text-center p-2">
-              <p className="text-4xl font-bold text-gray-900 dark:text-white tracking-tighter mb-1">{stats?.livesImpacted?.toLocaleString() ?? '500+'}</p>
+              <p className="text-4xl font-bold text-gray-900 dark:text-white tracking-tighter mb-1">{stats?.livesetfunded?.toLocaleString() ?? '500+'}</p>
               <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('pages.home.activeCampaigns', 'Active Campaigns')}</p>
             </div>
             <div className="flex flex-col items-center text-center p-2">
@@ -333,7 +333,7 @@ const Home: React.FC = () => {
         <div className="max-w-300 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">{t('pages.home.transparentTitle', 'Transparent giving.')}<br />{t('pages.home.visibleImpact', 'Visible impact.')}</h2>
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">{t('pages.home.transparentTitle', 'Transparent giving.')}<br />{t('pages.home.visibleetfund', 'Visible etfund.')}</h2>
               <p className="text-gray-600 dark:text-gray-400 text-lg mb-10 leading-relaxed">
                 {t('pages.home.transparentDesc', 'We make it easy to support the causes you care about. Every cent is tracked and verified, ensuring your contribution reaches those in need.')}
               </p>
@@ -359,7 +359,7 @@ const Home: React.FC = () => {
               </div>
             </div>
             <div className="relative h-125 rounded-3xl overflow-hidden shadow-2xl">
-              <img alt="Impact process" className="w-full h-full object-cover" src={heroImages[0]} />
+              <img alt="etfund process" className="w-full h-full object-cover" src={heroImages[0]} />
               <div className="absolute top-8 right-8 bg-white dark:bg-surface-dark p-6 rounded-2xl shadow-xl max-w-50">
                 <div className="text-primary font-black text-2xl mb-1">100%</div>
                 <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-tight">{t('pages.home.proceeds', 'Proceeds go to the field directly')}</div>
@@ -375,7 +375,7 @@ const Home: React.FC = () => {
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
           <div className="relative z-10">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">{t('pages.home.communityTitle', 'Join our community')}</h2>
-            <p className="text-purple-100 text-lg mb-10 max-w-lg mx-auto">{t('pages.home.communitySubtitle', 'Get inspiring stories and impact reports delivered straight to your inbox.')}</p>
+            <p className="text-purple-100 text-lg mb-10 max-w-lg mx-auto">{t('pages.home.communitySubtitle', 'Get inspiring stories and etfund reports delivered straight to your inbox.')}</p>
             <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input className="flex-1 px-6 h-14 rounded-full bg-white/20 border-white/30 text-white placeholder-purple-200 focus:ring-2 focus:ring-white/50 focus:border-transparent outline-none backdrop-blur-md" placeholder={t('pages.home.emailPlaceholder', 'Your email address')} type="email" />
               <button className="px-8 h-14 bg-white text-primary font-bold rounded-full hover:bg-gray-100 transition-all shadow-xl" type="button">

@@ -24,7 +24,7 @@ const PrivacyPolicy: React.FC = () => {
                 This Privacy Notice for <strong>Donations Platform</strong> (<strong>"we," "us," or "our"</strong>), describes how and why we might access, collect, store, use, and/or share (<strong>"process"</strong>) your personal information when you use our services (<strong>"Services"</strong>), including when you:
               </p>
               <ul className="list-disc pl-6 mb-4">
-                <li>Visit our website at <strong>https://impactdonation.vercel.app</strong> or any website of ours that links to this Privacy Notice.</li>
+                <li>Visit our website at <strong>https://www.etfund.org</strong> or any website of ours that links to this Privacy Notice.</li>
                 <li>Download and use our mobile application (<strong>Donations Platform</strong>) or any other application of ours that links to this Privacy Notice.</li>
                 <li>Engage with us in other related ways, including any beneficiary verification, fundraising campaigns, donor transactions, or events.</li>
               </ul>
@@ -40,7 +40,7 @@ const PrivacyPolicy: React.FC = () => {
                 <li><strong>What personal information do we process?</strong> When you visit, use, or navigate our Services, we process account information, identity verification data (for beneficiaries), financial transaction history, and technical usage data.</li>
                 <li><strong>Do we process any sensitive personal information?</strong> Yes. Because medical-related documentation and government IDs are required to verify campaigns, we handle sensitive personal data with enhanced encryption and strict access controls.</li>
                 <li><strong>Do we collect any information from third parties?</strong> We collect information from identity verification providers, payment processors (e.g., Chapa, Stripe, PayPal), and social media platforms if you choose to link your account.</li>
-                <li><strong>How do we process your information?</strong> We process your information to facilitate global donations, verify beneficiary authenticity, prevent fraud using AI-powered risk scoring, and maintain a trust-centered impact platform.</li>
+                <li><strong>How do we process your information?</strong> We process your information to facilitate global donations, verify beneficiary authenticity, prevent fraud using AI-powered risk scoring, and maintain a trust-centered etfund platform.</li>
                 <li><strong>In what situations and with which parties do we share personal information?</strong> We share information with payment processors, verification services, and AI model providers used for fraud detection.</li>
                 <li><strong>How do we keep your information safe?</strong> We have implemented advanced organizational and technical procedures to protect your high-risk data, though no electronic transmission is 100% secure.</li>
                 <li><strong>What are your rights?</strong> Depending on your location (e.g. Ethiopia under FDRE Constitution Article 26 Proclamation No, 1321/2024, EU/UK under GDPR or California under CCPA), you have specific rights regarding your personal information, including the right to appeal AI-driven decisions.</li>

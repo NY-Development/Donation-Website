@@ -206,7 +206,7 @@ export const campaignService = {
     const response = {
       totalDonated: totalDonations,
       donorsCount,
-      livesImpacted: campaigns
+      livesetfunded: campaigns
     };
     await cache.set('stats:global', response, 60);
     return response;

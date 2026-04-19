@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-20">
           <div className="col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2 mb-6">
-              <img src="/impact-logo.png" alt="Logo" className="size-12 rounded-full text-primary" aria-hidden="true" />
+              <img src="/etfund-logo.png" alt="Logo" className="size-12 rounded-full text-primary" aria-hidden="true" />
               <span className="text-2xl font-black text-gray-900 dark:text-white">{t('common.brand')}</span>
             </div>
             <p className="text-gray-500 dark:text-gray-400 max-w-xs mb-8 leading-relaxed">
@@ -79,7 +79,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
         <div className="border-t border-gray-100 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-bold text-gray-400 uppercase tracking-widest">
-          <p>© 2026 Impact Foundation. All rights reserved.</p>
+          <p>© 2026 etfund Foundation. All rights reserved.</p>
           <div className="flex gap-8">
             <Link className="hover:text-gray-900 dark:hover:text-white transition-colors" to="/privacy-policy">{t('footer.privacy', 'Privacy Policy')}</Link>
             <Link className="hover:text-gray-900 dark:hover:text-white transition-colors" to="/terms">{t('footer.terms', 'Terms of Service')}</Link>

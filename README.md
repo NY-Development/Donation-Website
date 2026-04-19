@@ -2,7 +2,7 @@
 
 A modern, secure, and fully responsive **donation web application** built using **React (Vite)**, **Tailwind CSS v4**, and **GSAP animations**.
 
-Designed to help users **discover campaigns, donate securely, and track social impact** — with a clean UI, smooth animations, and scalable architecture.
+Designed to help users **discover campaigns, donate securely, and track social etfund** — with a clean UI, smooth animations, and scalable architecture.
 
 ---
 
@@ -160,4 +160,4 @@ npm run dev
 📜 License
 This project is licensed under the MIT License.
 
-💜 Built with care to create impact — one donation at a time.
+💜 Built with care to create etfund — one donation at a time.

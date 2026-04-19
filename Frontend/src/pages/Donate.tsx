@@ -361,8 +361,8 @@ const Donate: React.FC = () => {
                   <div className="flex gap-3 items-start text-sm">
                     <Leaf className="size-4 text-primary" aria-hidden="true" />
                     <div>
-                      <p className="font-semibold">{t('pages.donate.yourImpact')}</p>
-                      <p className="text-gray-500">{t('pages.donate.impactBody', { amount })}</p>
+                      <p className="font-semibold">{t('pages.donate.youretfund')}</p>
+                      <p className="text-gray-500">{t('pages.donate.etfundBody', { amount })}</p>
                     </div>
                   </div>
                 </div>

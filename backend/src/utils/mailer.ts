@@ -14,7 +14,7 @@ export const mailer = nodemailer.createTransport({
   }
 });
 
-const logoCid = 'impact-logo';
+const logoCid = 'etfund-logo';
 const logoPath = path.resolve(__dirname, '../assets/image.png');
 
 const logoAttachment = {
@@ -45,7 +45,7 @@ const emailLayout = (payload: {
           <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border:1px solid #ece7fa;border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(127,19,236,0.08);">
             <tr>
               <td style="padding:28px 28px 18px;background:linear-gradient(135deg,#7f13ec 0%,#5b21b6 100%);text-align:center;">
-                <img src="cid:${logoCid}" alt="Impact" width="64" height="64" style="display:block;margin:0 auto 14px;border-radius:12px;background:#fff;padding:6px;" />
+                <img src="cid:${logoCid}" alt="etfund" width="64" height="64" style="display:block;margin:0 auto 14px;border-radius:12px;background:#fff;padding:6px;" />
                 <h1 style="margin:0;color:#ffffff;font-size:24px;line-height:1.2;font-weight:800;">${payload.title}</h1>
                 <p style="margin:10px 0 0;color:#e9dcff;font-size:14px;line-height:1.5;">${payload.subtitle}</p>
               </td>

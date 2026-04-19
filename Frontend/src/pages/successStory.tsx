@@ -34,7 +34,7 @@ const SuccessStory: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-14">
           <span className="inline-block px-4 py-1.5 mb-6 text-xs font-bold uppercase tracking-widest text-primary bg-primary/10 rounded-full">
-            {t('pages.successStories.kicker', 'Impact Report')}
+            {t('pages.successStories.kicker', 'etfund Report')}
           </span>
           <h1 className="text-4xl md:text-6xl font-black leading-tight tracking-tight mb-6">
             {t('pages.successStories.heroTitlePrefix', 'Real Stories of')}{' '}
